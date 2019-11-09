@@ -1,0 +1,509 @@
+openapi: "3.0.0"
+info:
+  title: Otto user service
+  version: 1.0
+paths:
+  /post:
+    post:
+      operationId: createNewPost
+      summary: create a new post
+      requestBody:
+        description: post to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPost"
+      responses:
+        '201':
+          description: |-
+            201 response
+    get:
+      operationId: getPosts
+      summary: get posts
+      responses:
+        '200':
+          description: a list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+  /post/{uuid}:
+    get:
+      operationId: getPost
+      summary: get a post
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: get a post
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: |-
+            404 response
+  /post/{uuid}/replies:
+    get:
+      operationId: getPostRepliesV1
+      summary: get replies to a post
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: post replies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reply'
+        '404':
+          description: |-
+            404 response
+  /reply:
+    post:
+      operationId: createAReply
+      summary: create a reply
+      requestBody:
+        description: reply to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NewReply"
+      responses:
+        '201':
+          description: |-
+            201 response
+  /report/post:
+    post:
+      operationId: createAPostReportV1
+      summary: create a post report
+      requestBody:
+        description: post report to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NewPostReport"
+      responses:
+        '201':
+          description: |-
+            201 response
+  /report/reply:
+    post:
+      operationId: createAReplyReportV1
+      summary: create a reply report
+      requestBody:
+        description: reply report to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NewReplyReport"
+      responses:
+        '201':
+          description: |-
+            201 response
+  /reshare:
+    post:
+      operationId: createAReshare
+      summary: create a reshare
+      requestBody:
+        description: reshare to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NewReshare"
+      responses:
+        '201':
+          description: |-
+            201 response
+  /rehare/{uuid}:
+    get:
+      operationId: getReshare
+      summary: get a reshare
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: get a reshare
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Reshare'
+        '404':
+          description: |-
+            404 response
+  /user/{uuid}:
+    get:
+      operationId: getUser
+      summary: get a user
+      parameters:
+        - in: path
+          name: uuid
+          description: a user's unique ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/User"
+        '404':
+          description: no user found
+  /user/{uuid}/posts:
+    get:
+      operationId: getUserPostsV1
+      summary: get user posts
+      parameters:
+        - in: path
+          name: uuid
+          description: a user's unique ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A user's posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+  /user/{uuid}/follows:
+    get:
+      operationId: getUserFollowsV1
+      summary: get user follows
+      parameters:
+        - in: path
+          name: uuid
+          description: a user's unique ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A user's follows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follow"
+        '404':
+          description: No user found
+    post:
+      operationId: addUserFollowV1
+      summary: add a follow
+      parameters:
+        - in: path
+          name: uuid
+          description: a user's unique ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: follow to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NewFollow"
+      responses:
+        '201':
+          description: Follow created
+  /session:
+    post:
+      operationId: createSessionV1
+      summary: create a session and login
+      requestBody:
+        description: new session
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/NewSession"
+      responses:
+        '201':
+          description: session created
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - uuid
+        - name
+        - created
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        follows:
+          type: array
+          items:
+            $ref: "#/components/schemas/Follow"
+    Follow:
+      type: object
+      required:
+        - uuid
+        - user
+        - following
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        user:
+          type: object
+          $ref: "#/components/schemas/User"
+        following:
+          type: object
+          $ref: "#/components/schemas/User"
+    NewFollow:
+      type: object
+      properties:
+        following:
+          type: object
+          $ref: "#/components/schemas/User"
+    Post:
+      type: object
+      required:
+        - uuid
+        - message
+        - replies
+        - created
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        message:
+          type: object
+          $ref: "#/components/schemas/Message"
+        replies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Reply"
+        created_at:
+          type: string
+          format: date-time
+    NewPost:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: object
+          $ref: "#/components/schemas/NewMessage"
+    Reply:
+      type: object
+      required:
+        - message
+        - created
+        - post
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        post:
+          type: object
+          $ref: "#/components/schemas/Post"
+        message:
+          type: object
+          $ref: "#/components/schemas/NewMessage"
+    NewReply:
+      type: object
+      required:
+        - replyTo
+        - message
+      properties:
+        post:
+          type: object
+          $ref: "#/components/schemas/Post"
+        replyTo:
+          type: object
+          $ref: "#/components/schemas/Message"
+        message:
+          type: object
+          $ref: "#/components/schemas/NewMessage"
+    Reshare:
+      type: object
+      required:
+        - uuid
+        - message
+        - reshare
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        message:
+          type: object
+          $ref: "#/components/schemas/Message"
+        reshare:
+          type: object
+          $ref: "#/components/schemas/Message"
+    NewReshare:
+      type: object
+      properties:
+        message:
+          type: object
+          $ref: "#/components/schemas/NewMessage"
+        reshare:
+          type: object
+          $ref: "#/components/schemas/Message"
+    Message:
+      type: object
+      required:
+        - uuid
+        - created
+        - text
+        - user
+        - visibility
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        text:
+          type: string
+        user:
+          type: object
+          $ref: "#/components/schemas/User"
+        visibility:
+          type: string
+          $ref: "#/components/schemas/Visibility"
+    NewMessage:
+      type: object
+      required:
+        - message
+        - user
+      properties:
+        message:
+          type: string
+        user:
+          type: object
+          $ref: "#/components/schemas/User"
+    PostReport:
+      type: object
+      required:
+        - uuid
+        - created
+        - reporter
+        - message
+        - post
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        created_at:
+          type: timestamp
+        reporter:
+          type: object
+          $ref: "#/components/schema/User"
+        message:
+          type: object
+          $ref: "#/components/schemas/Message"
+        post:
+          type: object
+          $ref: "#/components/schemas/Post"
+    ReplyReport:
+      type: object
+      required:
+        - uuid
+        - created
+        - reporter
+        - message
+        - reply
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        created_at:
+          type: timestamp
+        reporter:
+          type: object
+          $ref: "#/components/schema/User"
+        message:
+          type: object
+          $ref: "#/components/schemas/Message"
+        reply:
+          type: object
+          $ref: "#/components/schemas/Reply"
+    NewPostReport:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: object
+          $ref: "#/components/schemas/NewMessage"
+        post:
+          type: object
+          $ref: "#/components/schemas/Post"
+    NewReplyReport:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: object
+          $ref: "#/components/schemas/NewMessage"
+        reply:
+          type: object
+          $ref: "#/components/schemas/Reply"
+    NewSession:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    Visibility:
+      type: string
+      enum:
+        - public
+        - limited
+        - private

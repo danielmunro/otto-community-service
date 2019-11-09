@@ -1,0 +1,1 @@
+go test ./test/... -coverpkg=./... -coverprofile coverage.out -v -count 1
