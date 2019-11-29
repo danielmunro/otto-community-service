@@ -12,13 +12,11 @@ package main
 import (
 	"github.com/danielmunro/otto-community-service/internal"
 	"github.com/danielmunro/otto-community-service/internal/middleware"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 )
 
 func main() {
-	_ = godotenv.Load()
 	router := internal.NewRouter()
 	log.Print("listening on 8081")
 	log.Fatal(http.ListenAndServe(":8081",
