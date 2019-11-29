@@ -10,11 +10,11 @@ import (
 
 func CreateDefaultConnection() *gorm.DB {
 	return CreateConnection(
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_PORT"),
-		os.Getenv("POSTGRES_DBNAME"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"))
+		os.Getenv("PG_HOST"),
+		os.Getenv("PG_PORT"),
+		os.Getenv("PG_DBNAME"),
+		os.Getenv("PG_USER"),
+		os.Getenv("PG_PASSWORD"))
 }
 
 func CreateConnection(host string, port string, dbname string, user string, password string) *gorm.DB {
