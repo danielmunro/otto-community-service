@@ -54,7 +54,16 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 func (p *PostService) GetPostsForUser(userUuid uuid.UUID) []*model.Post {
 	user, err := p.userRepository.FindOneByUuid(userUuid.String())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err) // return an error!
 	}
 	return mapper.GetPostModelsFromEntities(user, p.postRepository.FindByUser(user))
+}
+
+func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID) ([]*model.Post, error) {
+	user, err := p.userRepository.FindOneByUuid(userUuid.String())
+	if err != nil {
+		return nil, err
+	}
+	posts := p.postRepository.FindByUserFollows(userUuid)
+	return mapper.GetPostModelsFromEntities(user, posts), nil
 }

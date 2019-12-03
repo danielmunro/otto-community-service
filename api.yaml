@@ -199,6 +199,26 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
+  /user/{uuid}/follow-posts:
+    get:
+      operationId: getPostsForUserFollowsV1
+      summary: get posts for a user's follows
+      parameters:
+        - in: path
+          name: uuid
+          description: a user ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Posts for a user's follows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
   /user/{uuid}/follows:
     get:
       operationId: getUserFollowsV1

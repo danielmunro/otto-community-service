@@ -37,3 +37,14 @@ func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 	}
 	return post, nil
 }
+
+func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID) []*entity.Post {
+	var posts []*entity.Post
+	p.conn.
+		Table("posts").
+		Joins("join follows on follows.user_id = posts.user_id").
+		Joins("join users on follows.following_id = users.id").
+		Where("users.uuid = ?", userUuid.String()).
+		Find(&posts)
+	return posts
+}

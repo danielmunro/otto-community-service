@@ -95,3 +95,24 @@ func Test_PostService_GetUserPosts(t *testing.T) {
 	// then
 	test.Assert(t, len(posts) == 5)
 }
+
+func Test_GetPostsForUserFollows_HappyPath(t *testing.T) {
+	// setup
+	testUser := createTestUser()
+	follower := createTestUser()
+	postService := service.CreateDefaultPostService()
+	followService := service.CreateDefaultFollowService()
+	_, _ = followService.CreateFollow(*follower.Uuid, &model.NewFollow{Following: model.User{ Uuid: testUser.Uuid.String() } })
+
+	// given
+	for i := 0; i < 5; i++ {
+		_, _ = postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+	}
+
+	// when
+	posts, err := postService.GetPostsForUserFollows(*follower.Uuid)
+
+	// then
+	test.Assert(t, err == nil)
+	test.Assert(t, len(posts) == 5)
+}

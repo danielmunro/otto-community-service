@@ -24,3 +24,14 @@ func GetUserV1(w http.ResponseWriter, r *http.Request) {
 	data, _ := json.Marshal(user)
 	_, _ = w.Write(data)
 }
+
+// GetUserFollowsPostsV1 - get a user's friend's posts
+func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
+	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(uuid.GetUuidFromPath(r.URL.Path))
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	data, _ := json.Marshal(posts)
+	_, _ = w.Write(data)
+}
