@@ -22,16 +22,30 @@ func main() {
 	}
 	log.Print("reading from kafka")
 	_ = conn.SetReadDeadline(time.Now().Add(10*time.Second))
-	batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
-	b := make([]byte, 10e3) // 10KB max per message
-	log.Print("sanity")
-	userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
-	log.Print("starting batch read")
+	for {
+		batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
+		log.Print("sanity")
+		userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
+		log.Print("starting batch read")
+		err := ParseBatch(userRepository, batch)
+		if err != nil {
+			break
+		}
+		_ = batch.Close()
+	}
+	_ = conn.Close()
+}
+
+func ParseBatch(userRepository *repository.UserRepository, batch *kafka.Batch) error {
+	b := make([]byte, 10e3)            // 10KB max per message
 	for {
 		readLen, err := batch.Read(b)
+		if err != nil && err.Error() == "EOF" {
+			break
+		}
 		if err != nil {
 			log.Print("error received", err)
-			break
+			return err
 		}
 		data := b[:readLen]
 		log.Print("received user", string(data))
@@ -39,6 +53,5 @@ func main() {
 		userEntity := mapper.GetUserEntityFromModel(userModel)
 		userRepository.Create(userEntity)
 	}
-	_ = batch.Close()
-	_ = conn.Close()
+	return nil
 }

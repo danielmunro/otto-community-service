@@ -21,11 +21,22 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 
 // GetPostV1 - get a post
 func GetPostV1(w http.ResponseWriter, r *http.Request) {
-	post, err := service.CreateDefaultPostService().GetPost(iUuid.GetUuidFromPath(r.URL.Path))
+	post, err := service.CreateDefaultPostService().GetPost(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	data, _ := json.Marshal(post)
+	_, _ = w.Write(data)
+}
+
+// GetUserFollowsPostsV1 - get a user's friend's posts
+func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
+	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(iUuid.GetUuidFromPathThirdPosition(r.URL.Path))
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

@@ -20,7 +20,7 @@ func CreateAReplyV1(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPostRepliesV1(w http.ResponseWriter, r *http.Request) {
-	postUuid := iUuid.GetUuidFromPath(r.URL.Path)
+	postUuid := iUuid.GetUuidFromPathSecondPosition(r.URL.Path)
 	replies, err := service.CreateDefaultReplyService().GetRepliesForPost(postUuid)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

@@ -9,29 +9,18 @@ import (
 
 // GetUserPostsV1 - get posts by a user
 func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
-	posts := service.CreateDefaultPostService().GetPostsForUser(uuid.GetUuidFromPath(r.URL.Path))
+	posts := service.CreateDefaultPostService().GetPostsForUser(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
 
 // GetUserV1 - get a user
 func GetUserV1(w http.ResponseWriter, r *http.Request) {
-	user, err := service.CreateDefaultUserService().GetUser(uuid.GetUuidFromPath(r.URL.Path))
+	user, err := service.CreateDefaultUserService().GetUser(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	data, _ := json.Marshal(user)
-	_, _ = w.Write(data)
-}
-
-// GetUserFollowsPostsV1 - get a user's friend's posts
-func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
-	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(uuid.GetUuidFromPath(r.URL.Path))
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

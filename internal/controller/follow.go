@@ -11,7 +11,7 @@ import (
 // CreateNewUserV1 - create a new user
 func CreateNewFollowV1(w http.ResponseWriter, r *http.Request) {
 	newFollowModel := mapper.DecodeRequestToNewFollow(r)
-	userUuid := uuid.GetUuidFromPath(r.URL.Path)
+	userUuid := uuid.GetUuidFromPathSecondPosition(r.URL.Path)
 	service.CreateDefaultAuthService().
 		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
 			return service.CreateDefaultFollowService().CreateFollow(userUuid, newFollowModel)
@@ -20,7 +20,7 @@ func CreateNewFollowV1(w http.ResponseWriter, r *http.Request) {
 
 // CreateNewUserV1 - create a new user
 func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
-	follows, err := service.CreateDefaultFollowService().GetUserFollowers(uuid.GetUuidFromPath(r.URL.Path))
+	follows, err := service.CreateDefaultFollowService().GetUserFollowers(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

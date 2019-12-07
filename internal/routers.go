@@ -179,7 +179,7 @@ var routes = Routes{
 	{
 		"GetUserFollowsPostsV1",
 		strings.ToUpper("Get"),
-		"/user/{uuid}/follow-posts",
+		"/post/follows/{uuid}",
 		controller.GetUserFollowsPostsV1,
 	},
 
