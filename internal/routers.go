@@ -163,6 +163,13 @@ var routes = Routes{
 	},
 
 	{
+		"GetSuggestedFollowsForUserV1",
+		strings.ToUpper("Get"),
+		"/user/{uuid}/suggested-follows",
+		controller.GetSuggestedFollowsForUserV1,
+	},
+
+	{
 		"GetUserV1",
 		strings.ToUpper("Get"),
 		"/user/{uuid}",

@@ -24,3 +24,11 @@ func GetUserV1(w http.ResponseWriter, r *http.Request) {
 	data, _ := json.Marshal(user)
 	_, _ = w.Write(data)
 }
+
+// GetSuggestedFollowsForUserV1 - Get suggested follows for user
+func GetSuggestedFollowsForUserV1(w http.ResponseWriter, r *http.Request) {
+	users := service.CreateDefaultUserService().
+		GetSuggestedFollowsForUser(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
+	data, _ := json.Marshal(users)
+	_, _ = w.Write(data)
+}
