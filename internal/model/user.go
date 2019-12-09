@@ -20,6 +20,24 @@ type User struct {
 
 	Name string `json:"name"`
 
+	Username string `json:"username"`
+
+	ProfilePic string `json:"profile_pic,omitempty"`
+
+	BioMessage string `json:"bio_message,omitempty"`
+
+	Location string `json:"location,omitempty"`
+
+	Birthday string `json:"birthday,omitempty"`
+
+	Email string `json:"email,omitempty"`
+
+	EmailVerified bool `json:"email_verified,omitempty"`
+
+	Phone string `json:"phone,omitempty"`
+
+	PhoneVerified bool `json:"phone_verified,omitempty"`
+
 	CreatedAt time.Time `json:"created_at"`
 }
 
