@@ -9,11 +9,6 @@ import (
 )
 
 func CreateDefaultConnection() *gorm.DB {
-	log.Print(os.Getenv("PG_HOST"),
-		os.Getenv("PG_PORT"),
-		os.Getenv("PG_DBNAME"),
-		os.Getenv("PG_USER"),
-		os.Getenv("PG_PASSWORD"))
 	return CreateConnection(
 		os.Getenv("PG_HOST"),
 		os.Getenv("PG_PORT"),
