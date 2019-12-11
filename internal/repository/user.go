@@ -36,7 +36,7 @@ func (u *UserRepository) FindOneByUuid(uuid string) (*entity.User, error) {
 
 func (u *UserRepository) FindUsersNotFollowing(userUuid uuid.UUID) []*entity.User {
 	var users []*entity.User
-	u.conn.Raw("SELECT DISTINCT(uuid), name " +
+	u.conn.Raw("SELECT uuid, name, username, profile_pic, bio_message, location, email, phone, birthday " +
 	"FROM users " +
 	"WHERE id NOT IN (SELECT following_id FROM follows f JOIN users u ON f.user_id = u.id WHERE u.uuid = ?)", userUuid.String()).
 	Scan(&users)
