@@ -18,27 +18,13 @@ import (
 type User struct {
 	Uuid string `json:"uuid"`
 
-	Name string `json:"name"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
 
-	Username string `json:"username"`
+	Posts []Post `json:"posts,omitempty"`
 
-	ProfilePic string `json:"profile_pic,omitempty"`
+	Replies []Reply `json:"replies,omitempty"`
 
-	BioMessage string `json:"bio_message,omitempty"`
-
-	Location string `json:"location,omitempty"`
-
-	Birthday string `json:"birthday,omitempty"`
-
-	Email string `json:"email,omitempty"`
-
-	EmailVerified bool `json:"email_verified,omitempty"`
-
-	Phone string `json:"phone,omitempty"`
-
-	PhoneVerified bool `json:"phone_verified,omitempty"`
-
-	CreatedAt time.Time `json:"created_at"`
+	Follows []Follow `json:"follows,omitempty"`
 }
 
 func DecodeMessageToUser(message []byte) *User {

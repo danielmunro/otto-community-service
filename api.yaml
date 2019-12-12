@@ -310,31 +310,17 @@ components:
         uuid:
           type: string
           format: uuid
-        name:
-          type: string
-        username:
-          type: string
-        profile_pic:
-          type: string
-        bio_message:
-          type: string
-        location:
-          type: string
-        birthday:
-          type: string
-          format: date
-        email:
-          type: string
-          format: email
-        email_verified:
-          type: boolean
-        phone:
-          type: string
-        phone_verified:
-          type: boolean
         created_at:
           type: string
           format: date-time
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        replies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Reply"
         follows:
           type: array
           items:
