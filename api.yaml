@@ -158,27 +158,6 @@ paths:
         '404':
           description: |-
             404 response
-  /user/{uuid}:
-    get:
-      operationId: getUser
-      summary: get a user
-      parameters:
-        - in: path
-          name: uuid
-          description: a user's unique ID
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: A user
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/User"
-        '404':
-          description: no user found
   /user/{uuid}/posts:
     get:
       operationId: getUserPostsV1
