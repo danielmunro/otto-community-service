@@ -15,10 +15,8 @@ const NumberOfRepliesToCreate = 5
 func createReplyModel(post *model.Post, user *entity.User) *model.NewReply {
 	return &model.NewReply{
 		Post: *post,
-		Message: model.NewMessage{
-			User: model.User{Uuid: user.Uuid.String()},
-			Text: "this is a reply",
-		},
+		User: model.User{Uuid: user.Uuid.String()},
+		Text: "this is a reply",
 	}
 }
 
@@ -55,12 +53,10 @@ func Test_CreateReply_Fails_WithMissing_User(t *testing.T) {
 	response, err := replyService.CreateReply(&model.NewReply{
 		Post: model.Post{
 			Uuid:    &postUuid,
-			Message: model.Message{},
+			Text: "",
 		},
-		Message: model.NewMessage{
-			User: model.User{Uuid: testUser.Uuid},
-			Text: "this is a reply",
-		},
+		User: model.User{Uuid: testUser.Uuid},
+		Text: "this is a reply",
 	})
 
 	// then
@@ -79,12 +75,10 @@ func Test_CreateReply_Fails_WithMissing_Post(t *testing.T) {
 	response, err := replyService.CreateReply(&model.NewReply{
 		Post: model.Post{
 			Uuid:    &postUuid,
-			Message: model.Message{},
+			Text: "",
 		},
-		Message: model.NewMessage{
-			User: model.User{Uuid: testUser.Uuid.String()},
-			Text: "this is a reply",
-		},
+		User: model.User{Uuid: testUser.Uuid.String()},
+		Text: "this is a reply",
 	})
 
 	// then

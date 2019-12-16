@@ -21,7 +21,9 @@ type ReplyReport struct {
 
 	Reporter User `json:"reporter"`
 
-	Message Message `json:"message"`
+	User User `json:"user,omitempty"`
+
+	Text string `json:"text,omitempty"`
 
 	Reply Reply `json:"reply"`
 }

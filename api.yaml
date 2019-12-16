@@ -198,6 +198,26 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
+  /user/{uuid}/new-posts:
+    get:
+      operationId: getNewPostsV1
+      summary: get new posts
+      parameters:
+        - in: path
+          name: uuid
+          description: a user ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: New posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
   /user/{uuid}/follows:
     get:
       operationId: getUserFollowsV1
@@ -330,16 +350,17 @@ components:
       type: object
       required:
         - uuid
-        - message
         - replies
         - created
       properties:
         uuid:
           type: string
           format: uuid
-        message:
+        text:
+          type: string
+        user:
           type: object
-          $ref: "#/components/schemas/Message"
+          $ref: "#/components/schemas/User"
         replies:
           type: array
           items:
@@ -350,17 +371,21 @@ components:
     NewPost:
       type: object
       required:
-        - message
+        - text
+        - user
       properties:
-        message:
+        text:
+          type: string
+        user:
           type: object
-          $ref: "#/components/schemas/NewMessage"
+          $ref: "#/components/schemas/User"
     Reply:
       type: object
       required:
-        - message
         - created
         - post
+        - text
+        - user
       properties:
         created_at:
           type: string
@@ -368,60 +393,32 @@ components:
         post:
           type: object
           $ref: "#/components/schemas/Post"
-        message:
+        text:
+          type: string
+        user:
           type: object
-          $ref: "#/components/schemas/NewMessage"
+          $ref: "#/components/schemas/User"
     NewReply:
       type: object
       required:
-        - replyTo
-        - message
+        - post
+        - text
+        - user
       properties:
         post:
           type: object
           $ref: "#/components/schemas/Post"
-        replyTo:
+        text:
+          type: string
+        user:
           type: object
-          $ref: "#/components/schemas/Message"
-        message:
-          type: object
-          $ref: "#/components/schemas/NewMessage"
+          $ref: "#/components/schemas/User"
     Reshare:
       type: object
       required:
         - uuid
-        - message
-        - reshare
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-        message:
-          type: object
-          $ref: "#/components/schemas/Message"
-        reshare:
-          type: object
-          $ref: "#/components/schemas/Message"
-    NewReshare:
-      type: object
-      properties:
-        message:
-          type: object
-          $ref: "#/components/schemas/NewMessage"
-        reshare:
-          type: object
-          $ref: "#/components/schemas/Message"
-    Message:
-      type: object
-      required:
-        - uuid
-        - created
-        - text
         - user
-        - visibility
+        - post
       properties:
         uuid:
           type: string
@@ -434,27 +431,29 @@ components:
         user:
           type: object
           $ref: "#/components/schemas/User"
-        visibility:
-          type: string
-          $ref: "#/components/schemas/Visibility"
-    NewMessage:
+        post:
+          type: object
+          $ref: "#/components/schemas/Post"
+    NewReshare:
       type: object
       required:
-        - message
         - user
+        - post
       properties:
-        message:
+        text:
           type: string
         user:
           type: object
           $ref: "#/components/schemas/User"
+        post:
+          type: object
+          $ref: "#/components/schemas/Post"
     PostReport:
       type: object
       required:
         - uuid
         - created
-        - reporter
-        - message
+        - user
         - post
       properties:
         uuid:
@@ -462,12 +461,11 @@ components:
           format: uuid
         created_at:
           type: timestamp
-        reporter:
+        user:
           type: object
           $ref: "#/components/schema/User"
-        message:
-          type: object
-          $ref: "#/components/schemas/Message"
+        text:
+          type: string
         post:
           type: object
           $ref: "#/components/schemas/Post"
@@ -477,7 +475,6 @@ components:
         - uuid
         - created
         - reporter
-        - message
         - reply
       properties:
         uuid:
@@ -485,34 +482,39 @@ components:
           format: uuid
         created_at:
           type: timestamp
-        reporter:
+        user:
           type: object
           $ref: "#/components/schema/User"
-        message:
-          type: object
-          $ref: "#/components/schemas/Message"
+        text:
+          type: string
         reply:
           type: object
           $ref: "#/components/schemas/Reply"
     NewPostReport:
       type: object
       required:
-        - message
+        - user
+        - post
       properties:
-        message:
+        text:
+          type: string
+        user:
           type: object
-          $ref: "#/components/schemas/NewMessage"
+          $ref: "#/components/schemas/User"
         post:
           type: object
           $ref: "#/components/schemas/Post"
     NewReplyReport:
       type: object
       required:
-        - message
+        - user
+        - reply
       properties:
-        message:
+        text:
+          type: string
+        user:
           type: object
-          $ref: "#/components/schemas/NewMessage"
+          $ref: "#/components/schemas/User"
         reply:
           type: object
           $ref: "#/components/schemas/Reply"

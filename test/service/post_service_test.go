@@ -46,7 +46,7 @@ func Test_GetPost(t *testing.T) {
 
 	// then
 	test.Assert(t, err == nil)
-	test.Assert(t, response != nil && response.Message.Text == message)
+	test.Assert(t, response != nil && response.Text == message)
 }
 
 func Test_GetPost_Fails_WhenNotFound(t *testing.T) {

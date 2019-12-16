@@ -17,7 +17,9 @@ import (
 type Post struct {
 	Uuid *uuid.UUID `json:"uuid"`
 
-	Message Message `json:"message"`
+	Text string `json:"text,omitempty"`
+
+	User User `json:"user,omitempty"`
 
 	Replies []Reply `json:"replies"`
 

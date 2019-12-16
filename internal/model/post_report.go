@@ -21,18 +21,18 @@ type PostReport struct {
 
 	Reporter User `json:"reporter"`
 
-	Message Message `json:"message"`
+	User User `json:"user"`
+
+	Text string `json:"text,omitempty"`
 
 	Post Post `json:"post"`
 }
 
 func CreateNewPostReport(userUuid *uuid.UUID, postUuid *uuid.UUID, message string) *NewPostReport {
 	return &NewPostReport{
-		Message: NewMessage{
-			Text: message,
-			User: User{
-				Uuid: userUuid.String(),
-			},
+		Text: message,
+		User: User{
+			Uuid: userUuid.String(),
 		},
 		Post: Post{
 			Uuid: postUuid,
@@ -42,11 +42,9 @@ func CreateNewPostReport(userUuid *uuid.UUID, postUuid *uuid.UUID, message strin
 
 func CreateNewReplyReport(userUuid *uuid.UUID, replyUuid *uuid.UUID, message string) *NewReplyReport {
 	return &NewReplyReport{
-		Message: NewMessage{
-			Text: message,
-			User: User{
-				Uuid: userUuid.String(),
-			},
+		Text: message,
+		User: User{
+			Uuid: userUuid.String(),
 		},
 		Reply: Reply{
 			Uuid: replyUuid,

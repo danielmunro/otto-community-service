@@ -10,7 +10,9 @@
 package model
 
 type NewReshare struct {
-	Message NewMessage `json:"message,omitempty"`
+	Text string `json:"text,omitempty"`
 
-	Reshare Message `json:"reshare,omitempty"`
+	User User `json:"user"`
+
+	Post Post `json:"post"`
 }

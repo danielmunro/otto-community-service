@@ -11,7 +11,9 @@ package model
 
 type NewReplyReport struct {
 
-	Message NewMessage `json:"message"`
+	Text string `json:"text,omitempty"`
 
-	Reply Reply `json:"reply,omitempty"`
+	User User `json:"user"`
+
+	Reply Reply `json:"reply"`
 }

@@ -9,7 +9,10 @@ import (
 
 type Reply struct {
 	gorm.Model
-	Message
+	Text       string
+	UserID     uint
+	User *User
+	Visibility enum.Visibility
 	Uuid   *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	PostID uint
 	Reports []*Report `gorm:"polymorphic:Reported;"`
@@ -17,11 +20,9 @@ type Reply struct {
 
 func CreateReply(user *User, post *Post, reply *model.NewReply) *Reply {
 	return &Reply{
-		Message: Message{
-			Text:       reply.Message.Text,
-			UserID:     user.ID,
-			Visibility: enum.PUBLIC,
-		},
+		Text:       reply.Text,
+		UserID:     user.ID,
+		Visibility: enum.PUBLIC,
 		PostID: post.ID,
 	}
 }

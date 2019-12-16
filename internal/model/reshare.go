@@ -18,7 +18,9 @@ type Reshare struct {
 
 	CreatedAt time.Time `json:"created_at"`
 
-	Message Message `json:"message"`
+	Text string `json:"text,omitempty"`
 
-	Reshare Message `json:"reshare"`
+	User User `json:"user"`
+
+	Post Post `json:"post"`
 }

@@ -15,8 +15,11 @@ import (
 )
 
 type NewPostReport struct {
-	Message NewMessage `json:"message"`
-	Post Post `json:"post,omitempty"`
+	Text string `json:"text,omitempty"`
+
+	User User `json:"user"`
+
+	Post Post `json:"post"`
 }
 
 func DecodeRequestToNewPostReport(r *http.Request) *NewPostReport {

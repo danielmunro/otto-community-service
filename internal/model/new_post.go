@@ -16,7 +16,9 @@ import (
 )
 
 type NewPost struct {
-	Message NewMessage `json:"message"`
+	Text string `json:"text"`
+
+	User User `json:"user"`
 }
 
 func DecodeRequestToNewPost(r *http.Request) *NewPost {
@@ -31,11 +33,9 @@ func DecodeRequestToNewPost(r *http.Request) *NewPost {
 
 func CreateNewPost(userUuid *uuid.UUID, message string) *NewPost {
 	return &NewPost{
-		Message: NewMessage{
-			Text: message,
-			User: User{
-				Uuid: userUuid.String(),
-			},
+		Text: message,
+		User: User{
+			Uuid: userUuid.String(),
 		},
 	}
 }

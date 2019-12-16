@@ -12,7 +12,7 @@ import (
 // CreateAReplyV1 - create a reply
 func CreateAReplyV1(w http.ResponseWriter, r *http.Request) {
 	newReplyModel := model.DecodeRequestToNewReply(r)
-	userUuid := uuid.MustParse(newReplyModel.Message.User.Uuid)
+	userUuid := uuid.MustParse(newReplyModel.User.Uuid)
 	service.CreateDefaultAuthService().
 		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
 			return service.CreateDefaultReplyService().CreateReply(newReplyModel)

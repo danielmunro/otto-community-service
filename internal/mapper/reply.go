@@ -9,11 +9,7 @@ func GetReplyModelFromEntity(reply *entity.Reply) *model.Reply {
 	return &model.Reply{
 		Uuid: reply.Uuid,
 		CreatedAt: reply.CreatedAt,
-		Message: model.Message{
-			CreatedAt:  reply.CreatedAt,
-			Text:       reply.Text,
-			Visibility: reply.Visibility,
-		},
+		Text:       reply.Text,
 	}
 }
 

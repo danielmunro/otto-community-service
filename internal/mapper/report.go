@@ -9,10 +9,8 @@ func GetPostReportModelFromEntity(user *entity.User, post *entity.Post, report *
 	return &model.PostReport{
 		Uuid:      report.Uuid.String(),
 		CreatedAt: report.CreatedAt,
-		Message:   model.Message{
-			Text:  report.Text,
-			User:  model.User{ Uuid: user.Uuid.String() },
-		},
+		Text:  report.Text,
+		User:  model.User{ Uuid: user.Uuid.String() },
 		Post: model.Post{
 			Uuid: post.Uuid,
 		},
@@ -23,10 +21,8 @@ func GetReplyReportModelFromEntity(user *entity.User, reply *entity.Reply, repor
 	return &model.ReplyReport{
 		Uuid:      report.Uuid.String(),
 		CreatedAt: report.CreatedAt,
-		Message:   model.Message{
-			Text:  report.Text,
-			User:  model.User{ Uuid: user.Uuid.String() },
-		},
+		Text:  report.Text,
+		User:  model.User{ Uuid: user.Uuid.String() },
 		Reply: model.Reply{
 			Uuid: reply.Uuid,
 		},

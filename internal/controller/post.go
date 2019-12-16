@@ -12,7 +12,7 @@ import (
 // CreateNewPostV1 - create a new post
 func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 	newPostModel := model.DecodeRequestToNewPost(r)
-	userUuid := uuid.MustParse(newPostModel.Message.User.Uuid)
+	userUuid := uuid.MustParse(newPostModel.User.Uuid)
 	service.CreateDefaultAuthService().
 		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
 			return service.CreateDefaultPostService().CreatePost(newPostModel)
@@ -37,6 +37,12 @@ func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	data, _ := json.Marshal(posts)
+	_, _ = w.Write(data)
+}
+
+func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
+	posts := service.CreateDefaultPostService().GetNewPosts(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

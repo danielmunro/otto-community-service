@@ -5,23 +5,19 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 )
 
-func GetPostModelFromEntity(user *entity.User, post *entity.Post) *model.Post {
+func GetPostModelFromEntity(post *entity.Post) *model.Post {
 	return &model.Post{
 		Uuid: post.Uuid,
-		Message: model.Message{
-			Text: post.Text,
-			User: model.User{
-				Uuid: user.Uuid.String(),
-			},
-		},
+		Text: post.Text,
+		User: *GetUserModelFromEntity(post.User),
 		CreatedAt: post.CreatedAt,
 	}
 }
 
-func GetPostModelsFromEntities(user *entity.User, posts []*entity.Post) []*model.Post {
+func GetPostModelsFromEntities(posts []*entity.Post) []*model.Post {
 	postModels := make([]*model.Post, len(posts))
 	for i, v := range posts {
-		postModels[i] = GetPostModelFromEntity(user, v)
+		postModels[i] = GetPostModelFromEntity(v)
 	}
 	return postModels
 }

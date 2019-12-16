@@ -15,9 +15,11 @@ import (
 )
 
 type NewReply struct {
-	Post Post `json:"post,omitempty"`
+	Post Post `json:"post"`
 
-	Message NewMessage `json:"message"`
+	Text string `json:"text"`
+
+	User User `json:"user"`
 }
 
 func DecodeRequestToNewReply(r *http.Request) *NewReply {

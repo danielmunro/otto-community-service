@@ -9,7 +9,10 @@ import (
 
 type Report struct {
 	gorm.Model
-	Message
+	Text       string
+	UserID     uint
+	User *User
+	Visibility enum.Visibility
 	Uuid   *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	ReportedID uint
 	ReportedType string
@@ -17,11 +20,9 @@ type Report struct {
 
 func CreateReportPostEntity(reporter *User, post *Post, report *model.NewPostReport) *Report {
 	return &Report{
-		Message: Message{
-			Text:       report.Message.Text,
-			UserID:     reporter.ID,
-			Visibility: enum.PRIVATE,
-		},
+		Text:       report.Text,
+		UserID:     reporter.ID,
+		Visibility: enum.PRIVATE,
 		ReportedID: post.ID,
 		ReportedType: "Post",
 	}
@@ -29,11 +30,9 @@ func CreateReportPostEntity(reporter *User, post *Post, report *model.NewPostRep
 
 func CreateReportReplyEntity(reporter *User, reply *Reply, report *model.NewReplyReport) *Report {
 	return &Report{
-		Message: Message{
-			Text:       report.Message.Text,
-			UserID:     reporter.ID,
-			Visibility: enum.PRIVATE,
-		},
+		Text:       report.Text,
+		UserID:     reporter.ID,
+		Visibility: enum.PRIVATE,
 		ReportedID: reply.ID,
 		ReportedType: "Reply",
 	}

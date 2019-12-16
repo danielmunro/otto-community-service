@@ -21,16 +21,16 @@ type Reply struct {
 
 	Post Post `json:"post"`
 
-	Message Message `json:"message"`
+	Text string `json:"text"`
+
+	User User `json:"user"`
 }
 
 func CreateNewReply(userUuid *uuid.UUID, postUuid *uuid.UUID, message string) *NewReply {
 	return &NewReply{
-		Message: NewMessage{
-			Text: message,
-			User: User{
-				Uuid: userUuid.String(),
-			},
+		Text: message,
+		User: User{
+			Uuid: userUuid.String(),
 		},
 		Post: Post{
 			Uuid: postUuid,
