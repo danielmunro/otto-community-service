@@ -11,12 +11,21 @@ package model
 
 import (
 	"encoding/json"
-	"log"
 	"time"
 )
 
 type User struct {
 	Uuid string `json:"uuid"`
+
+	Username string `json:"username,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	Birthday time.Time `json:"birthday,omitempty"`
+
+	BioMessage string `json:"bio_message,omitempty"`
+
+	ProfilePic string `json:"profile_pic,omitempty"`
 
 	CreatedAt time.Time `json:"created_at,omitempty"`
 
@@ -27,11 +36,8 @@ type User struct {
 	Follows []Follow `json:"follows,omitempty"`
 }
 
-func DecodeMessageToUser(message []byte) *User {
+func DecodeMessageToUser(message []byte) (*User, error) {
 	user := &User{}
 	err := json.Unmarshal(message, user)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return user
+	return user, err
 }

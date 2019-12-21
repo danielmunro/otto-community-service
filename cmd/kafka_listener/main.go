@@ -20,13 +20,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Print("reading from kafka")
 	_ = conn.SetReadDeadline(time.Now().Add(10*time.Second))
 	for {
 		batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
-		log.Print("sanity")
 		userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
-		log.Print("starting batch read")
 		err := ParseBatch(userRepository, batch)
 		if err != nil {
 			break
@@ -48,10 +45,21 @@ func ParseBatch(userRepository *repository.UserRepository, batch *kafka.Batch) e
 			return err
 		}
 		data := b[:readLen]
-		log.Print("received user", string(data))
-		userModel := model.DecodeMessageToUser(data)
-		userEntity := mapper.GetUserEntityFromModel(userModel)
-		userRepository.Create(userEntity)
+		userModel, err := model.DecodeMessageToUser(data)
+		if err != nil {
+			log.Print("error decoding message to user, skipping")
+			continue
+		}
+		userEntity, err := userRepository.FindOneByUuid(userModel.Uuid)
+		if err == nil {
+			userEntity.UpdateUserProfileFromModel(userModel)
+			log.Print("update", userModel, userEntity)
+			userRepository.Update(userEntity)
+		} else {
+			log.Print("create")
+			userEntity = mapper.GetUserEntityFromModel(userModel)
+			userRepository.Create(userEntity)
+		}
 	}
 	return nil
 }

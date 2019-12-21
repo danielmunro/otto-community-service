@@ -312,6 +312,14 @@ components:
         created_at:
           type: string
           format: date-time
+        username:
+          type: string
+        profile_pic:
+          type: string
+        name:
+          type: string
+        bioMessage:
+          type: string
         posts:
           type: array
           items:
