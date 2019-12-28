@@ -24,10 +24,8 @@ func main() {
 }
 
 func readKafka() {
-	for {
-		log.Print("connecting to kafka on 9092")
-		kafka.Check()
-	}
+	log.Print("connecting to kafka on 9092")
+	kafka.InitializeAndRunLoop()
 }
 
 func serveHttp() {

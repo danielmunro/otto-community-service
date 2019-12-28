@@ -1,41 +1,34 @@
 package kafka
 
 import (
+	"context"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/segmentio/kafka-go"
 	"log"
-	"time"
 )
 
-const SecondsToWait = 20
 
-func Check() {
-	conn := GetConnection()
-	_ = conn.SetReadDeadline(time.Now().Add(SecondsToWait * time.Second))
-	batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
+func InitializeAndRunLoop() {
+	reader := GetReader()
 	userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
-	err := ParseBatch(userRepository, batch)
+	err := loopKafkaReader(userRepository, reader)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_ = batch.Close()
-	_ = conn.Close()
 }
 
-func ParseBatch(userRepository *repository.UserRepository, batch *kafka.Batch) error {
-	b := make([]byte, 10e3) // 10KB max per message
+func loopKafkaReader(userRepository *repository.UserRepository, reader *kafka.Reader) error {
 	for {
-		readLen, err := batch.Read(b)
+		data, err := reader.ReadMessage(context.Background())
 		if err != nil  {
 			return nil
 		}
-		data := b[:readLen]
-		userModel, err := model.DecodeMessageToUser(data)
+		userModel, err := model.DecodeMessageToUser(data.Value)
 		if err != nil {
-			log.Print("error decoding message to user, skipping")
+			log.Print("error decoding message to user, skipping", string(data.Value))
 			continue
 		}
 		userEntity, err := userRepository.FindOneByUuid(userModel.Uuid)
