@@ -38,7 +38,8 @@ func (u *UserRepository) FindUsersNotFollowing(userUuid uuid.UUID) []*entity.Use
 	var users []*entity.User
 	u.conn.Raw("SELECT * " +
 	"FROM users " +
-	"WHERE id NOT IN (SELECT following_id FROM follows f JOIN users u ON f.user_id = u.id WHERE u.uuid = ?)", userUuid.String()).
+	"WHERE id NOT IN (SELECT following_id FROM follows f JOIN users u ON f.user_id = u.id WHERE u.uuid = ?) " +
+	"AND uuid != ?", userUuid.String(), userUuid.String()).
 	Scan(&users)
 	return users
 }
