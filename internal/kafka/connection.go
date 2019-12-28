@@ -9,6 +9,7 @@ func GetReader(broker string) *kafka.Reader {
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:   []string{broker},
 		Topic:     string(constants.Users),
+		GroupID: "community_service",
 		Partition: 0,
 		MinBytes:  10e3, // 10KB
 		MaxBytes:  10e6, // 10MB
