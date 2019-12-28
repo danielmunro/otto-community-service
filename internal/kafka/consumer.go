@@ -27,6 +27,7 @@ func loopKafkaReader(userRepository *repository.UserRepository, reader *kafka.Re
 			log.Print(err)
 			return nil
 		}
+		log.Print("consuming user message ", string(data.Value))
 		userModel, err := model.DecodeMessageToUser(data.Value)
 		if err != nil {
 			log.Print("error decoding message to user, skipping", string(data.Value))
