@@ -24,6 +24,7 @@ func loopKafkaReader(userRepository *repository.UserRepository, reader *kafka.Re
 	for {
 		data, err := reader.ReadMessage(context.Background())
 		if err != nil  {
+			log.Print(err)
 			return nil
 		}
 		userModel, err := model.DecodeMessageToUser(data.Value)
