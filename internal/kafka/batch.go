@@ -1,48 +1,36 @@
-package main
+package kafka
 
 import (
-	"context"
-	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
-	"github.com/joho/godotenv"
 	"github.com/segmentio/kafka-go"
 	"log"
 	"time"
 )
 
-func main() {
-	_ = godotenv.Load()
-	log.Print("connecting to localhost:9092")
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", string(constants.Users), 0)
+const SecondsToWait = 20
+
+func Check() {
+	conn := GetConnection()
+	_ = conn.SetReadDeadline(time.Now().Add(SecondsToWait * time.Second))
+	batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
+	userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
+	err := ParseBatch(userRepository, batch)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_ = conn.SetReadDeadline(time.Now().Add(10*time.Second))
-	for {
-		batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
-		userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
-		err := ParseBatch(userRepository, batch)
-		if err != nil {
-			break
-		}
-		_ = batch.Close()
-	}
+	_ = batch.Close()
 	_ = conn.Close()
 }
 
 func ParseBatch(userRepository *repository.UserRepository, batch *kafka.Batch) error {
-	b := make([]byte, 10e3)            // 10KB max per message
+	b := make([]byte, 10e3) // 10KB max per message
 	for {
 		readLen, err := batch.Read(b)
-		if err != nil && err.Error() == "EOF" {
-			break
-		}
-		if err != nil {
-			log.Print("error received", err)
-			return err
+		if err != nil  {
+			return nil
 		}
 		data := b[:readLen]
 		userModel, err := model.DecodeMessageToUser(data)
@@ -53,13 +41,10 @@ func ParseBatch(userRepository *repository.UserRepository, batch *kafka.Batch) e
 		userEntity, err := userRepository.FindOneByUuid(userModel.Uuid)
 		if err == nil {
 			userEntity.UpdateUserProfileFromModel(userModel)
-			log.Print("update", userModel, userEntity)
 			userRepository.Update(userEntity)
 		} else {
-			log.Print("create")
 			userEntity = mapper.GetUserEntityFromModel(userModel)
 			userRepository.Create(userEntity)
 		}
 	}
-	return nil
 }

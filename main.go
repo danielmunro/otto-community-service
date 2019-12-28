@@ -11,6 +11,7 @@ package main
 
 import (
 	"github.com/danielmunro/otto-community-service/internal"
+	"github.com/danielmunro/otto-community-service/internal/kafka"
 	"github.com/danielmunro/otto-community-service/internal/middleware"
 	_ "github.com/joho/godotenv/autoload"
 	"log"
@@ -18,8 +19,20 @@ import (
 )
 
 func main() {
+	go serveHttp()
+	readKafka()
+}
+
+func readKafka() {
+	for {
+		log.Print("connecting to kafka on 9092")
+		kafka.Check()
+	}
+}
+
+func serveHttp() {
 	router := internal.NewRouter()
-	log.Print("listening on 8081")
+	log.Print("http listening on 8081")
 	log.Fatal(http.ListenAndServe(":8081",
 		middleware.ContentTypeMiddleware(router)))
 }
