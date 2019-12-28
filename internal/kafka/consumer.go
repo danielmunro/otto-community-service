@@ -8,12 +8,11 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/segmentio/kafka-go"
 	"log"
-	"os"
 )
 
 
-func InitializeAndRunLoop() {
-	reader := GetReader(os.Getenv("KAFKA_HOST"))
+func InitializeAndRunLoop(kafkaHost string) {
+	reader := GetReader(kafkaHost)
 	userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
 	err := loopKafkaReader(userRepository, reader)
 	if err != nil {

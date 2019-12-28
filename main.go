@@ -16,6 +16,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -24,8 +25,9 @@ func main() {
 }
 
 func readKafka() {
-	log.Print("connecting to kafka on 9092")
-	kafka.InitializeAndRunLoop()
+	kafkaHost := os.Getenv("KAFKA_HOST")
+	log.Print("connecting to kafka", kafkaHost)
+	kafka.InitializeAndRunLoop(kafkaHost)
 	log.Print("exit kafka loop")
 }
 
