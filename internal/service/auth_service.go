@@ -12,6 +12,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/util"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"log"
 	"net/http"
 )
 
@@ -53,7 +54,13 @@ func (a *AuthService) DoWithValidSessionAndUser(w http.ResponseWriter, r *http.R
 		return
 	}
 	session, err := a.GetSession(sessionToken)
+	if err == nil {
+		log.Print("session validation succeeded, userUuuid: ", userUuid.String(), ", sessionUuid: ", session.User.Uuid)
+	} else {
+		log.Print("session validation failed, err: ", err, ", userUuuid: ", userUuid.String())
+	}
 	if err != nil || userUuid.String() != session.User.Uuid {
+		log.Print("FAILED! Either error, or Uuid mismatch")
 		err := errors.New("invalid session")
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = w.Write([]byte(err.Error()))
