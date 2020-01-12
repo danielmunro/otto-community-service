@@ -10,7 +10,6 @@ import (
 	"log"
 )
 
-
 func InitializeAndRunLoop(kafkaHost string) {
 	reader := GetReader(kafkaHost)
 	userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
@@ -22,7 +21,9 @@ func InitializeAndRunLoop(kafkaHost string) {
 
 func loopKafkaReader(userRepository *repository.UserRepository, reader *kafka.Reader) error {
 	for {
+		log.Print("listening for kafka messages")
 		data, err := reader.ReadMessage(context.Background())
+		log.Print("message received")
 		if err != nil  {
 			log.Print(err)
 			return nil
