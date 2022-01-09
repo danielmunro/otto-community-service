@@ -60,7 +60,7 @@ func (a *AuthService) DoWithValidSessionAndUser(w http.ResponseWriter, r *http.R
 		log.Print("session validation failed, err: ", err, ", userUuid: ", userUuid.String())
 	}
 	if err != nil || userUuid.String() != session.User.Uuid {
-		log.Print("FAILED! Either error, or Uuid mismatch :: ", err, userUuid, session.User.Uuid)
+		log.Print("FAILED! Either error, or Uuid mismatch :: ", err, userUuid)
 		err := errors.New("invalid session")
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = w.Write([]byte(err.Error()))
