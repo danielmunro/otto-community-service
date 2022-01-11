@@ -5,7 +5,7 @@ info:
 paths:
   /post:
     post:
-      operationId: createNewPost
+      operationId: createNewPostV1
       summary: create a new post
       requestBody:
         description: post to create
@@ -19,7 +19,7 @@ paths:
           description: |-
             201 response
     get:
-      operationId: getPosts
+      operationId: getPostsV1
       summary: get posts
       responses:
         '200':
@@ -32,7 +32,7 @@ paths:
                   $ref: '#/components/schemas/Post'
   /post/{uuid}:
     get:
-      operationId: getPost
+      operationId: getPostV1
       summary: get a post
       parameters:
         - in: path

@@ -32,7 +32,8 @@ func GetPostV1(w http.ResponseWriter, r *http.Request) {
 
 // GetUserFollowsPostsV1 - get a user's friend's posts
 func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
-	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(iUuid.GetUuidFromPathThirdPosition(r.URL.Path))
+	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(
+		iUuid.GetUuidFromPathThirdPosition(r.URL.Path))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -45,4 +46,14 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 	posts := service.CreateDefaultPostService().GetNewPosts(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
+}
+
+// GetPosts - get posts
+func GetPostsV1(w http.ResponseWriter, r *http.Request) {
+	sessionToken := r.Header.Get("x-session-token")
+	if sessionToken == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("missing required header: x-session-token"))
+		return
+	}
 }

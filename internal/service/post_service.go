@@ -11,6 +11,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/util"
 	"github.com/google/uuid"
 	"log"
+	"sort"
 )
 
 type PostService struct {
@@ -75,4 +76,17 @@ func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID) ([]*model.Post,
 	}
 	posts := p.postRepository.FindByUserFollows(userUuid)
 	return mapper.GetPostModelsFromEntities(posts), nil
+}
+
+func (p *PostService) GetPostsV1(userUuid uuid.UUID) ([]*model.Post, error) {
+	selfPosts := p.GetPostsForUser(userUuid)
+	friendsPosts, friendsErr := p.GetPostsForUserFollows(userUuid)
+	if friendsErr != nil {
+		return nil, friendsErr
+	}
+	allPosts := append(selfPosts, friendsPosts...)
+	sort.SliceStable(allPosts, func(i, j int) bool {
+		return allPosts[i].CreatedAt.Before(allPosts[j].CreatedAt)
+	})
+	return allPosts, nil
 }

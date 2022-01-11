@@ -152,7 +152,7 @@ var routes = Routes{
 		"GetPosts",
 		strings.ToUpper("Get"),
 		"/post",
-		GetPosts,
+		controller.GetPostsV1,
 	},
 
 	{
