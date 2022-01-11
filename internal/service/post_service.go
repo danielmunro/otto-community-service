@@ -86,7 +86,7 @@ func (p *PostService) GetPosts(userUuid uuid.UUID) ([]*model.Post, error) {
 	}
 	allPosts := append(selfPosts, friendsPosts...)
 	sort.SliceStable(allPosts, func(i, j int) bool {
-		return allPosts[i].CreatedAt.Before(allPosts[j].CreatedAt)
+		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
 	return allPosts, nil
 }
