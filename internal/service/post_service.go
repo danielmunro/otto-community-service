@@ -78,7 +78,7 @@ func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID) ([]*model.Post,
 	return mapper.GetPostModelsFromEntities(posts), nil
 }
 
-func (p *PostService) GetPostsV1(userUuid uuid.UUID) ([]*model.Post, error) {
+func (p *PostService) GetPosts(userUuid uuid.UUID) ([]*model.Post, error) {
 	selfPosts := p.GetPostsForUser(userUuid)
 	friendsPosts, friendsErr := p.GetPostsForUserFollows(userUuid)
 	if friendsErr != nil {

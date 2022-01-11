@@ -46,8 +46,12 @@ func (a *AuthService) GetSession(sessionId string) (*model.Session, error) {
 	return session, nil
 }
 
+func (a *AuthService) GetSessionToken(r *http.Request) string {
+	return r.Header.Get("x-session-token")
+}
+
 func (a *AuthService) DoWithValidSessionAndUser(w http.ResponseWriter, r *http.Request, userUuid uuid.UUID, doAction func() (interface{}, error)) {
-	sessionToken := r.Header.Get("x-session-token")
+	sessionToken := a.GetSessionToken(r)
 	if sessionToken == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte("missing required header: x-session-token"))

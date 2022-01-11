@@ -50,10 +50,14 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 
 // GetPosts - get posts
 func GetPostsV1(w http.ResponseWriter, r *http.Request) {
-	sessionToken := r.Header.Get("x-session-token")
+	authService := service.CreateDefaultAuthService()
+	sessionToken := authService.GetSessionToken(r)
 	if sessionToken == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte("missing required header: x-session-token"))
 		return
 	}
+	session, _ := authService.GetSession(sessionToken)
+	posts, _ := service.CreateDefaultPostService().GetPosts(uuid.MustParse(session.User.Uuid))
+	data, _ := json.Marshal(posts)
+	_, _ = w.Write(data)
 }
