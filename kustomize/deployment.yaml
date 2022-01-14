@@ -64,4 +64,4 @@ spec:
                 key: database
       imagePullSecrets:
       - name: dockerconfigjson-github-com
-      - name: postgres
+      - name: postgres-community
