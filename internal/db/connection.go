@@ -18,12 +18,14 @@ func CreateDefaultConnection() *gorm.DB {
 }
 
 func CreateConnection(host string, port string, dbname string, user string, password string) *gorm.DB {
+	log.Print("connection details :: ", host, port, dbname, user, password)
 	db, err := gorm.Open(
 		"postgres",
 		fmt.Sprintf(
-			"host=%s port=%s dbname=community_service user=%s password=%s sslmode=disable",
+			"host=%s port=%s dbname=%s user=%s password=%s sslmode=disable",
 			host,
 			port,
+			dbname,
 			user,
 			password))
 	if err != nil {
