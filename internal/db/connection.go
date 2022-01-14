@@ -18,7 +18,6 @@ func CreateDefaultConnection() *gorm.DB {
 }
 
 func CreateConnection(host string, port string, dbname string, user string, password string) *gorm.DB {
-	log.Print("connection details :: ", host, port, dbname, user, password)
 	db, err := gorm.Open(
 		"postgres",
 		fmt.Sprintf(
