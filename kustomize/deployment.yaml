@@ -22,7 +22,7 @@ spec:
         app: community-service
     spec:
       containers:
-      - name: otto-user-service
+      - name: otto-community-service
         image: ghcr.io/danielmunro/otto-community-service:latest
         imagePullPolicy: Always
         ports:
