@@ -37,6 +37,7 @@ paths:
       parameters:
         - in: path
           name: uuid
+          required: true
           schema:
             type: string
             format: uuid
@@ -58,6 +59,7 @@ paths:
       parameters:
         - in: path
           name: uuid
+          required: true
           schema:
             type: string
             format: uuid
@@ -144,6 +146,7 @@ paths:
       parameters:
         - in: path
           name: uuid
+          required: true
           schema:
             type: string
             format: uuid
@@ -166,6 +169,7 @@ paths:
         - in: path
           name: uuid
           description: a user's unique ID
+          required: true
           schema:
             type: string
             format: uuid
@@ -186,6 +190,7 @@ paths:
         - in: path
           name: uuid
           description: a user ID
+          required: true
           schema:
             type: string
             format: uuid
@@ -206,6 +211,7 @@ paths:
         - in: path
           name: uuid
           description: a user ID
+          required: true
           schema:
             type: string
             format: uuid
@@ -226,6 +232,7 @@ paths:
         - in: path
           name: uuid
           description: a user's unique ID
+          required: true
           schema:
             type: string
             format: uuid
@@ -247,6 +254,7 @@ paths:
         - in: path
           name: uuid
           description: a user's unique ID
+          required: true
           schema:
             type: string
             format: uuid
@@ -269,6 +277,7 @@ paths:
         - in: path
           name: uuid
           description: a user ID
+          required: true
           schema:
             type: string
             format: uuid

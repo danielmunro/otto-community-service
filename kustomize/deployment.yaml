@@ -90,3 +90,4 @@ spec:
       imagePullSecrets:
       - name: dockerconfigjson-github-com
       - name: postgres-community
+      - name: kafka
