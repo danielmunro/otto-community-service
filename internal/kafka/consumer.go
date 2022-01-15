@@ -10,8 +10,8 @@ import (
 	"log"
 )
 
-func InitializeAndRunLoop(kafkaHost string) {
-	reader := GetReader(kafkaHost)
+func InitializeAndRunLoop() {
+	reader := GetReader()
 	userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
 	err := loopKafkaReader(userRepository, reader)
 	if err != nil {

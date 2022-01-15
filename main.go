@@ -24,9 +24,7 @@ func main() {
 }
 
 func readKafka() {
-	kafkaHost := "kafka:9092"
-	log.Print("connecting to kafka", kafkaHost)
-	kafka.InitializeAndRunLoop(kafkaHost)
+	kafka.InitializeAndRunLoop()
 	log.Print("exit kafka loop")
 }
 
