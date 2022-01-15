@@ -1,28 +1,27 @@
 package kafka
 
 import (
-	"context"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
-	"github.com/segmentio/kafka-go"
+	"github.com/google/uuid"
 	"log"
 )
 
 func InitializeAndRunLoop() {
-	reader := GetReader()
 	userRepository := repository.CreateUserRepository(db.CreateDefaultConnection())
-	err := loopKafkaReader(userRepository, reader)
+	err := loopKafkaReader(userRepository)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func loopKafkaReader(userRepository *repository.UserRepository, reader *kafka.Reader) error {
+func loopKafkaReader(userRepository *repository.UserRepository) error {
+	reader := GetReader()
 	for {
 		log.Print("listening for kafka messages")
-		data, err := reader.ReadMessage(context.Background())
+		data, err := reader.ReadMessage(-1)
 		log.Print("message received")
 		if err != nil  {
 			log.Print(err)
@@ -32,6 +31,10 @@ func loopKafkaReader(userRepository *repository.UserRepository, reader *kafka.Re
 		userModel, err := model.DecodeMessageToUser(data.Value)
 		if err != nil {
 			log.Print("error decoding message to user, skipping", string(data.Value))
+			continue
+		}
+		_, err = uuid.Parse(userModel.Uuid)
+		if err != nil {
 			continue
 		}
 		userEntity, err := userRepository.FindOneByUuid(userModel.Uuid)

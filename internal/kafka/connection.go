@@ -1,31 +1,25 @@
 package kafka
 
 import (
-	"github.com/danielmunro/otto-community-service/internal/constants"
-	"github.com/segmentio/kafka-go"
-	"github.com/segmentio/kafka-go/sasl/scram"
-	"log"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"os"
-	"time"
 )
 
-func GetReader() *kafka.Reader {
-	mechanism, err := scram.Mechanism(
-		scram.SHA512,
-		os.Getenv("KAFKA_SASL_USERNAME"),
-		os.Getenv("KAFKA_SASL_PASSWORD"))
-	if err != nil {
-		log.Panic(err)
-	}
-	dialer := &kafka.Dialer{
-		Timeout:       10 * time.Second,
-		DualStack:     true,
-		SASLMechanism: mechanism,
-	}
-	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:   []string{os.Getenv("KAFKA_BOOTSTRAP_SERVERS")},
-		Topic:     string(constants.Users),
-		Dialer: dialer,
+func GetReader() *kafka.Consumer {
+	c, err := kafka.NewConsumer(&kafka.ConfigMap{
+		"bootstrap.servers": os.Getenv("KAFKA_BOOTSTRAP_SERVERS"),
+		"security.protocol": os.Getenv("KAFKA_SECURITY_PROTOCOL"),
+		"sasl.mechanisms": os.Getenv("KAFKA_SASL_MECHANISMS"),
+		"sasl.username": os.Getenv("KAFKA_SASL_USERNAME"),
+		"sasl.password": os.Getenv("KAFKA_SASL_PASSWORD"),
+		"group.id": "otto",
+		"auto.offset.reset": "earliest",
 	})
-	return r
+
+	if err != nil {
+		panic(err)
+	}
+
+	c.SubscribeTopics([]string{"users"}, nil)
+	return c
 }
