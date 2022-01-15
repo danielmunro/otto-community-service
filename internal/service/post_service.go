@@ -60,7 +60,7 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 	if err != nil {
 		return err
 	}
-	if post.User.Uuid != &userUuid {
+	if *post.User.Uuid != userUuid {
 		return errors.New("access denied")
 	}
 	now := time.Now()
