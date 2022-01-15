@@ -7,6 +7,7 @@ import (
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
@@ -68,6 +69,7 @@ func DeletePostV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()
 	sessionToken := authService.GetSessionToken(r)
 	if sessionToken == "" {
+		log.Print("delete denied -- no valid session")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -75,12 +77,14 @@ func DeletePostV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	postUuid, err := uuid.Parse(params["uuid"])
 	if err != nil {
+		log.Print("malformed uuid for delete post :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	userUuid := uuid.MustParse(session.User.Uuid)
 	err = service.CreateDefaultPostService().DeletePost(postUuid, userUuid)
 	if err != nil {
+		log.Print("delete error, error :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 }
