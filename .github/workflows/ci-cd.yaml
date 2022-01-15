@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/danielmunro/otto-user-service:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.CR_PAT }}
       ports:
         - 8080:8080
     steps:
