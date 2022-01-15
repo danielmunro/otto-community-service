@@ -3,15 +3,20 @@ on:
     branches:
       - main
 jobs:
-  publish-gpr:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - run: go vet ./...
+      - run: go test ./test/...
+  build-publish-latest:
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-      - run: go vet ./...
       - run: |
           echo $CR_PAT | docker login ghcr.io -u danielmunro --password-stdin
         env:
