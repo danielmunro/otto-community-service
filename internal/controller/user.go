@@ -9,7 +9,7 @@ import (
 
 // GetUserPostsV1 - get posts by a user
 func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
-	posts := service.CreateDefaultPostService().GetPostsForUser(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
+	posts, _ := service.CreateDefaultPostService().GetPostsForUser(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
