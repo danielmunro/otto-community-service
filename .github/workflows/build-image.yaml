@@ -12,6 +12,7 @@ jobs:
       - run: go test ./test/...
   build-publish-latest:
     runs-on: ubuntu-latest
+    needs: test
     permissions:
       packages: write
       contents: read
