@@ -29,6 +29,47 @@ func Test_PostService_CreateNewPost(t *testing.T) {
 	test.Assert(t, response != nil)
 }
 
+func Test_PostService_CreateNewPost_Fails_WhenUserNotFound(t *testing.T) {
+	// setup
+	userUuid, _ := uuid.NewRandom()
+	postService := service.CreateDefaultPostService()
+
+	// when
+	response, err := postService.CreatePost(model.CreateNewPost(&userUuid, message))
+
+	// then
+	test.Assert(t, err != nil)
+	test.Assert(t, response == nil)
+}
+
+func Test_PostService_Can_DeletePost(t *testing.T) {
+	// setup
+	testUser := createTestUser()
+	postService := service.CreateDefaultPostService()
+	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+
+	// when
+	err := postService.DeletePost(*postModel.Uuid, *testUser.Uuid)
+
+	// then
+	test.Assert(t, err == nil)
+}
+
+func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
+	// setup
+	testUser := createTestUser()
+	postService := service.CreateDefaultPostService()
+	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+	_ = postService.DeletePost(*postModel.Uuid, *testUser.Uuid)
+
+	// when
+	response, err := postService.GetPost(*postModel.Uuid)
+
+	// then
+	test.Assert(t, err != nil)
+	test.Assert(t, response == nil)
+}
+
 func Test_GetPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
@@ -90,10 +131,28 @@ func Test_PostService_GetUserPosts(t *testing.T) {
 	}
 
 	// when
-	posts := postService.GetPostsForUser(*testUser.Uuid)
+	posts, _ := postService.GetPostsForUser(*testUser.Uuid)
 
 	// then
 	test.Assert(t, len(posts) == 5)
+}
+
+func Test_PostService_GetUserPosts_FailsFor_MissingUser(t *testing.T) {
+	// setup
+	testUserUuid, _ := uuid.NewRandom()
+	postService := service.CreateDefaultPostService()
+
+	// given
+	for i := 0; i < 5; i++ {
+		_, _ = postService.CreatePost(model.CreateNewPost(&testUserUuid, message))
+	}
+
+	// when
+	posts, err := postService.GetPostsForUser(testUserUuid)
+
+	// then
+	test.Assert(t, posts == nil)
+	test.Assert(t, err != nil)
 }
 
 func Test_GetPostsForUserFollows_HappyPath(t *testing.T) {

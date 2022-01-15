@@ -10,7 +10,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/danielmunro/otto-community-service/internal/util"
 	"github.com/google/uuid"
-	"log"
 	"sort"
 	"time"
 )
@@ -70,18 +69,19 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 }
 
 func (p *PostService) GetNewPosts(userUuid uuid.UUID) []*model.Post {
-	posts, _ := p.GetPostsForUserFollows(userUuid)
+	followPosts, _ := p.GetPostsForUserFollows(userUuid)
+	userPosts, _ := p.GetPostsForUser(userUuid)
 	return util.CombinePosts(
-		p.GetPostsForUser(userUuid),
-		posts)
+		followPosts,
+		userPosts)
 }
 
-func (p *PostService) GetPostsForUser(userUuid uuid.UUID) []*model.Post {
+func (p *PostService) GetPostsForUser(userUuid uuid.UUID) ([]*model.Post, error) {
 	user, err := p.userRepository.FindOneByUuid(userUuid.String())
 	if err != nil {
-		log.Fatal(err) // return an error!
+		return nil, err
 	}
-	return mapper.GetPostModelsFromEntities(p.postRepository.FindByUser(user))
+	return mapper.GetPostModelsFromEntities(p.postRepository.FindByUser(user)), nil
 }
 
 func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID) ([]*model.Post, error) {
@@ -94,7 +94,7 @@ func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID) ([]*model.Post,
 }
 
 func (p *PostService) GetPosts(userUuid uuid.UUID) ([]*model.Post, error) {
-	selfPosts := p.GetPostsForUser(userUuid)
+	selfPosts, _ := p.GetPostsForUser(userUuid)
 	friendsPosts, friendsErr := p.GetPostsForUserFollows(userUuid)
 	if friendsErr != nil {
 		return nil, friendsErr
