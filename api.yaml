@@ -52,6 +52,22 @@ paths:
         '404':
           description: |-
             404 response
+    delete:
+      operationId: deletePostV1
+      summary: delete a post
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: post deleted
+        '404':
+          description: |-
+            404 response
   /post/{uuid}/replies:
     get:
       operationId: getPostRepliesV1

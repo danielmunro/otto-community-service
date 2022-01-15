@@ -6,6 +6,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/service"
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -60,4 +61,26 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	posts, _ := service.CreateDefaultPostService().GetPosts(uuid.MustParse(session.User.Uuid))
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
+}
+
+// DeletePostV1 - delete a post
+func DeletePostV1(w http.ResponseWriter, r *http.Request) {
+	authService := service.CreateDefaultAuthService()
+	sessionToken := authService.GetSessionToken(r)
+	if sessionToken == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	session, _ := authService.GetSession(sessionToken)
+	params := mux.Vars(r)
+	postUuid, err := uuid.Parse(params["uuid"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	userUuid := uuid.MustParse(session.User.Uuid)
+	err = service.CreateDefaultPostService().DeletePost(postUuid, userUuid)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }

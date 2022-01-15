@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"log"
 	"sort"
+	"time"
 )
 
 type PostService struct {
@@ -52,6 +53,20 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 	post := entity.CreatePost(user, newPost)
 	p.postRepository.Save(post)
 	return mapper.GetPostModelFromEntity(post), nil
+}
+
+func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
+	post, err := p.postRepository.FindOneByUuid(postUuid)
+	if err != nil {
+		return err
+	}
+	if *post.User.Uuid != userUuid {
+		return errors.New("access denied")
+	}
+	now := time.Now()
+	post.DeletedAt = &now
+	p.postRepository.Save(post)
+	return nil
 }
 
 func (p *PostService) GetNewPosts(userUuid uuid.UUID) []*model.Post {

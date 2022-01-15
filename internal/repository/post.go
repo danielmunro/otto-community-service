@@ -24,7 +24,7 @@ func (p *PostRepository) FindByUser(user *entity.User) []*entity.Post {
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
-		Where("user_id = ?", user.ID).
+		Where("user_id = ? and deleted_at IS NULL", user.ID).
 		Order("id desc").
 		Limit(constants.UserPostsDefaultPageSize).
 		Find(&posts)
@@ -35,7 +35,7 @@ func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 	post := &entity.Post{}
 	p.conn.
 		Preload("User").
-		Where("uuid = ?", uuid).
+		Where("uuid = ? and deleted_at IS NULL", uuid).
 		Find(post)
 	if post.ID == 0 {
 		return nil, errors.New(constants.ErrorMessagePostNotFound)
@@ -50,7 +50,7 @@ func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID) []*entity.Post {
 		Table("posts").
 		Joins("join follows on follows.user_id = posts.user_id").
 		Joins("join users on follows.following_id = users.id").
-		Where("users.uuid = ?", userUuid.String()).
+		Where("users.uuid = ? and posts.deleted_at IS NULL", userUuid.String()).
 		Order("id desc").
 		Find(&posts)
 	return posts

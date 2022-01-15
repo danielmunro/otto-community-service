@@ -135,6 +135,13 @@ var routes = Routes{
 	},
 
 	{
+		"DeletePostV1",
+		strings.ToUpper("Delete"),
+		"/post/{uuid}",
+		controller.DeletePostV1,
+	},
+
+	{
 		"GetPostV1",
 		strings.ToUpper("Get"),
 		"/post/{uuid}",
