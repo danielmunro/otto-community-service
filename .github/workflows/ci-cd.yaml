@@ -12,6 +12,10 @@ jobs:
       - run: go test ./test/...
   build-publish-latest:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/danielmunro/otto-user-service:latest
+      ports:
+        - 8080:8080
     needs: test
     permissions:
       packages: write
