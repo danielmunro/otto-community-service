@@ -1,11 +1,11 @@
 package controller
 
 import (
-	iUuid "../uuid"
 	"encoding/json"
 	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/service"
+	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"log"
