@@ -62,8 +62,8 @@ func (p *PostRepository) FindAll(limit int) []*entity.Post {
 	p.conn.
 		Preload("User").
 		Table("posts").
-		Joins("join users on users.id = posts.user_id").
-		Where("users.id IS NOT NULL AND posts.deleted_at IS NULL").
+		Joins("users").
+		Where("posts.deleted_at IS NULL").
 		Order("id desc").
 		Limit(limit).
 		Find(&posts)
