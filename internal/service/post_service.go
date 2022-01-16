@@ -8,7 +8,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
-	"github.com/danielmunro/otto-community-service/internal/util"
 	"github.com/google/uuid"
 	"sort"
 	"time"
@@ -71,9 +70,8 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 func (p *PostService) GetNewPosts(userUuid uuid.UUID, limit int) []*model.Post {
 	followPosts, _ := p.GetPostsForUserFollows(userUuid, limit)
 	userPosts, _ := p.GetPostsForUser(userUuid, limit)
-	return util.CombinePosts(
-		followPosts,
-		userPosts)
+	allPosts := append(followPosts, userPosts...)
+	return removeDuplicatePosts(allPosts)
 }
 
 func (p *PostService) GetPostsForUser(userUuid uuid.UUID, limit int) ([]*model.Post, error) {

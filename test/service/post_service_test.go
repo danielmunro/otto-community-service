@@ -70,13 +70,16 @@ func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 	test.Assert(t, response == nil)
 }
 
-func Test_GetAllPosts(t *testing.T) {
+func Test_GetPosts(t *testing.T) {
 	// setup
 	postService := service.CreateDefaultPostService()
+	testUser := createTestUser()
 
 	// when
-	posts := postService.GetAllPosts(constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPosts(*testUser.Uuid, constants.UserPostsDefaultPageSize)
 
+	// then
+	test.Assert(t, err == nil)
 	test.Assert(t, posts != nil)
 }
 
@@ -130,6 +133,24 @@ func Test_GetPost_Fails_WhenUser_IsNotFound(t *testing.T) {
 	test.Assert(t, err.Error() == constants.ErrorMessageUserNotFound)
 }
 
+func Test_GetPostForUserFollows_Fails_WhenUser_IsNotFound(t *testing.T) {
+	// setup
+	testUser := createTestUser()
+	postService := service.CreateDefaultPostService()
+	_, _ = postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+
+	// given
+	_ = service.CreateDefaultUserService().DeleteUser(*testUser.Uuid)
+
+	// when
+	response, err := postService.GetPostsForUserFollows(*testUser.Uuid, constants.UserPostsDefaultPageSize)
+
+	// then
+	test.Assert(t, err != nil)
+	test.Assert(t, response == nil)
+	test.Assert(t, err.Error() == constants.ErrorMessageUserNotFound)
+}
+
 func Test_PostService_GetUserPosts(t *testing.T) {
 	// setup
 	testUser := createTestUser()
@@ -171,7 +192,7 @@ func Test_GetPostsForUserFollows_HappyPath(t *testing.T) {
 	follower := createTestUser()
 	postService := service.CreateDefaultPostService()
 	followService := service.CreateDefaultFollowService()
-	_, _ = followService.CreateFollow(*follower.Uuid, &model.NewFollow{Following: model.User{ Uuid: testUser.Uuid.String() } })
+	_, _ = followService.CreateFollow(*follower.Uuid, &model.NewFollow{Following: model.User{Uuid: testUser.Uuid.String()}})
 
 	// given
 	for i := 0; i < 5; i++ {
