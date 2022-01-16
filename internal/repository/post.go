@@ -57,7 +57,7 @@ func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID, limit int) []*ent
 	return posts
 }
 
-func (p *PostRepository) FindAll() []*entity.Post {
+func (p *PostRepository) FindAll(limit int) []*entity.Post {
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
@@ -65,6 +65,7 @@ func (p *PostRepository) FindAll() []*entity.Post {
 		Joins("join users on users.id = posts.user_id").
 		Where("posts.deleted_at IS NULL").
 		Order("id desc").
+		Limit(limit).
 		Find(&posts)
 	return posts
 }
