@@ -36,11 +36,11 @@ func (u *UserRepository) FindOneByUuid(uuid string) (*entity.User, error) {
 
 func (u *UserRepository) FindUsersNotFollowing(userUuid uuid.UUID) []*entity.User {
 	var users []*entity.User
-	u.conn.Raw("SELECT * " +
-	"FROM users " +
-	"WHERE id NOT IN (SELECT following_id FROM follows f JOIN users u ON f.user_id = u.id WHERE u.uuid = ?) " +
-	"AND uuid != ?", userUuid.String(), userUuid.String()).
-	Scan(&users)
+	u.conn.Raw("SELECT * "+
+		"FROM users "+
+		"WHERE id NOT IN (SELECT following_id FROM follows f JOIN users u ON f.user_id = u.id WHERE u.uuid = ?) "+
+		"AND uuid != ?", userUuid.String(), userUuid.String()).
+		Scan(&users)
 	return users
 }
 
@@ -50,8 +50,4 @@ func (u *UserRepository) Create(user *entity.User) {
 
 func (u *UserRepository) Update(user *entity.User) {
 	u.conn.Model(&user).Updates(user)
-}
-
-func (u *UserRepository) Delete(user *entity.User) {
-	u.conn.Delete(user)
 }

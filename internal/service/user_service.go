@@ -7,6 +7,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"time"
 )
 
 type UserService struct {
@@ -28,7 +29,9 @@ func (s *UserService) DeleteUser(userUuid uuid.UUID) error {
 	if err != nil {
 		return err
 	}
-	s.userRepository.Delete(userEntity)
+	deletedAt := time.Now()
+	userEntity.DeletedAt = &deletedAt
+	s.userRepository.Update(userEntity)
 	return nil
 }
 
