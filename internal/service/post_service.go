@@ -124,7 +124,7 @@ func removeDuplicatePosts(posts []*model.Post) []*model.Post {
 	var dedup []*model.Post
 	allKeys := make(map[*uuid.UUID]bool)
 	for _, item := range posts {
-		if _, value := allKeys[item.Uuid]; !value {
+		if value := allKeys[item.Uuid]; !value {
 			allKeys[item.Uuid] = true
 			dedup = append(dedup, item)
 		}
