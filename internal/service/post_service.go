@@ -122,10 +122,10 @@ func (p *PostService) GetPosts(userUuid uuid.UUID, limit int) ([]*model.Post, er
 
 func removeDuplicatePosts(posts []*model.Post) []*model.Post {
 	var dedup []*model.Post
-	allKeys := make(map[*uuid.UUID]bool)
+	allKeys := make(map[string]bool)
 	for _, item := range posts {
-		if value := allKeys[item.Uuid]; !value {
-			allKeys[item.Uuid] = true
+		if value := allKeys[item.Uuid.String()]; !value {
+			allKeys[item.Uuid.String()] = true
 			dedup = append(dedup, item)
 		}
 	}
