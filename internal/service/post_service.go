@@ -93,6 +93,11 @@ func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID, limit int) ([]*
 	return mapper.GetPostModelsFromEntities(posts), nil
 }
 
+func (p *PostService) GetAllPosts(limit int) []*model.Post {
+	posts := p.postRepository.FindAll(limit)
+	return mapper.GetPostModelsFromEntities(posts)
+}
+
 func (p *PostService) GetPosts(userUuid uuid.UUID, limit int) ([]*model.Post, error) {
 	selfPosts, _ := p.GetPostsForUser(userUuid, limit)
 	remaining := limit - len(selfPosts)
@@ -104,12 +109,12 @@ func (p *PostService) GetPosts(userUuid uuid.UUID, limit int) ([]*model.Post, er
 		}
 		allPosts = append(selfPosts, friendsPosts...)
 		remaining -= len(friendsPosts)
+		if remaining > 0 {
+			otherPosts := p.GetAllPosts(remaining)
+			allPosts = append(allPosts, otherPosts...)
+		}
 	} else {
 		allPosts = selfPosts
-	}
-	if remaining > 0 {
-		otherPosts := mapper.GetPostModelsFromEntities(p.postRepository.FindAll(remaining))
-		allPosts = append(allPosts, otherPosts...)
 	}
 	sort.SliceStable(allPosts, func(i, j int) bool {
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)

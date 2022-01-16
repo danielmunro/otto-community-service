@@ -70,6 +70,16 @@ func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 	test.Assert(t, response == nil)
 }
 
+func Test_GetAllPosts(t *testing.T) {
+	// setup
+	postService := service.CreateDefaultPostService()
+
+	// when
+	posts := postService.GetAllPosts(constants.UserPostsDefaultPageSize)
+
+	test.Assert(t, posts != nil)
+}
+
 func Test_GetPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
