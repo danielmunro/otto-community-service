@@ -119,5 +119,17 @@ func (p *PostService) GetPosts(userUuid uuid.UUID, limit int) ([]*model.Post, er
 	sort.SliceStable(allPosts, func(i, j int) bool {
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
-	return allPosts, nil
+	return removeDuplicatePosts(allPosts), nil
+}
+
+func removeDuplicatePosts(posts []*model.Post) []*model.Post {
+	var dedup []*model.Post
+	allKeys := make(map[*uuid.UUID]bool)
+	for _, item := range posts {
+		if _, value := allKeys[item.Uuid]; !value {
+			allKeys[item.Uuid] = true
+			dedup = append(dedup, item)
+		}
+	}
+	return dedup
 }
