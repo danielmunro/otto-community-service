@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	"github.com/danielmunro/otto-community-service/internal/uuid"
 	"net/http"
@@ -9,7 +10,8 @@ import (
 
 // GetUserPostsV1 - get posts by a user
 func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
-	posts, _ := service.CreateDefaultPostService().GetPostsForUser(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
+	posts, _ := service.CreateDefaultPostService().GetPostsForUser(
+		uuid.GetUuidFromPathSecondPosition(r.URL.Path), constants.UserPostsDefaultPageSize)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

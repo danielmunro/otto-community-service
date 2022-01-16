@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
@@ -34,8 +35,9 @@ func GetPostV1(w http.ResponseWriter, r *http.Request) {
 
 // GetUserFollowsPostsV1 - get a user's friend's posts
 func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
+	limit := constants.UserPostsDefaultPageSize
 	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(
-		iUuid.GetUuidFromPathThirdPosition(r.URL.Path))
+		iUuid.GetUuidFromPathThirdPosition(r.URL.Path), limit)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -45,7 +47,9 @@ func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
-	posts := service.CreateDefaultPostService().GetNewPosts(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
+	limit := constants.UserPostsDefaultPageSize
+	posts := service.CreateDefaultPostService().GetNewPosts(
+		iUuid.GetUuidFromPathSecondPosition(r.URL.Path), limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
@@ -59,7 +63,9 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	session, _ := authService.GetSession(sessionToken)
-	posts, _ := service.CreateDefaultPostService().GetPosts(uuid.MustParse(session.User.Uuid))
+	limit := constants.UserPostsDefaultPageSize
+	posts, _ := service.CreateDefaultPostService().GetPosts(
+		uuid.MustParse(session.User.Uuid), limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

@@ -68,38 +68,44 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 	return nil
 }
 
-func (p *PostService) GetNewPosts(userUuid uuid.UUID) []*model.Post {
-	followPosts, _ := p.GetPostsForUserFollows(userUuid)
-	userPosts, _ := p.GetPostsForUser(userUuid)
+func (p *PostService) GetNewPosts(userUuid uuid.UUID, limit int) []*model.Post {
+	followPosts, _ := p.GetPostsForUserFollows(userUuid, limit)
+	userPosts, _ := p.GetPostsForUser(userUuid, limit)
 	return util.CombinePosts(
 		followPosts,
 		userPosts)
 }
 
-func (p *PostService) GetPostsForUser(userUuid uuid.UUID) ([]*model.Post, error) {
+func (p *PostService) GetPostsForUser(userUuid uuid.UUID, limit int) ([]*model.Post, error) {
 	user, err := p.userRepository.FindOneByUuid(userUuid.String())
 	if err != nil {
 		return nil, err
 	}
-	return mapper.GetPostModelsFromEntities(p.postRepository.FindByUser(user)), nil
+	return mapper.GetPostModelsFromEntities(p.postRepository.FindByUser(user, limit)), nil
 }
 
-func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID) ([]*model.Post, error) {
+func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID, limit int) ([]*model.Post, error) {
 	_, err := p.userRepository.FindOneByUuid(userUuid.String())
 	if err != nil {
 		return nil, err
 	}
-	posts := p.postRepository.FindByUserFollows(userUuid)
+	posts := p.postRepository.FindByUserFollows(userUuid, limit)
 	return mapper.GetPostModelsFromEntities(posts), nil
 }
 
-func (p *PostService) GetPosts(userUuid uuid.UUID) ([]*model.Post, error) {
-	selfPosts, _ := p.GetPostsForUser(userUuid)
-	friendsPosts, friendsErr := p.GetPostsForUserFollows(userUuid)
-	if friendsErr != nil {
-		return nil, friendsErr
+func (p *PostService) GetPosts(userUuid uuid.UUID, limit int) ([]*model.Post, error) {
+	selfPosts, _ := p.GetPostsForUser(userUuid, limit)
+	remaining := limit - len(selfPosts)
+	var allPosts []*model.Post
+	if remaining > 0 {
+		friendsPosts, friendsErr := p.GetPostsForUserFollows(userUuid, limit)
+		if friendsErr != nil {
+			return nil, friendsErr
+		}
+		allPosts = append(selfPosts, friendsPosts...)
+	} else {
+		allPosts = selfPosts
 	}
-	allPosts := append(selfPosts, friendsPosts...)
 	sort.SliceStable(allPosts, func(i, j int) bool {
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})

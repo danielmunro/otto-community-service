@@ -1,6 +1,6 @@
 module github.com/danielmunro/otto-community-service
 
-go 1.13
+go 1.9
 
 require (
 	github.com/antihax/optional v1.0.0

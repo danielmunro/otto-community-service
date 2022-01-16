@@ -20,13 +20,13 @@ func (p *PostRepository) Save(entity *entity.Post) {
 	p.conn.Save(entity)
 }
 
-func (p *PostRepository) FindByUser(user *entity.User) []*entity.Post {
+func (p *PostRepository) FindByUser(user *entity.User, limit int) []*entity.Post {
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
 		Where("user_id = ? and deleted_at IS NULL", user.ID).
 		Order("id desc").
-		Limit(constants.UserPostsDefaultPageSize).
+		Limit(limit).
 		Find(&posts)
 	return posts
 }
@@ -43,7 +43,7 @@ func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 	return post, nil
 }
 
-func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID) []*entity.Post {
+func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID, limit int) []*entity.Post {
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
@@ -51,6 +51,19 @@ func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID) []*entity.Post {
 		Joins("join follows on follows.user_id = posts.user_id").
 		Joins("join users on follows.following_id = users.id").
 		Where("users.uuid = ? and posts.deleted_at IS NULL", userUuid.String()).
+		Order("id desc").
+		Limit(limit).
+		Find(&posts)
+	return posts
+}
+
+func (p *PostRepository) FindAll() []*entity.Post {
+	var posts []*entity.Post
+	p.conn.
+		Preload("User").
+		Table("posts").
+		Joins("join users on users.id = posts.user_id").
+		Where("posts.deleted_at IS NULL").
 		Order("id desc").
 		Find(&posts)
 	return posts
