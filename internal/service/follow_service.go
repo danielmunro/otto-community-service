@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
@@ -59,7 +60,7 @@ func (f *FollowService) GetUserFollowers(userUuid uuid.UUID) ([]*model.Follow, e
 func (f *FollowService) DeleteFollow(followUuid uuid.UUID, userUuid uuid.UUID) error {
 	follow := f.followRepository.FindOne(followUuid)
 	if follow == nil {
-		return errors.New("follow not found")
+		return errors.New(fmt.Sprintf("follow not found :: %s", followUuid))
 	}
 	user, _ := f.userRepository.FindOneByUuid(userUuid.String())
 	if follow.UserID != user.ID {
