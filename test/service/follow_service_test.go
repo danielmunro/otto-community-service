@@ -22,8 +22,8 @@ func Test_CanFollow_AUser(t *testing.T) {
 
 	// then
 	test.Assert(t, err == nil)
-	test.Assert(t, follow.Following.Uuid == user1.Uuid.String())
-	test.Assert(t, follow.User.Uuid == user2.Uuid.String())
+	test.Assert(t, follow.User.Uuid == user1.Uuid.String())
+	test.Assert(t, follow.Following.Uuid == user2.Uuid.String())
 }
 
 func Test_GetFollows(t *testing.T) {
