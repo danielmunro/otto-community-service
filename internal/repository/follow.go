@@ -25,7 +25,7 @@ func (f *FollowRepository) FindByUser(user *entity.User) []*entity.Follow {
 }
 
 func (f *FollowRepository) FindOne(followUuid uuid.UUID) *entity.Follow {
-	var follow *entity.Follow
+	follow := &entity.Follow{}
 	f.conn.Preload("Following").Where("uuid = ?", followUuid.String()).Find(&follow)
 	return follow
 }
