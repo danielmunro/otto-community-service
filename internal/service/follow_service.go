@@ -40,9 +40,9 @@ func (f *FollowService) CreateFollow(userUuid uuid.UUID, follow *model.NewFollow
 		return nil, errors.New("follower not found")
 	}
 
-	followEntity := entity.GetFollowEntityFromModel(followingUser, user)
+	followEntity := entity.GetFollowEntityFromModel(user, followingUser)
 	f.followRepository.Create(followEntity)
-	return mapper.GetFollowModelFromEntity(followEntity, followingUser, user), nil
+	return mapper.GetFollowModelFromEntity(followEntity, user, followingUser), nil
 }
 
 func (f *FollowService) GetUserFollowers(userUuid uuid.UUID) ([]*model.Follow, error) {

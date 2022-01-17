@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// CreateNewUserV1 - create a new user
+// CreateNewFollowV1 - create a new follow
 func CreateNewFollowV1(w http.ResponseWriter, r *http.Request) {
 	newFollowModel := mapper.DecodeRequestToNewFollow(r)
 	userUuid := uuid.GetUuidFromPathSecondPosition(r.URL.Path)
@@ -18,7 +18,7 @@ func CreateNewFollowV1(w http.ResponseWriter, r *http.Request) {
 		})
 }
 
-// CreateNewUserV1 - create a new user
+// GetUserFollowsV1 - get user follows
 func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
 	follows, err := service.CreateDefaultFollowService().GetUserFollowers(uuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {

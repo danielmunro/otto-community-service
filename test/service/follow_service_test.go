@@ -35,13 +35,13 @@ func Test_GetFollows(t *testing.T) {
 	followService := service.CreateDefaultFollowService()
 
 	_, _ = followService.CreateFollow(uuid.MustParse(user1.Uuid.String()), &model.NewFollow{
-		Following: model.User{Uuid: user3.Uuid.String()},
+		Following: model.User{Uuid: user2.Uuid.String()},
 	})
-	_, _ = followService.CreateFollow(uuid.MustParse(user2.Uuid.String()), &model.NewFollow{
+	_, _ = followService.CreateFollow(uuid.MustParse(user1.Uuid.String()), &model.NewFollow{
 		Following: model.User{Uuid: user3.Uuid.String()},
 	})
 
-	following, err := followService.GetUserFollowers(*user3.Uuid)
+	following, err := followService.GetUserFollowers(*user1.Uuid)
 
 	// then
 	test.Assert(t, err == nil)
