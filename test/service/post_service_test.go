@@ -186,21 +186,21 @@ func Test_PostService_GetUserPosts_FailsFor_MissingUser(t *testing.T) {
 	test.Assert(t, err != nil)
 }
 
-func Test_GetPostsForUserFollows_HappyPath(t *testing.T) {
+func Test_CanGetPosts_ForUserFollows(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	follower := createTestUser()
+	following := createTestUser()
 	postService := service.CreateDefaultPostService()
 	followService := service.CreateDefaultFollowService()
-	_, _ = followService.CreateFollow(*follower.Uuid, &model.NewFollow{Following: model.User{Uuid: testUser.Uuid.String()}})
+	_, _ = followService.CreateFollow(*testUser.Uuid, &model.NewFollow{Following: model.User{Uuid: following.Uuid.String()}})
 
 	// given
 	for i := 0; i < 5; i++ {
-		_, _ = postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+		_, _ = postService.CreatePost(model.CreateNewPost(following.Uuid, message))
 	}
 
 	// when
-	posts, err := postService.GetPostsForUserFollows(*follower.Uuid, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPostsForUserFollows(*testUser.Uuid, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, err == nil)

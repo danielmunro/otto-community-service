@@ -48,8 +48,8 @@ func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID, limit int) []*ent
 	p.conn.
 		Preload("User").
 		Table("posts").
-		Joins("join follows on follows.user_id = posts.user_id").
-		Joins("join users on follows.following_id = users.id").
+		Joins("join follows on follows.following_id = posts.user_id").
+		Joins("join users on follows.user_id = users.id").
 		Where("users.uuid = ? and posts.deleted_at IS NULL", userUuid.String()).
 		Order("id desc").
 		Limit(limit).
