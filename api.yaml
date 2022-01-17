@@ -401,6 +401,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Reply"
+        visibility:
+          $ref: "#/components/schemas/Visibility"
         created_at:
           type: string
           format: date-time
@@ -414,6 +416,8 @@ components:
           type: string
         user:
           $ref: "#/components/schemas/User"
+        visibility:
+          $ref: "#/components/schemas/Visibility"
     Reply:
       type: object
       required:
@@ -554,5 +558,5 @@ components:
       type: string
       enum:
         - public
-        - limited
+        - following
         - private

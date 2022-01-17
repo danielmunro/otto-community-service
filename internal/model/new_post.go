@@ -16,9 +16,9 @@ import (
 )
 
 type NewPost struct {
-	Text string `json:"text"`
-
-	User User `json:"user"`
+	Text       string     `json:"text"`
+	User       User       `json:"user"`
+	Visibility Visibility `json:"access,omitempty"`
 }
 
 func DecodeRequestToNewPost(r *http.Request) *NewPost {

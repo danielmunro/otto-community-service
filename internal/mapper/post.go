@@ -7,10 +7,11 @@ import (
 
 func GetPostModelFromEntity(post *entity.Post) *model.Post {
 	return &model.Post{
-		Uuid: post.Uuid,
-		Text: post.Text,
-		User: *GetUserModelFromEntity(post.User),
-		CreatedAt: post.CreatedAt,
+		Uuid:       post.Uuid,
+		Text:       post.Text,
+		User:       *GetUserModelFromEntity(post.User),
+		CreatedAt:  post.CreatedAt,
+		Visibility: post.Visibility,
 	}
 }
 

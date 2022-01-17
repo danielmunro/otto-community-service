@@ -10,7 +10,6 @@
 package model
 
 import (
-	"github.com/danielmunro/otto-community-service/internal/enum"
 	"time"
 )
 
@@ -23,5 +22,5 @@ type Message struct {
 
 	User User `json:"user"`
 
-	Visibility enum.Visibility `json:"visibility"`
+	Visibility Visibility `json:"visibility"`
 }

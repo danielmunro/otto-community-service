@@ -29,6 +29,40 @@ func Test_PostService_CreateNewPost(t *testing.T) {
 	test.Assert(t, response != nil)
 }
 
+func Test_PostService_CreateNewPost_WithPrivateVisibility(t *testing.T) {
+	// setup
+	testUser := createTestUser()
+	postService := service.CreateDefaultPostService()
+
+	// given
+	newPost := model.CreateNewPost(testUser.Uuid, message)
+	newPost.Visibility = model.PRIVATE
+
+	// when
+	response, err := postService.CreatePost(newPost)
+
+	// then
+	test.Assert(t, err == nil)
+	test.Assert(t, response.Visibility == model.PRIVATE)
+}
+
+func Test_PostService_CreateNewPost_WithFollowingVisibility(t *testing.T) {
+	// setup
+	testUser := createTestUser()
+	postService := service.CreateDefaultPostService()
+
+	// given
+	newPost := model.CreateNewPost(testUser.Uuid, message)
+	newPost.Visibility = model.FOLLOWING
+
+	// when
+	response, err := postService.CreatePost(newPost)
+
+	// then
+	test.Assert(t, err == nil)
+	test.Assert(t, response.Visibility == model.FOLLOWING)
+}
+
 func Test_PostService_CreateNewPost_Fails_WhenUserNotFound(t *testing.T) {
 	// setup
 	userUuid, _ := uuid.NewRandom()

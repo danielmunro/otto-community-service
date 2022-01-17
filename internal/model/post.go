@@ -23,5 +23,7 @@ type Post struct {
 
 	Replies []Reply `json:"replies"`
 
+	Visibility Visibility `json:"visibility,omitempty"`
+
 	CreatedAt time.Time `json:"created_at"`
 }
