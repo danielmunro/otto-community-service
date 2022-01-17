@@ -1,7 +1,7 @@
 openapi: "3.0.0"
 info:
   title: Otto user service
-  version: 1.0
+  version: "1.0"
 paths:
   /post:
     post:
@@ -47,7 +47,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: '#/components/schemas/Post'
         '404':
           description: |-
@@ -101,7 +100,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: "#/components/schemas/NewReply"
       responses:
         '201':
@@ -117,7 +115,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: "#/components/schemas/NewPostReport"
       responses:
         '201':
@@ -133,7 +130,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: "#/components/schemas/NewReplyReport"
       responses:
         '201':
@@ -149,7 +145,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: "#/components/schemas/NewReshare"
       responses:
         '201':
@@ -172,7 +167,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: '#/components/schemas/Reshare'
         '404':
           description: |-
@@ -280,7 +274,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: "#/components/schemas/NewFollow"
       responses:
         '201':
@@ -316,7 +309,6 @@ paths:
         content:
           application/json:
             schema:
-              type: object
               $ref: "#/components/schemas/NewSession"
       responses:
         '201':
@@ -368,16 +360,13 @@ components:
           type: string
           format: uuid
         user:
-          type: object
           $ref: "#/components/schemas/User"
         following:
-          type: object
           $ref: "#/components/schemas/User"
     NewFollow:
       type: object
       properties:
         following:
-          type: object
           $ref: "#/components/schemas/User"
     Post:
       type: object
@@ -392,7 +381,6 @@ components:
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
         replies:
           type: array
@@ -410,7 +398,6 @@ components:
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
     Reply:
       type: object
@@ -424,12 +411,10 @@ components:
           type: string
           format: date-time
         post:
-          type: object
           $ref: "#/components/schemas/Post"
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
     NewReply:
       type: object
@@ -439,12 +424,10 @@ components:
         - user
       properties:
         post:
-          type: object
           $ref: "#/components/schemas/Post"
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
     Reshare:
       type: object
@@ -462,10 +445,8 @@ components:
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
         post:
-          type: object
           $ref: "#/components/schemas/Post"
     NewReshare:
       type: object
@@ -476,10 +457,8 @@ components:
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
         post:
-          type: object
           $ref: "#/components/schemas/Post"
     PostReport:
       type: object
@@ -493,14 +472,13 @@ components:
           type: string
           format: uuid
         created_at:
-          type: timestamp
+          type: string
+          format: timestamp
         user:
-          type: object
           $ref: "#/components/schema/User"
         text:
           type: string
         post:
-          type: object
           $ref: "#/components/schemas/Post"
     ReplyReport:
       type: object
@@ -514,14 +492,13 @@ components:
           type: string
           format: uuid
         created_at:
-          type: timestamp
+          type: string
+          format: timestamp
         user:
-          type: object
           $ref: "#/components/schema/User"
         text:
           type: string
         reply:
-          type: object
           $ref: "#/components/schemas/Reply"
     NewPostReport:
       type: object
@@ -532,10 +509,8 @@ components:
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
         post:
-          type: object
           $ref: "#/components/schemas/Post"
     NewReplyReport:
       type: object
@@ -546,10 +521,8 @@ components:
         text:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/User"
         reply:
-          type: object
           $ref: "#/components/schemas/Reply"
     NewSession:
       type: object
