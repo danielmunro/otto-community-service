@@ -8,6 +8,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"time"
 )
 
 type FollowService struct {
@@ -53,4 +54,19 @@ func (f *FollowService) GetUserFollowers(userUuid uuid.UUID) ([]*model.Follow, e
 
 	follows := f.followRepository.FindByUser(user)
 	return mapper.GetFollowsModelFromEntities(follows, user), err
+}
+
+func (f *FollowService) DeleteFollow(followUuid uuid.UUID, userUuid uuid.UUID) error {
+	follow := f.followRepository.FindOne(followUuid)
+	if follow == nil {
+		return errors.New("follow not found")
+	}
+	user, _ := f.userRepository.FindOneByUuid(userUuid.String())
+	if follow.UserID != user.ID {
+		return errors.New("not allowed")
+	}
+	deletedAt := time.Now()
+	follow.DeletedAt = &deletedAt
+	f.followRepository.Update(follow)
+	return nil
 }

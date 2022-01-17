@@ -17,14 +17,14 @@ import (
 )
 
 type AuthService struct {
-	client *auth.APIClient
-	cookieStore *sessions.CookieStore
+	client         *auth.APIClient
+	cookieStore    *sessions.CookieStore
 	userRepository *repository.UserRepository
 }
 
 func CreateDefaultAuthService() *AuthService {
 	return &AuthService{
-		client: auth.NewAPIClient(auth.NewConfiguration()),
+		client:         auth.NewAPIClient(auth.NewConfiguration()),
 		userRepository: repository.CreateUserRepository(db.CreateDefaultConnection()),
 	}
 }
@@ -71,6 +71,27 @@ func (a *AuthService) DoWithValidSessionAndUser(w http.ResponseWriter, r *http.R
 		return
 	}
 	object, err := doAction()
+	util.WriteResponse(w, object, err)
+}
+
+func (a *AuthService) DoWithValidSession(w http.ResponseWriter, r *http.Request, doAction func(session *model.Session) (interface{}, error)) {
+	sessionToken := a.GetSessionToken(r)
+	if sessionToken == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("missing required header: x-session-token"))
+		return
+	}
+	session, err := a.GetSession(sessionToken)
+	if err == nil {
+		log.Print("session validation succeeded, sessionUuid: ", session.User.Uuid)
+	} else {
+		log.Print("FAILED! Either error, or Uuid mismatch :: ", err)
+		err := errors.New("invalid session")
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
+	object, err := doAction(session)
 	util.WriteResponse(w, object, err)
 }
 

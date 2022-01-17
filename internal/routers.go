@@ -135,6 +135,13 @@ var routes = Routes{
 	},
 
 	{
+		"DeleteFollowV1",
+		strings.ToUpper("Delete"),
+		"/follow/{uuid}",
+		controller.DeleteFollowV1,
+	},
+
+	{
 		"DeletePostV1",
 		strings.ToUpper("Delete"),
 		"/post/{uuid}",
