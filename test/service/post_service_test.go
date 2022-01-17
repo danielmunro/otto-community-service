@@ -16,7 +16,7 @@ func createTestUser() *entity.User {
 	return service.CreateDefaultUserService().CreateUser(test.CreateTestUser())
 }
 
-func Test_PostService_CreateNewPost(t *testing.T) {
+func Test_PostService_CreatePublic_NewPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
 	postService := service.CreateDefaultPostService()
@@ -27,6 +27,7 @@ func Test_PostService_CreateNewPost(t *testing.T) {
 	// then
 	test.Assert(t, err == nil)
 	test.Assert(t, response != nil)
+	test.Assert(t, response.Visibility == model.PUBLIC)
 }
 
 func Test_PostService_CreateNewPost_WithPrivateVisibility(t *testing.T) {

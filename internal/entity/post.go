@@ -11,12 +11,15 @@ type Post struct {
 	Text       string
 	UserID     uint
 	User       *User
-	Visibility model.Visibility
-	Uuid       *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
-	Reports    []*Report  `gorm:"polymorphic:Reported;"`
+	Visibility model.Visibility `gorm:"default:public"`
+	Uuid       *uuid.UUID       `gorm:"type:uuid;default:uuid_generate_v4()"`
+	Reports    []*Report        `gorm:"polymorphic:Reported;"`
 }
 
 func CreatePost(user *User, post *model.NewPost) *Post {
+	if post.Visibility == "" {
+		post.Visibility = model.PUBLIC
+	}
 	return &Post{
 		UserID:     user.ID,
 		User:       user,
