@@ -7,7 +7,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/service"
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -34,10 +33,9 @@ func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
 
 // DeleteFollowV1 - delete a follow
 func DeleteFollowV1(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	uuidParam := params["uuid"]
+	followUuid := iUuid.GetUuidFromPathSecondPosition(r.URL.Path)
 	service.CreateDefaultAuthService().DoWithValidSession(w, r, func(session *model.Session) (interface{}, error) {
-		err := service.CreateDefaultFollowService().DeleteFollow(uuid.MustParse(uuidParam), uuid.MustParse(session.User.Uuid))
+		err := service.CreateDefaultFollowService().DeleteFollow(followUuid, uuid.MustParse(session.User.Uuid))
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 		}
