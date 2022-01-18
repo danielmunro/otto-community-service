@@ -47,6 +47,22 @@ func Test_PostService_CreateNewPost_WithPrivateVisibility(t *testing.T) {
 	test.Assert(t, response.Visibility == model.PRIVATE)
 }
 
+func Test_PostService_Respects_PrivateVisibility(t *testing.T) {
+	// setup
+	testUser := createTestUser()
+	postService := service.CreateDefaultPostService()
+	newPost := model.CreateNewPost(testUser.Uuid, message)
+	newPost.Visibility = model.PRIVATE
+	response, err := postService.CreatePost(newPost)
+
+	// when
+	post, err := postService.GetPost(nil, *response.Uuid)
+
+	// then
+	test.Assert(t, post == nil)
+	test.Assert(t, err != nil)
+}
+
 func Test_PostService_CreateNewPost_WithFollowingVisibility(t *testing.T) {
 	// setup
 	testUser := createTestUser()
@@ -62,6 +78,30 @@ func Test_PostService_CreateNewPost_WithFollowingVisibility(t *testing.T) {
 	// then
 	test.Assert(t, err == nil)
 	test.Assert(t, response.Visibility == model.FOLLOWING)
+}
+
+func Test_PostService_Respects_FollowingVisibility(t *testing.T) {
+	// setup
+	testUser1 := createTestUser()
+	testUser2 := createTestUser()
+	testUser3 := createTestUser()
+	_, _ = service.CreateDefaultFollowService().CreateFollow(
+		*testUser1.Uuid, &model.NewFollow{Following: model.User{Uuid: testUser2.Uuid.String()}})
+	postService := service.CreateDefaultPostService()
+	newPost := model.CreateNewPost(testUser1.Uuid, message)
+	newPost.Visibility = model.FOLLOWING
+	response, _ := postService.CreatePost(newPost)
+
+	// when
+	post1, err1 := postService.GetPost(testUser2.Uuid, *response.Uuid)
+	post2, err2 := postService.GetPost(testUser3.Uuid, *response.Uuid)
+
+	// then
+	test.Assert(t, post1 != nil)
+	test.Assert(t, err1 == nil)
+
+	test.Assert(t, post2 == nil)
+	test.Assert(t, err2 != nil)
 }
 
 func Test_PostService_CreateNewPost_Fails_WhenUserNotFound(t *testing.T) {
@@ -98,7 +138,7 @@ func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 	_ = postService.DeletePost(*postModel.Uuid, *testUser.Uuid)
 
 	// when
-	response, err := postService.GetPost(*postModel.Uuid)
+	response, err := postService.GetPost(nil, *postModel.Uuid)
 
 	// then
 	test.Assert(t, err != nil)
@@ -131,7 +171,7 @@ func Test_GetPost(t *testing.T) {
 	test.Assert(t, err == nil)
 
 	// when
-	response, err := postService.GetPost(*post.Uuid)
+	response, err := postService.GetPost(nil, *post.Uuid)
 
 	// then
 	test.Assert(t, err == nil)
@@ -143,7 +183,7 @@ func Test_GetPost_Fails_WhenNotFound(t *testing.T) {
 	postService := service.CreateDefaultPostService()
 
 	// when
-	post, err := postService.GetPost(uuid.New())
+	post, err := postService.GetPost(nil, uuid.New())
 
 	// then
 	test.Assert(t, err != nil)
@@ -160,7 +200,7 @@ func Test_GetPost_Fails_WhenUser_IsNotFound(t *testing.T) {
 	_ = service.CreateDefaultUserService().DeleteUser(*testUser.Uuid)
 
 	// when
-	response, err := postService.GetPost(*post.Uuid)
+	response, err := postService.GetPost(nil, *post.Uuid)
 
 	// then
 	test.Assert(t, err != nil)

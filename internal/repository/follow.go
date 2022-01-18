@@ -24,6 +24,16 @@ func (f *FollowRepository) FindByUser(user *entity.User) []*entity.Follow {
 	return follows
 }
 
+func (f *FollowRepository) FindByUserAndFollowing(userUuid uuid.UUID, followingUuid uuid.UUID) *entity.Follow {
+	follow := &entity.Follow{}
+	f.conn.Raw("SELECT f.* FROM follows f JOIN users u1 ON f.user_id = u1.id JOIN users u2 ON f.following_id = u2.id WHERE u1.uuid = ? AND u2.uuid = ?", userUuid, followingUuid).
+		Scan(follow)
+	if follow.ID == 0 {
+		return nil
+	}
+	return follow
+}
+
 func (f *FollowRepository) FindOne(followUuid uuid.UUID) *entity.Follow {
 	follow := &entity.Follow{}
 	f.conn.Preload("Following").Where("uuid = ?", followUuid.String()).Find(&follow)

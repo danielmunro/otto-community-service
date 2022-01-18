@@ -24,7 +24,18 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 
 // GetPostV1 - get a post
 func GetPostV1(w http.ResponseWriter, r *http.Request) {
-	post, err := service.CreateDefaultPostService().GetPost(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
+	authService := service.CreateDefaultAuthService()
+	token := authService.GetSessionToken(r)
+	var viewerUuid uuid.UUID
+	if token != "" {
+		session, err := authService.GetSession(token)
+		if err == nil {
+			viewerUuid = uuid.MustParse(session.User.Uuid)
+		}
+	}
+	post, err := service.CreateDefaultPostService().GetPost(
+		&viewerUuid,
+		iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
