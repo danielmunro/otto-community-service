@@ -71,8 +71,10 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	sessionToken := authService.GetSessionToken(r)
 	var viewerUuid uuid.UUID
 	if sessionToken != "" {
-		session, _ := authService.GetSession(sessionToken)
-		viewerUuid = uuid.MustParse(session.User.Uuid)
+		session, err := authService.GetSession(sessionToken)
+		if err != nil {
+			viewerUuid = uuid.MustParse(session.User.Uuid)
+		}
 	}
 	limit := constants.UserPostsDefaultPageSize
 	posts, _ := service.CreateDefaultPostService().GetPosts(&viewerUuid, limit)
