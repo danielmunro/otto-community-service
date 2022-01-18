@@ -72,7 +72,7 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	var viewerUuid uuid.UUID
 	if sessionToken != "" {
 		session, err := authService.GetSession(sessionToken)
-		if err != nil && session.User.Uuid != "" {
+		if err != nil && session != nil {
 			viewerUuid = uuid.MustParse(session.User.Uuid)
 		}
 	}
