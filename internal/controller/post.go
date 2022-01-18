@@ -25,13 +25,10 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 // GetPostV1 - get a post
 func GetPostV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()
-	token := authService.GetSessionToken(r)
+	session := authService.GetSessionFromRequest(r)
 	var viewerUuid uuid.UUID
-	if token != "" {
-		session, err := authService.GetSession(token)
-		if err == nil {
-			viewerUuid = uuid.MustParse(session.User.Uuid)
-		}
+	if session != nil {
+		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
 	post, err := service.CreateDefaultPostService().GetPost(
 		&viewerUuid,
@@ -68,13 +65,10 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 // GetPostsV1 - get posts
 func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()
-	sessionToken := authService.GetSessionToken(r)
+	session := authService.GetSessionFromRequest(r)
 	var viewerUuid uuid.UUID
-	if sessionToken != "" {
-		session, err := authService.GetSession(sessionToken)
-		if err != nil && session != nil {
-			viewerUuid = uuid.MustParse(session.User.Uuid)
-		}
+	if session != nil {
+		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
 	limit := constants.UserPostsDefaultPageSize
 	posts, _ := service.CreateDefaultPostService().GetPosts(&viewerUuid, limit)
@@ -85,13 +79,11 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 // DeletePostV1 - delete a post
 func DeletePostV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()
-	sessionToken := authService.GetSessionToken(r)
-	if sessionToken == "" {
-		log.Print("delete denied -- no valid session")
-		w.WriteHeader(http.StatusBadRequest)
+	session := authService.GetSessionFromRequest(r)
+	if session == nil {
+		w.WriteHeader(http.StatusForbidden)
 		return
 	}
-	session, _ := authService.GetSession(sessionToken)
 	params := mux.Vars(r)
 	postUuid, err := uuid.Parse(params["uuid"])
 	if err != nil {

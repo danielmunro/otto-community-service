@@ -34,30 +34,25 @@ func (a *AuthService) CreateSession(newSession model.NewSession) (*model.Session
 	return &session, err
 }
 
-func (a *AuthService) GetSession(sessionId string) (*model.Session, error) {
-	ctx := context.TODO()
-	response, _ := a.client.DefaultApi.GetSession(ctx, &auth.GetSessionOpts{
-		Token: optional.NewString(sessionId),
-	})
-	if response == nil || response.StatusCode != http.StatusOK {
-		return nil, errors.New("no session found")
+func (a *AuthService) GetSessionFromRequest(r *http.Request) *model.Session {
+	sessionToken := a.getSessionToken(r)
+	if sessionToken != "" {
+		session, err := a.getSession(sessionToken)
+		if err != nil && session != nil {
+			return session
+		}
 	}
-	session := DecodeRequestToNewSession(response)
-	return session, nil
-}
-
-func (a *AuthService) GetSessionToken(r *http.Request) string {
-	return r.Header.Get("x-session-token")
+	return nil
 }
 
 func (a *AuthService) DoWithValidSessionAndUser(w http.ResponseWriter, r *http.Request, userUuid uuid.UUID, doAction func() (interface{}, error)) {
-	sessionToken := a.GetSessionToken(r)
+	sessionToken := a.getSessionToken(r)
 	if sessionToken == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte("missing required header: x-session-token"))
 		return
 	}
-	session, err := a.GetSession(sessionToken)
+	session, err := a.getSession(sessionToken)
 	if err == nil {
 		log.Print("session validation succeeded, userUuid: ", userUuid.String(), ", sessionUuid: ", session.User.Uuid)
 	} else {
@@ -75,13 +70,13 @@ func (a *AuthService) DoWithValidSessionAndUser(w http.ResponseWriter, r *http.R
 }
 
 func (a *AuthService) DoWithValidSession(w http.ResponseWriter, r *http.Request, doAction func(session *model.Session) (interface{}, error)) {
-	sessionToken := a.GetSessionToken(r)
+	sessionToken := a.getSessionToken(r)
 	if sessionToken == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte("missing required header: x-session-token"))
 		return
 	}
-	session, err := a.GetSession(sessionToken)
+	session, err := a.getSession(sessionToken)
 	if err == nil {
 		log.Print("session validation succeeded, sessionUuid: ", session.User.Uuid)
 	} else {
@@ -93,6 +88,22 @@ func (a *AuthService) DoWithValidSession(w http.ResponseWriter, r *http.Request,
 	}
 	object, err := doAction(session)
 	util.WriteResponse(w, object, err)
+}
+
+func (a *AuthService) getSession(sessionId string) (*model.Session, error) {
+	ctx := context.TODO()
+	response, _ := a.client.DefaultApi.GetSession(ctx, &auth.GetSessionOpts{
+		Token: optional.NewString(sessionId),
+	})
+	if response == nil || response.StatusCode != http.StatusOK {
+		return nil, errors.New("no session found")
+	}
+	session := DecodeRequestToNewSession(response)
+	return session, nil
+}
+
+func (a *AuthService) getSessionToken(r *http.Request) string {
+	return r.Header.Get("x-session-token")
 }
 
 func DecodeRequestToNewSession(r *http.Response) *model.Session {
