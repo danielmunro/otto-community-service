@@ -11,7 +11,7 @@ type Post struct {
 	Text       string
 	UserID     uint
 	User       *User
-	Visibility model.Visibility `gorm:"default:public"`
+	Visibility model.Visibility `gorm:"default:'public'"`
 	Uuid       *uuid.UUID       `gorm:"type:uuid;default:uuid_generate_v4()"`
 	Reports    []*Report        `gorm:"polymorphic:Reported;"`
 }
