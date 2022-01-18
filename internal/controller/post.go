@@ -65,18 +65,17 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(data)
 }
 
-// GetPosts - get posts
+// GetPostsV1 - get posts
 func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()
 	sessionToken := authService.GetSessionToken(r)
-	if sessionToken == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	var viewerUuid uuid.UUID
+	if sessionToken != "" {
+		session, _ := authService.GetSession(sessionToken)
+		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
-	session, _ := authService.GetSession(sessionToken)
 	limit := constants.UserPostsDefaultPageSize
-	posts, _ := service.CreateDefaultPostService().GetPosts(
-		uuid.MustParse(session.User.Uuid), limit)
+	posts, _ := service.CreateDefaultPostService().GetPosts(&viewerUuid, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

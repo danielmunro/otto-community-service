@@ -151,7 +151,19 @@ func Test_GetPosts(t *testing.T) {
 	testUser := createTestUser()
 
 	// when
-	posts, err := postService.GetPosts(*testUser.Uuid, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPosts(testUser.Uuid, constants.UserPostsDefaultPageSize)
+
+	// then
+	test.Assert(t, err == nil)
+	test.Assert(t, posts != nil)
+}
+
+func Test_GetPosts_NoSession(t *testing.T) {
+	// setup
+	postService := service.CreateDefaultPostService()
+
+	// when
+	posts, err := postService.GetPosts(nil, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, err == nil)

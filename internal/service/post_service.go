@@ -105,24 +105,24 @@ func (p *PostService) GetAllPosts(limit int) []*model.Post {
 	return mapper.GetPostModelsFromEntities(posts)
 }
 
-func (p *PostService) GetPosts(userUuid uuid.UUID, limit int) ([]*model.Post, error) {
-	selfPosts, _ := p.GetPostsForUser(userUuid, limit)
-	remaining := limit - len(selfPosts)
-	var allPosts []*model.Post
-	if remaining > 0 {
-		friendsPosts, err := p.GetPostsForUserFollows(userUuid, remaining)
-		if err != nil {
-			return nil, err
-		}
-		allPosts = append(selfPosts, friendsPosts...)
-		remaining -= len(friendsPosts)
-		if remaining > 0 {
-			otherPosts := p.GetAllPosts(remaining)
-			allPosts = append(allPosts, otherPosts...)
-		}
-	} else {
-		allPosts = selfPosts
+func (p *PostService) GetPosts(userUuid *uuid.UUID, limit int) ([]*model.Post, error) {
+	var selfPosts []*model.Post
+	var followingPosts []*model.Post
+	var publicPosts []*model.Post
+	remaining := constants.UserPostsDefaultPageSize
+	if userUuid != nil {
+		selfPosts, _ = p.GetPostsForUser(*userUuid, limit)
+		remaining -= len(selfPosts)
 	}
+	if remaining > 0 && userUuid != nil {
+		followingPosts, _ = p.GetPostsForUserFollows(*userUuid, remaining)
+		remaining -= len(followingPosts)
+	}
+	if remaining > 0 {
+		publicPosts = p.GetAllPosts(remaining)
+	}
+	allPosts := append(selfPosts, followingPosts...)
+	allPosts = append(allPosts, publicPosts...)
 	sort.SliceStable(allPosts, func(i, j int) bool {
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
