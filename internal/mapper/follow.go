@@ -29,17 +29,13 @@ func GetFollowModelFromEntity(follow *entity.Follow, user *entity.User, followin
 	}
 }
 
-func GetFollowsModelFromEntities(follows []*entity.Follow, user *entity.User) []*model.Follow {
+func GetFollowsModelFromEntities(follows []*entity.Follow) []*model.Follow {
 	followModels := make([]*model.Follow, len(follows))
 	for i, v := range follows {
 		followModels[i] = &model.Follow{
-			Uuid: v.Uuid.String(),
-			User: model.User{
-				Uuid: user.Uuid.String(),
-			},
-			Following: model.User{
-				Uuid: v.Following.Uuid.String(),
-			},
+			Uuid:      v.Uuid.String(),
+			User:      *GetUserModelFromEntity(v.User),
+			Following: *GetUserModelFromEntity(v.Following),
 		}
 	}
 	return followModels

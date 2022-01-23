@@ -20,13 +20,17 @@ func (f *FollowRepository) Create(entity *entity.Follow) {
 
 func (f *FollowRepository) FindByFollowing(user *entity.User) []*entity.Follow {
 	var follows []*entity.Follow
-	f.conn.Preload("Following").Where("following_id = ?", user.ID).Find(&follows)
+	f.conn.Preload("Following").
+		Preload("User").
+		Where("following_id = ?", user.ID).Find(&follows)
 	return follows
 }
 
 func (f *FollowRepository) FindByUser(user *entity.User) []*entity.Follow {
 	var follows []*entity.Follow
-	f.conn.Preload("Following").Where("user_id = ?", user.ID).Find(&follows)
+	f.conn.Preload("Following").
+		Preload("User").
+		Where("user_id = ?", user.ID).Find(&follows)
 	return follows
 }
 

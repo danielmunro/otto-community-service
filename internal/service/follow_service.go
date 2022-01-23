@@ -54,7 +54,7 @@ func (f *FollowService) GetUserFollowers(userUuid uuid.UUID) ([]*model.Follow, e
 	}
 
 	follows := f.followRepository.FindByFollowing(user)
-	return mapper.GetFollowsModelFromEntities(follows, user), err
+	return mapper.GetFollowsModelFromEntities(follows), err
 }
 
 func (f *FollowService) GetUserFollows(userUuid uuid.UUID) ([]*model.Follow, error) {
@@ -64,7 +64,7 @@ func (f *FollowService) GetUserFollows(userUuid uuid.UUID) ([]*model.Follow, err
 	}
 
 	follows := f.followRepository.FindByUser(user)
-	return mapper.GetFollowsModelFromEntities(follows, user), err
+	return mapper.GetFollowsModelFromEntities(follows), err
 }
 
 func (f *FollowService) DeleteFollow(followUuid uuid.UUID, userUuid uuid.UUID) error {
