@@ -9,15 +9,15 @@ import (
 
 type User struct {
 	gorm.Model
-	Uuid    *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
-	Username string
+	Uuid       *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
+	Username   string     `gorm:"unique;not null"`
 	ProfilePic string
-	Name string
+	Name       string
 	BioMessage string
-	Birthday time.Time
-	Follows []*Follow
-	Posts   []*Post
-	Replies []*Reply
+	Birthday   time.Time
+	Follows    []*Follow
+	Posts      []*Post
+	Replies    []*Reply
 }
 
 func (u *User) UpdateUserProfileFromModel(user *model.User) {
