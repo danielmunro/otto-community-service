@@ -41,9 +41,31 @@ func Test_GetFollows(t *testing.T) {
 		Following: model.User{Uuid: user3.Uuid.String()},
 	})
 
-	following, err := followService.GetUserFollowers(*user1.Uuid)
+	following, err := followService.GetUserFollows(*user1.Uuid)
 
 	// then
 	test.Assert(t, err == nil)
 	test.Assert(t, len(following) == 2)
+}
+
+func Test_GetFollowers(t *testing.T) {
+	// setup
+	userService := service.CreateDefaultUserService()
+	user1 := userService.CreateUser(test.CreateTestUser())
+	user2 := userService.CreateUser(test.CreateTestUser())
+	user3 := userService.CreateUser(test.CreateTestUser())
+	followService := service.CreateDefaultFollowService()
+
+	_, _ = followService.CreateFollow(uuid.MustParse(user1.Uuid.String()), &model.NewFollow{
+		Following: model.User{Uuid: user3.Uuid.String()},
+	})
+	_, _ = followService.CreateFollow(uuid.MustParse(user2.Uuid.String()), &model.NewFollow{
+		Following: model.User{Uuid: user3.Uuid.String()},
+	})
+
+	followers, err := followService.GetUserFollowers(*user3.Uuid)
+
+	// then
+	test.Assert(t, err == nil)
+	test.Assert(t, len(followers) == 2)
 }

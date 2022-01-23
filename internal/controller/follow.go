@@ -7,6 +7,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/service"
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
 	"github.com/google/uuid"
+	"log"
 	"net/http"
 )
 
@@ -20,10 +21,23 @@ func CreateNewFollowV1(w http.ResponseWriter, r *http.Request) {
 		})
 }
 
-// GetUserFollowsV1 - get user follows
-func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
+// GetUserFollowersV1 - get user followers
+func GetUserFollowersV1(w http.ResponseWriter, r *http.Request) {
 	follows, err := service.CreateDefaultFollowService().GetUserFollowers(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {
+		log.Print("error received from get user follows :: ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	data, _ := json.Marshal(follows)
+	_, _ = w.Write(data)
+}
+
+// GetUserFollowsV1 - get user follows
+func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
+	follows, err := service.CreateDefaultFollowService().GetUserFollows(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
+	if err != nil {
+		log.Print("error received from get user follows :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
