@@ -23,12 +23,12 @@ func loopKafkaReader(userRepository *repository.UserRepository) error {
 	for {
 		log.Print("listening for kafka messages")
 		data, err := reader.ReadMessage(-1)
-		log.Print("message received on topic :: ", data.TopicPartition.Topic)
+		log.Print("message received on topic :: ", data.TopicPartition.String())
 		if err != nil {
 			log.Print(err)
 			return nil
 		}
-		log.Print("data :: ", data.Value)
+		log.Print("data :: ", string(data.Value))
 		if *data.TopicPartition.Topic == "users" {
 			readUser(userRepository, data.Value)
 		} else if *data.TopicPartition.Topic == "images" {
