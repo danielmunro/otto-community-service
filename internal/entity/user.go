@@ -25,4 +25,5 @@ func (u *User) UpdateUserProfileFromModel(user *model.User) {
 	u.ProfilePic = user.ProfilePic
 	u.BioMessage = user.BioMessage
 	u.Birthday = user.Birthday
+	u.Username = user.Username
 }
