@@ -41,6 +41,7 @@ func updateUserImage(userRepository *repository.UserRepository, data []byte) {
 	result := decodeToMap(data)
 	userUuid := result["uuid"].(string)
 	s3Key := result["s3_key"].(string)
+	log.Print("update user profile pic :: {}, {}, {}", userUuid, s3Key, result)
 	userEntity, err := userRepository.FindOneByUuid(userUuid)
 	if err != nil {
 		log.Print("user not found when updating profile pic")
