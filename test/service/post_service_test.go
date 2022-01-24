@@ -202,42 +202,6 @@ func Test_GetPost_Fails_WhenNotFound(t *testing.T) {
 	test.Assert(t, post == nil)
 }
 
-func Test_GetPost_Fails_WhenUser_IsNotFound(t *testing.T) {
-	// setup
-	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
-	post, err := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
-
-	// given
-	_ = service.CreateDefaultUserService().DeleteUser(*testUser.Uuid)
-
-	// when
-	response, err := postService.GetPost(nil, *post.Uuid)
-
-	// then
-	test.Assert(t, err != nil)
-	test.Assert(t, response == nil)
-	test.Assert(t, err.Error() == constants.ErrorMessageUserNotFound)
-}
-
-func Test_GetPostForUserFollows_Fails_WhenUser_IsNotFound(t *testing.T) {
-	// setup
-	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
-	_, _ = postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
-
-	// given
-	_ = service.CreateDefaultUserService().DeleteUser(*testUser.Uuid)
-
-	// when
-	response, err := postService.GetPostsForUserFollows(*testUser.Uuid, constants.UserPostsDefaultPageSize)
-
-	// then
-	test.Assert(t, err != nil)
-	test.Assert(t, response == nil)
-	test.Assert(t, err.Error() == constants.ErrorMessageUserNotFound)
-}
-
 func Test_PostService_GetUserPosts(t *testing.T) {
 	// setup
 	testUser := createTestUser()
