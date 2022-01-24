@@ -50,7 +50,7 @@ func updateUserImage(userRepository *repository.UserRepository, data []byte) {
 	}
 	log.Print("update user with s3 key", userEntity.Uuid.String(), s3Key)
 	userEntity.ProfilePic = s3Key
-	userRepository.Update(userEntity)
+	userRepository.Save(userEntity)
 }
 
 func readUser(userRepository *repository.UserRepository, data []byte) {
@@ -67,7 +67,7 @@ func readUser(userRepository *repository.UserRepository, data []byte) {
 	userEntity, err := userRepository.FindOneByUuid(userModel.Uuid)
 	if err == nil {
 		userEntity.UpdateUserProfileFromModel(userModel)
-		userRepository.Update(userEntity)
+		userRepository.Save(userEntity)
 	} else {
 		userEntity = mapper.GetUserEntityFromModel(userModel)
 		userRepository.Create(userEntity)

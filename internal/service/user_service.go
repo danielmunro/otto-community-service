@@ -31,7 +31,7 @@ func (s *UserService) DeleteUser(userUuid uuid.UUID) error {
 	}
 	deletedAt := time.Now()
 	userEntity.DeletedAt = &deletedAt
-	s.userRepository.Update(userEntity)
+	s.userRepository.Save(userEntity)
 	return nil
 }
 

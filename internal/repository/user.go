@@ -48,6 +48,6 @@ func (u *UserRepository) Create(user *entity.User) {
 	u.conn.Create(user)
 }
 
-func (u *UserRepository) Update(user *entity.User) {
-	u.conn.Update(user)
+func (u *UserRepository) Save(user *entity.User) {
+	u.conn.Save(user)
 }
