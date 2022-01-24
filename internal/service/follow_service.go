@@ -57,8 +57,28 @@ func (f *FollowService) GetUserFollowers(userUuid uuid.UUID) ([]*model.Follow, e
 	return mapper.GetFollowsModelFromEntities(follows), err
 }
 
+func (f *FollowService) GetUserFollowersByUsername(username string) ([]*model.Follow, error) {
+	user, err := f.userRepository.FindOneByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+
+	follows := f.followRepository.FindByFollowing(user)
+	return mapper.GetFollowsModelFromEntities(follows), err
+}
+
 func (f *FollowService) GetUserFollows(userUuid uuid.UUID) ([]*model.Follow, error) {
 	user, err := f.userRepository.FindOneByUuid(userUuid.String())
+	if err != nil {
+		return nil, err
+	}
+
+	follows := f.followRepository.FindByUser(user)
+	return mapper.GetFollowsModelFromEntities(follows), err
+}
+
+func (f *FollowService) GetUserFollowsByUsername(username string) ([]*model.Follow, error) {
+	user, err := f.userRepository.FindOneByUsername(username)
 	if err != nil {
 		return nil, err
 	}

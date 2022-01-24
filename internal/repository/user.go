@@ -34,6 +34,15 @@ func (u *UserRepository) FindOneByUuid(uuid string) (*entity.User, error) {
 	return user, nil
 }
 
+func (u *UserRepository) FindOneByUsername(username string) (*entity.User, error) {
+	user := &entity.User{}
+	u.conn.Where("username = ?", username).Find(user)
+	if user.ID == 0 {
+		return nil, errors.New(constants.ErrorMessageUserNotFound)
+	}
+	return user, nil
+}
+
 func (u *UserRepository) FindUsersNotFollowing(userUuid uuid.UUID) []*entity.User {
 	var users []*entity.User
 	u.conn.Raw("SELECT * "+

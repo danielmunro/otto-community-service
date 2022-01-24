@@ -184,6 +184,13 @@ var routes = Routes{
 	},
 
 	{
+		"GetUserFollowersByUsernameV1",
+		strings.ToUpper("Get"),
+		"/user/{username}/followers",
+		controller.GetUserFollowersByUsernameV1,
+	},
+
+	{
 		"GetUserV1",
 		strings.ToUpper("Get"),
 		"/user/{uuid}",
@@ -195,6 +202,13 @@ var routes = Routes{
 		strings.ToUpper("Get"),
 		"/user/{uuid}/followers",
 		controller.GetUserFollowersV1,
+	},
+
+	{
+		"GetUserFollowsByUsernameV1",
+		strings.ToUpper("Get"),
+		"/user/{username}/follows",
+		controller.GetUserFollowsByUsernameV1,
 	},
 
 	{
