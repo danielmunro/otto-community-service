@@ -71,7 +71,8 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
 	limit := constants.UserPostsDefaultPageSize
-	posts, _ := service.CreateDefaultPostService().GetPosts(&viewerUuid, limit)
+	var posts []*model.Post
+	posts, _ = service.CreateDefaultPostService().GetPosts(&viewerUuid, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
