@@ -39,7 +39,8 @@ func loopKafkaReader(userRepository *repository.UserRepository) error {
 
 func updateUserImage(userRepository *repository.UserRepository, data []byte) {
 	result := decodeToMap(data)
-	userUuid := result["uuid"].(string)
+	user := result["user"].(map[string]interface{})
+	userUuid := user["uuid"].(string)
 	s3Key := result["s3_key"].(string)
 	log.Print("update user profile pic :: {}, {}, {}", userUuid, s3Key, result)
 	userEntity, err := userRepository.FindOneByUuid(userUuid)
