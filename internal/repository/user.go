@@ -49,5 +49,5 @@ func (u *UserRepository) Create(user *entity.User) {
 }
 
 func (u *UserRepository) Update(user *entity.User) {
-	u.conn.Model(&user).Updates(user)
+	u.conn.Update(user)
 }
