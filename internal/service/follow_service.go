@@ -47,8 +47,8 @@ func (f *FollowService) CreateFollow(userUuid uuid.UUID, follow *model.NewFollow
 	return mapper.GetFollowModelFromEntity(followEntity, user, followingUser), nil
 }
 
-func (f *FollowService) GetUserFollowers(userUuid uuid.UUID) ([]*model.Follow, error) {
-	user, err := f.userRepository.FindOneByUuid(userUuid.String())
+func (f *FollowService) GetUserFollowers(username string) ([]*model.Follow, error) {
+	user, err := f.userRepository.FindOneByUsername(username)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +67,8 @@ func (f *FollowService) GetUserFollowersByUsername(username string) ([]*model.Fo
 	return mapper.GetFollowsModelFromEntities(follows), err
 }
 
-func (f *FollowService) GetUserFollows(userUuid uuid.UUID) ([]*model.Follow, error) {
-	user, err := f.userRepository.FindOneByUuid(userUuid.String())
+func (f *FollowService) GetUserFollows(username string) ([]*model.Follow, error) {
+	user, err := f.userRepository.FindOneByUsername(username)
 	if err != nil {
 		return nil, err
 	}

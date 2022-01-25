@@ -200,21 +200,14 @@ var routes = Routes{
 	{
 		"GetUserFollowersV1",
 		strings.ToUpper("Get"),
-		"/user/{uuid}/followers",
+		"/user/{username}/followers",
 		controller.GetUserFollowersV1,
-	},
-
-	{
-		"GetUserFollowsByUsernameV1",
-		strings.ToUpper("Get"),
-		"/user/{username}/follows",
-		controller.GetUserFollowsByUsernameV1,
 	},
 
 	{
 		"GetUserFollowsV1",
 		strings.ToUpper("Get"),
-		"/user/{uuid}/follows",
+		"/user/{username}/follows",
 		controller.GetUserFollowsV1,
 	},
 
@@ -235,7 +228,7 @@ var routes = Routes{
 	{
 		"GetNewPostsV1",
 		strings.ToUpper("Get"),
-		"/user/{uuid}/new-posts",
+		"/user/{username}/new-posts",
 		controller.GetNewPostsV1,
 	},
 }

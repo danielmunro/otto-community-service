@@ -76,27 +76,27 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 	return nil
 }
 
-func (p *PostService) GetNewPosts(userUuid uuid.UUID, limit int) []*model.Post {
-	followPosts, _ := p.GetPostsForUserFollows(userUuid, limit)
-	userPosts, _ := p.GetPostsForUser(userUuid, limit)
+func (p *PostService) GetNewPosts(username string, limit int) []*model.Post {
+	followPosts, _ := p.GetPostsForUserFollows(username, limit)
+	userPosts, _ := p.GetPostsForUser(username, limit)
 	allPosts := append(followPosts, userPosts...)
 	return removeDuplicatePosts(allPosts)
 }
 
-func (p *PostService) GetPostsForUser(userUuid uuid.UUID, limit int) ([]*model.Post, error) {
-	user, err := p.userRepository.FindOneByUuid(userUuid.String())
+func (p *PostService) GetPostsForUser(username string, limit int) ([]*model.Post, error) {
+	user, err := p.userRepository.FindOneByUsername(username)
 	if err != nil {
 		return nil, err
 	}
 	return mapper.GetPostModelsFromEntities(p.postRepository.FindByUser(user, limit)), nil
 }
 
-func (p *PostService) GetPostsForUserFollows(userUuid uuid.UUID, limit int) ([]*model.Post, error) {
-	_, err := p.userRepository.FindOneByUuid(userUuid.String())
+func (p *PostService) GetPostsForUserFollows(username string, limit int) ([]*model.Post, error) {
+	_, err := p.userRepository.FindOneByUsername(username)
 	if err != nil {
 		return nil, err
 	}
-	posts := p.postRepository.FindByUserFollows(userUuid, limit)
+	posts := p.postRepository.FindByUserFollows(username, limit)
 	return mapper.GetPostModelsFromEntities(posts), nil
 }
 
@@ -105,17 +105,17 @@ func (p *PostService) GetAllPosts(limit int) []*model.Post {
 	return mapper.GetPostModelsFromEntities(posts)
 }
 
-func (p *PostService) GetPosts(userUuid *uuid.UUID, limit int) ([]*model.Post, error) {
+func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, error) {
 	var selfPosts []*model.Post
 	var followingPosts []*model.Post
 	var publicPosts []*model.Post
 	remaining := constants.UserPostsDefaultPageSize
-	if userUuid != nil {
-		selfPosts, _ = p.GetPostsForUser(*userUuid, limit)
+	if username != nil {
+		selfPosts, _ = p.GetPostsForUser(*username, limit)
 		remaining -= len(selfPosts)
 	}
-	if remaining > 0 && userUuid != nil {
-		followingPosts, _ = p.GetPostsForUserFollows(*userUuid, remaining)
+	if remaining > 0 && username != nil {
+		followingPosts, _ = p.GetPostsForUserFollows(*username, remaining)
 		remaining -= len(followingPosts)
 	}
 	if remaining > 0 {

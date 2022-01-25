@@ -5,13 +5,16 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	"github.com/danielmunro/otto-community-service/internal/uuid"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 // GetUserPostsV1 - get posts by a user
 func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
 	posts, _ := service.CreateDefaultPostService().GetPostsForUser(
-		uuid.GetUuidFromPathSecondPosition(r.URL.Path), constants.UserPostsDefaultPageSize)
+		username, constants.UserPostsDefaultPageSize)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

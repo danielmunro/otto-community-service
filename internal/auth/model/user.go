@@ -8,20 +8,23 @@
  */
 
 package model
+
 import (
 	"time"
 )
+
 // User struct for User
 type User struct {
-	Id int64               `json:"id"`
-	Uuid string            `json:"uuid"`
-	Name string            `json:"name"`
-	CurrentEmail string    `json:"current_email,omitempty"`
-	CurrentPassword string `json:"current_password,omitempty"`
-	Birthday string        `json:"birthday"`
-	Verified bool          `json:"verified"`
-	Created time.Time      `json:"created,omitempty"`
-	Updated time.Time      `json:"updated,omitempty"`
-	Emails []Email         `json:"emails,omitempty"`
-	Passwords []Password   `json:"passwords,omitempty"`
+	Id              int64      `json:"id"`
+	Uuid            string     `json:"uuid"`
+	Name            string     `json:"name"`
+	Username        string     `json:"username"`
+	CurrentEmail    string     `json:"current_email,omitempty"`
+	CurrentPassword string     `json:"current_password,omitempty"`
+	Birthday        string     `json:"birthday"`
+	Verified        bool       `json:"verified"`
+	Created         time.Time  `json:"created,omitempty"`
+	Updated         time.Time  `json:"updated,omitempty"`
+	Emails          []Email    `json:"emails,omitempty"`
+	Passwords       []Password `json:"passwords,omitempty"`
 }

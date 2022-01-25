@@ -41,7 +41,7 @@ func Test_GetFollows(t *testing.T) {
 		Following: model.User{Uuid: user3.Uuid.String()},
 	})
 
-	following, err := followService.GetUserFollows(*user1.Uuid)
+	following, err := followService.GetUserFollows(user1.Username)
 
 	// then
 	test.Assert(t, err == nil)
@@ -63,7 +63,7 @@ func Test_GetFollowers(t *testing.T) {
 		Following: model.User{Uuid: user3.Uuid.String()},
 	})
 
-	followers, err := followService.GetUserFollowers(*user3.Uuid)
+	followers, err := followService.GetUserFollowers(user3.Username)
 
 	// then
 	test.Assert(t, err == nil)

@@ -39,22 +39,9 @@ func GetUserFollowersByUsernameV1(w http.ResponseWriter, r *http.Request) {
 
 // GetUserFollowersV1 - get user followers
 func GetUserFollowersV1(w http.ResponseWriter, r *http.Request) {
-	follows, err := service.CreateDefaultFollowService().GetUserFollowers(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
-	if err != nil {
-		log.Print("error received from get user follows :: ", err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	data, _ := json.Marshal(follows)
-	_, _ = w.Write(data)
-}
-
-// GetUserFollowsByUsernameV1 - get user follows
-func GetUserFollowsByUsernameV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	usernameParam := params["username"]
-
-	follows, err := service.CreateDefaultFollowService().GetUserFollowsByUsername(usernameParam)
+	username := params["username"]
+	follows, err := service.CreateDefaultFollowService().GetUserFollowers(username)
 	if err != nil {
 		log.Print("error received from get user follows :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -66,7 +53,9 @@ func GetUserFollowsByUsernameV1(w http.ResponseWriter, r *http.Request) {
 
 // GetUserFollowsV1 - get user follows
 func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
-	follows, err := service.CreateDefaultFollowService().GetUserFollows(iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
+	params := mux.Vars(r)
+	username := params["username"]
+	follows, err := service.CreateDefaultFollowService().GetUserFollows(username)
 	if err != nil {
 		log.Print("error received from get user follows :: ", err)
 		w.WriteHeader(http.StatusBadRequest)

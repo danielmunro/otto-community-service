@@ -44,8 +44,9 @@ func GetPostV1(w http.ResponseWriter, r *http.Request) {
 // GetUserFollowsPostsV1 - get a user's friend's posts
 func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
 	limit := constants.UserPostsDefaultPageSize
-	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(
-		iUuid.GetUuidFromPathThirdPosition(r.URL.Path), limit)
+	params := mux.Vars(r)
+	username := params["username"]
+	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(username, limit)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -56,8 +57,9 @@ func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
 
 func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 	limit := constants.UserPostsDefaultPageSize
-	posts := service.CreateDefaultPostService().GetNewPosts(
-		iUuid.GetUuidFromPathSecondPosition(r.URL.Path), limit)
+	params := mux.Vars(r)
+	username := params["username"]
+	posts := service.CreateDefaultPostService().GetNewPosts(username, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
@@ -66,13 +68,13 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()
 	session := authService.GetSessionFromRequest(r)
-	var viewerUuid uuid.UUID
+	var viewerUsername string
 	if session != nil {
-		viewerUuid = uuid.MustParse(session.User.Uuid)
+		viewerUsername = session.User.Username
 	}
 	limit := constants.UserPostsDefaultPageSize
 	var posts []*model.Post
-	posts, _ = service.CreateDefaultPostService().GetPosts(&viewerUuid, limit)
+	posts, _ = service.CreateDefaultPostService().GetPosts(&viewerUsername, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

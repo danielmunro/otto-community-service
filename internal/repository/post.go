@@ -43,14 +43,14 @@ func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 	return post, nil
 }
 
-func (p *PostRepository) FindByUserFollows(userUuid uuid.UUID, limit int) []*entity.Post {
+func (p *PostRepository) FindByUserFollows(username string, limit int) []*entity.Post {
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
 		Table("posts").
 		Joins("join follows on follows.following_id = posts.user_id").
 		Joins("join users on follows.user_id = users.id").
-		Where("users.uuid = ? and posts.deleted_at IS NULL", userUuid.String()).
+		Where("users.username = ? and posts.deleted_at IS NULL", username).
 		Order("id desc").
 		Limit(limit).
 		Find(&posts)

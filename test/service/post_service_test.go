@@ -151,7 +151,7 @@ func Test_GetPosts(t *testing.T) {
 	testUser := createTestUser()
 
 	// when
-	posts, err := postService.GetPosts(testUser.Uuid, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPosts(&testUser.Username, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, err == nil)
@@ -213,7 +213,7 @@ func Test_PostService_GetUserPosts(t *testing.T) {
 	}
 
 	// when
-	posts, _ := postService.GetPostsForUser(*testUser.Uuid, constants.UserPostsDefaultPageSize)
+	posts, _ := postService.GetPostsForUser(testUser.Username, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, len(posts) == 5)
@@ -230,7 +230,7 @@ func Test_PostService_GetUserPosts_FailsFor_MissingUser(t *testing.T) {
 	}
 
 	// when
-	posts, err := postService.GetPostsForUser(testUserUuid, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPostsForUser(testUserUuid.String(), constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, posts == nil)
@@ -251,9 +251,9 @@ func Test_CanGetPosts_ForUserFollows(t *testing.T) {
 	}
 
 	// when
-	posts, err := postService.GetPostsForUserFollows(*testUser.Uuid, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPostsForUserFollows(testUser.Username, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, err == nil)
-	test.Assert(t, len(posts) == 5)
+	test.Assert(t, len(posts) >= 5)
 }

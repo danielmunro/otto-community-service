@@ -171,18 +171,17 @@ paths:
         '404':
           description: |-
             404 response
-  /user/{uuid}/posts:
+  /user/{username}/posts:
     get:
       operationId: getUserPostsV1
       summary: get user posts
       parameters:
         - in: path
-          name: uuid
-          description: a user's unique ID
+          name: username
+          description: a username
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: A user's posts
@@ -192,18 +191,17 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
-  /user/{uuid}/follow-posts:
+  /user/{username}/follow-posts:
     get:
       operationId: getPostsForUserFollowsV1
       summary: get posts for a user's follows
       parameters:
         - in: path
-          name: uuid
-          description: a user ID
+          name: username
+          description: a username
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: Posts for a user's follows
@@ -213,18 +211,17 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
-  /user/{uuid}/new-posts:
+  /user/{username}/new-posts:
     get:
       operationId: getNewPostsV1
       summary: get new posts
       parameters:
         - in: path
-          name: uuid
-          description: a user ID
+          name: username
+          description: a username
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: New posts
@@ -234,18 +231,17 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
-  /user/{uuid}/follows:
+  /user/{username}/follows:
     get:
       operationId: getUserFollowsV1
       summary: get user follows
       parameters:
         - in: path
-          name: uuid
-          description: a user's unique ID
+          name: username
+          description: a username
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: A user's follows
@@ -262,12 +258,11 @@ paths:
       summary: add a follow
       parameters:
         - in: path
-          name: uuid
-          description: a user's unique ID
+          name: username
+          description: a username
           required: true
           schema:
             type: string
-            format: uuid
       requestBody:
         description: follow to create
         required: true
@@ -278,57 +273,12 @@ paths:
       responses:
         '201':
           description: Follow created
-  /user/{username}/follows:
-    get:
-      operationId: getUserFollowsByUsernameV1
-      summary: get user follows
-      parameters:
-        - in: path
-          name: username
-          description: a username
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: A user's follows
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Follow"
-        '404':
-          description: No user found
-  /user/{uuid}/followers:
+  /user/{username}/followers:
     get:
       operationId: getUserFollowersV1
       summary: get user followers
       parameters:
         - in: path
-          name: uuid
-          description: a user's unique ID
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Users following this user
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Follow"
-        '404':
-          description: No user found
-  /user/{username}/followers:
-    get:
-      operationId: getUserFollowersByUsernameV1
-      summary: get user followers
-      parameters:
-        - in: path
           name: username
           description: a username
           required: true
@@ -345,18 +295,17 @@ paths:
                   $ref: "#/components/schemas/Follow"
         '404':
           description: No user found
-  /user/{uuid}/suggested-follows:
+  /user/{username}/suggested-follows:
     get:
       operationId: getSuggestedFollowsForUserV1
       summary: get suggested follows for user
       parameters:
         - in: path
-          name: uuid
-          description: a user ID
+          name: username
+          description: a username
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: A user's follows
