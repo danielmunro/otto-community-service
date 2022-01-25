@@ -221,7 +221,7 @@ var routes = Routes{
 	{
 		"GetUserPostsV1",
 		strings.ToUpper("Get"),
-		"/user/{uuid}/posts",
+		"/user/{username}/posts",
 		controller.GetUserPostsV1,
 	},
 
