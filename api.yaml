@@ -92,7 +92,7 @@ paths:
             404 response
   /reply:
     post:
-      operationId: createAReply
+      operationId: createAReplyV1
       summary: create a reply
       requestBody:
         description: reply to create
