@@ -23,7 +23,7 @@ func (r *ReplyRepository) Create(reply *entity.Reply) {
 func (r *ReplyRepository) FindRepliesForPost(post *entity.Post) []*entity.Reply {
 	var replies []*entity.Reply
 	r.conn.Where("post_id = ?", post.ID).
-		Order("id desc").
+		Order("id asc").
 		Find(&replies)
 	return replies
 }
