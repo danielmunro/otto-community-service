@@ -23,5 +23,6 @@ func CreateReply(user *User, post *Post, reply *model.NewReply) *Reply {
 		UserID:     user.ID,
 		Visibility: model.PUBLIC,
 		PostID:     post.ID,
+		User:       user,
 	}
 }
