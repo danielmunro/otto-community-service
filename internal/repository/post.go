@@ -36,6 +36,7 @@ func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 	post := &entity.Post{}
 	p.conn.
 		Preload("User").
+		Preload("Images").
 		Where("uuid = ? and deleted_at IS NULL", uuid).
 		Find(post)
 	if post.ID == 0 {
@@ -48,6 +49,7 @@ func (p *PostRepository) FindByUserFollows(username string, limit int) []*entity
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
+		Preload("Images").
 		Table("posts").
 		Joins("join follows on follows.following_id = posts.user_id").
 		Joins("join users on follows.user_id = users.id").
@@ -62,6 +64,7 @@ func (p *PostRepository) FindAll(limit int) []*entity.Post {
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
+		Preload("Images").
 		Table("posts").
 		Joins("join users on posts.user_id = users.id").
 		Where("posts.deleted_at is null and users.deleted_at is null").
