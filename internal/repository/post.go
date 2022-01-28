@@ -24,7 +24,7 @@ func (p *PostRepository) FindByUser(user *entity.User, limit int) []*entity.Post
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
-		Preload("Image").
+		Preload("images").
 		Where("user_id = ? and deleted_at IS NULL", user.ID).
 		Order("id desc").
 		Limit(limit).
