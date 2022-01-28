@@ -12,6 +12,7 @@ func GetPostModelFromEntity(post *entity.Post) *model.Post {
 		User:       *GetUserModelFromEntity(post.User),
 		CreatedAt:  post.CreatedAt,
 		Visibility: post.Visibility,
+		Images:     GetImageModelsFromEntities(post.Images),
 	}
 }
 

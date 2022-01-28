@@ -19,6 +19,7 @@ type NewPost struct {
 	Text       string     `json:"text"`
 	User       User       `json:"user"`
 	Visibility Visibility `json:"access,omitempty"`
+	Images     []NewImage `json:"images,omitempty"`
 }
 
 func DecodeRequestToNewPost(r *http.Request) *NewPost {

@@ -15,14 +15,20 @@ func main() {
 		&entity.Post{},
 		&entity.Reply{},
 		&entity.Follow{},
-		&entity.Report{})
-	conn.Model(&entity.Post{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
+		&entity.Report{},
+		&entity.Image{},
+	)
+	conn.Model(&entity.Post{}).
+		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 	conn.Model(&entity.Reply{}).
 		AddForeignKey("post_id", "posts(id)", "RESTRICT", "RESTRICT")
 	conn.Model(&entity.Follow{}).
 		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
 		AddForeignKey("following_id", "users(id)", "RESTRICT", "RESTRICT")
 	conn.Model(&entity.Report{}).
+		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
+		AddForeignKey("reported_id", "posts(id)", "RESTRICT", "RESTRICT")
+	conn.Model(&entity.Image{}).
 		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
 		AddForeignKey("post_id", "posts(id)", "RESTRICT", "RESTRICT")
 }

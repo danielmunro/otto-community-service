@@ -419,6 +419,10 @@ components:
             $ref: "#/components/schemas/Reply"
         visibility:
           $ref: "#/components/schemas/Visibility"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/Image"
         created_at:
           type: string
           format: date-time
@@ -434,6 +438,10 @@ components:
           $ref: "#/components/schemas/User"
         visibility:
           $ref: "#/components/schemas/Visibility"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewImage"
     Reply:
       type: object
       required:
@@ -576,3 +584,35 @@ components:
         - public
         - following
         - private
+    NewImage:
+      type: object
+      required:
+        - uuid
+        - s3_key
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        s3_key:
+          type: string
+    Image:
+      type: object
+      required:
+        - uuid
+        - s3_key
+        - created_at
+        - post
+        - user
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        s3_key:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        post:
+          $ref: "#/components/schemas/Post"
+        user:
+          $ref: "#/components/schemas/User"

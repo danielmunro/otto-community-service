@@ -17,6 +17,7 @@ type PostService struct {
 	userRepository   *repository.UserRepository
 	postRepository   *repository.PostRepository
 	followRepository *repository.FollowRepository
+	imageRepository  *repository.ImageRepository
 }
 
 func CreateDefaultPostService() *PostService {
@@ -24,17 +25,21 @@ func CreateDefaultPostService() *PostService {
 	return CreatePostService(
 		repository.CreatePostRepository(conn),
 		repository.CreateUserRepository(conn),
-		repository.CreateFollowRepository(conn))
+		repository.CreateFollowRepository(conn),
+		repository.CreateImageRepository(conn),
+	)
 }
 
 func CreatePostService(
 	postRepository *repository.PostRepository,
 	userRepository *repository.UserRepository,
-	followRepository *repository.FollowRepository) *PostService {
+	followRepository *repository.FollowRepository,
+	imageRepository *repository.ImageRepository) *PostService {
 	return &PostService{
 		userRepository,
 		postRepository,
 		followRepository,
+		imageRepository,
 	}
 }
 
@@ -59,6 +64,13 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 	}
 	post := entity.CreatePost(user, newPost)
 	p.postRepository.Save(post)
+	var imageEntities []*entity.Image
+	for _, newImage := range newPost.Images {
+		imageEntity := entity.CreateImage(user, post, &newImage)
+		p.imageRepository.Create(imageEntity)
+		imageEntities = append(imageEntities, imageEntity)
+	}
+	post.Images = imageEntities
 	return mapper.GetPostModelFromEntity(post), nil
 }
 

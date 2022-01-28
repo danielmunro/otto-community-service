@@ -14,6 +14,7 @@ type Post struct {
 	Visibility model.Visibility `gorm:"default:'public'"`
 	Uuid       *uuid.UUID       `gorm:"type:uuid;default:uuid_generate_v4()"`
 	Reports    []*Report        `gorm:"polymorphic:Reported;"`
+	Images     []*Image
 }
 
 func CreatePost(user *User, post *model.NewPost) *Post {

@@ -25,5 +25,7 @@ type Post struct {
 
 	Visibility Visibility `json:"visibility,omitempty"`
 
+	Images []Image `json:"images,omitempty"`
+
 	CreatedAt time.Time `json:"created_at"`
 }
