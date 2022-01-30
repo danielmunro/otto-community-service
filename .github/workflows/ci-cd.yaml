@@ -57,3 +57,7 @@ jobs:
           CR_PAT: ${{ secrets.CR_PAT }}
       - run: docker build -t ghcr.io/danielmunro/otto-community-service:latest .
       - run: docker push ghcr.io/danielmunro/otto-community-service:latest
+      - run: mv ./cmd/kafka/main.go .
+      - run: mv Dockerfile-kafka Dockerfile
+      - run: docker build -t ghcr.io/danielmunro/otto-community-service:kafka-latest .
+      - run: docker push ghcr.io/danielmunro/otto-community-service:kafka-latest
