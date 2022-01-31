@@ -16,9 +16,10 @@ func Test_PostReport_HappyPath(t *testing.T) {
 	post, _ := postService.CreatePost(model.CreateNewPost(user1.Uuid, ""))
 	user2 := createTestUser()
 	reportService := service.CreateDefaultReportService()
+	postUuid := uuid.MustParse(post.Uuid)
 
 	// when
-	report, err := reportService.CreatePostReport(model.CreateNewPostReport(user2.Uuid, post.Uuid, "this is offensive"))
+	report, err := reportService.CreatePostReport(model.CreateNewPostReport(user2.Uuid, &postUuid, "this is offensive"))
 
 	// then
 	test.Assert(t, err == nil)
@@ -61,12 +62,14 @@ func Test_ReplyReport_HappyPath(t *testing.T) {
 	postService := service.CreateDefaultPostService()
 	post, _ := postService.CreatePost(model.CreateNewPost(user1.Uuid, ""))
 	replyService := service.CreateDefaultReplyService()
-	reply, _ := replyService.CreateReply(model.CreateNewReply(user1.Uuid, post.Uuid, "test message"))
+	postUuid := uuid.MustParse(post.Uuid)
+	reply, _ := replyService.CreateReply(model.CreateNewReply(user1.Uuid, &postUuid, "test message"))
 	user2 := createTestUser()
 	reportService := service.CreateDefaultReportService()
+	replyUuid := uuid.MustParse(reply.Uuid)
 
 	// when
-	report, err := reportService.CreateReplyReport(model.CreateNewReplyReport(user2.Uuid, reply.Uuid, "this is offensive"))
+	report, err := reportService.CreateReplyReport(model.CreateNewReplyReport(user2.Uuid, &replyUuid, "this is offensive"))
 
 	// then
 	test.Assert(t, err == nil)

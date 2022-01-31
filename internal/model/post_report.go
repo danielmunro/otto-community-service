@@ -35,7 +35,7 @@ func CreateNewPostReport(userUuid *uuid.UUID, postUuid *uuid.UUID, message strin
 			Uuid: userUuid.String(),
 		},
 		Post: Post{
-			Uuid: postUuid,
+			Uuid: postUuid.String(),
 		},
 	}
 }
@@ -47,7 +47,7 @@ func CreateNewReplyReport(userUuid *uuid.UUID, replyUuid *uuid.UUID, message str
 			Uuid: userUuid.String(),
 		},
 		Reply: Reply{
-			Uuid: replyUuid,
+			Uuid: replyUuid.String(),
 		},
 	}
 }

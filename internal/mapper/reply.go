@@ -7,10 +7,11 @@ import (
 
 func GetReplyModelFromEntity(reply *entity.Reply) *model.Reply {
 	return &model.Reply{
-		Uuid:      reply.Uuid,
+		Uuid:      reply.Uuid.String(),
 		CreatedAt: reply.CreatedAt,
 		Text:      reply.Text,
 		User:      *GetUserModelFromEntity(reply.User),
+		Likes:     reply.Likes,
 	}
 }
 

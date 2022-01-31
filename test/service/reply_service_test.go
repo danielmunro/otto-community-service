@@ -37,7 +37,7 @@ func Test_GetReplies_ForPost(t *testing.T) {
 	}
 
 	// when
-	replies, _ := replyService.GetRepliesForPost(*post.Uuid)
+	replies, _ := replyService.GetRepliesForPost(uuid.MustParse(post.Uuid))
 
 	// then
 	test.Assert(t, len(replies) == NumberOfRepliesToCreate)
@@ -52,7 +52,7 @@ func Test_CreateReply_Fails_WithMissing_User(t *testing.T) {
 	postUuid := uuid.New()
 	response, err := replyService.CreateReply(&model.NewReply{
 		Post: model.Post{
-			Uuid:    &postUuid,
+			Uuid: postUuid.String(),
 			Text: "",
 		},
 		User: model.User{Uuid: testUser.Uuid},
@@ -74,7 +74,7 @@ func Test_CreateReply_Fails_WithMissing_Post(t *testing.T) {
 	postUuid := uuid.New()
 	response, err := replyService.CreateReply(&model.NewReply{
 		Post: model.Post{
-			Uuid:    &postUuid,
+			Uuid: postUuid.String(),
 			Text: "",
 		},
 		User: model.User{Uuid: testUser.Uuid.String()},

@@ -15,6 +15,7 @@ type Reply struct {
 	Uuid       *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	PostID     uint
 	Reports    []*Report `gorm:"polymorphic:Reported;"`
+	Likes      uint
 }
 
 func CreateReply(user *User, post *Post, reply *model.NewReply) *Reply {

@@ -15,6 +15,8 @@ type Post struct {
 	Uuid       *uuid.UUID       `gorm:"type:uuid;default:uuid_generate_v4()"`
 	Reports    []*Report        `gorm:"polymorphic:Reported;"`
 	Images     []*Image
+	Likes      uint
+	Replies    uint
 }
 
 func CreatePost(user *User, post *model.NewPost) *Post {

@@ -14,6 +14,7 @@ type Image struct {
 	Uuid   *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	Post   *Post
 	PostID uint
+	Likes  uint
 }
 
 func CreateImage(user *User, post *Post, image *model.NewImage) *Image {

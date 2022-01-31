@@ -15,13 +15,15 @@ import (
 )
 
 type Reply struct {
-	Uuid *uuid.UUID `json:"uuid"`
+	Uuid string `json:"uuid"`
 
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
 
 	Post Post `json:"post"`
 
 	Text string `json:"text"`
+
+	Likes uint `json:"likes"`
 
 	User User `json:"user"`
 }
@@ -33,7 +35,7 @@ func CreateNewReply(userUuid *uuid.UUID, postUuid *uuid.UUID, message string) *N
 			Uuid: userUuid.String(),
 		},
 		Post: Post{
-			Uuid: postUuid,
+			Uuid: postUuid.String(),
 		},
 	}
 }

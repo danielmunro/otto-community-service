@@ -56,7 +56,7 @@ func Test_PostService_Respects_PrivateVisibility(t *testing.T) {
 	response, err := postService.CreatePost(newPost)
 
 	// when
-	post, err := postService.GetPost(nil, *response.Uuid)
+	post, err := postService.GetPost(nil, uuid.MustParse(response.Uuid))
 
 	// then
 	test.Assert(t, post == nil)
@@ -93,8 +93,8 @@ func Test_PostService_Respects_FollowingVisibility(t *testing.T) {
 	response, _ := postService.CreatePost(newPost)
 
 	// when
-	post1, err1 := postService.GetPost(testUser2.Uuid, *response.Uuid)
-	post2, err2 := postService.GetPost(testUser3.Uuid, *response.Uuid)
+	post1, err1 := postService.GetPost(testUser2.Uuid, uuid.MustParse(response.Uuid))
+	post2, err2 := postService.GetPost(testUser3.Uuid, uuid.MustParse(response.Uuid))
 
 	// then
 	test.Assert(t, post1 != nil)
@@ -124,7 +124,7 @@ func Test_PostService_Can_DeletePost(t *testing.T) {
 	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
 
 	// when
-	err := postService.DeletePost(*postModel.Uuid, *testUser.Uuid)
+	err := postService.DeletePost(uuid.MustParse(postModel.Uuid), *testUser.Uuid)
 
 	// then
 	test.Assert(t, err == nil)
@@ -135,10 +135,10 @@ func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 	testUser := createTestUser()
 	postService := service.CreateDefaultPostService()
 	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
-	_ = postService.DeletePost(*postModel.Uuid, *testUser.Uuid)
+	_ = postService.DeletePost(uuid.MustParse(postModel.Uuid), *testUser.Uuid)
 
 	// when
-	response, err := postService.GetPost(nil, *postModel.Uuid)
+	response, err := postService.GetPost(nil, uuid.MustParse(postModel.Uuid))
 
 	// then
 	test.Assert(t, err != nil)
@@ -183,7 +183,7 @@ func Test_GetPost(t *testing.T) {
 	test.Assert(t, err == nil)
 
 	// when
-	response, err := postService.GetPost(nil, *post.Uuid)
+	response, err := postService.GetPost(nil, uuid.MustParse(post.Uuid))
 
 	// then
 	test.Assert(t, err == nil)

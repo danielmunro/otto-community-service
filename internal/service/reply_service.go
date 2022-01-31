@@ -39,12 +39,14 @@ func (r *ReplyService) CreateReply(reply *model.NewReply) (*model.Reply, error) 
 	if err != nil {
 		return nil, err
 	}
-	post, err := r.postRepository.FindOneByUuid(*reply.Post.Uuid)
+	post, err := r.postRepository.FindOneByUuid(uuid.MustParse(reply.Post.Uuid))
 	if err != nil {
 		return nil, err
 	}
 	replyEntity := entity.CreateReply(user, post, reply)
 	r.replyRepository.Create(replyEntity)
+	post.Replies += 1
+	r.postRepository.Save(post)
 	return mapper.GetReplyModelFromEntity(replyEntity), nil
 }
 

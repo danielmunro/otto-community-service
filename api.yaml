@@ -67,7 +67,40 @@ paths:
         '404':
           description: |-
             404 response
-  /post/{uuid}/replies:
+  /post/{uuid}/like:
+    post:
+      operationId: createNewPostLikeV1
+      summary: like a post
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: like created
+    get:
+      operationId: getLikesForPostV1
+      summary: get likes for post
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: likes for a post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostLike'
+  /post/{uuid}/reply:
     get:
       operationId: getPostRepliesV1
       summary: get replies to a post
@@ -105,6 +138,39 @@ paths:
         '201':
           description: |-
             201 response
+  /reply/{uuid}/like:
+    post:
+      operationId: createNewReplyLikeV1
+      summary: like a reply
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: like created
+    get:
+      operationId: getLikesForReplyV1
+      summary: get likes for reply
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: likes for a reply
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReplyLike'
   /report/post:
     post:
       operationId: createAPostReportV1
@@ -404,19 +470,20 @@ components:
       required:
         - uuid
         - replies
-        - created
+        - likes
+        - created_at
       properties:
         uuid:
           type: string
           format: uuid
         text:
           type: string
+        likes:
+          type: integer
+        replies:
+          type: integer
         user:
           $ref: "#/components/schemas/User"
-        replies:
-          type: array
-          items:
-            $ref: "#/components/schemas/Reply"
         visibility:
           $ref: "#/components/schemas/Visibility"
         images:
@@ -445,11 +512,16 @@ components:
     Reply:
       type: object
       required:
+        - uuid
         - created
         - post
         - text
         - user
+        - likes
       properties:
+        uuid:
+          type: string
+          format: uuid
         created_at:
           type: string
           format: date-time
@@ -457,6 +529,8 @@ components:
           $ref: "#/components/schemas/Post"
         text:
           type: string
+        likes:
+          type: integer
         user:
           $ref: "#/components/schemas/User"
     NewReply:
@@ -616,3 +690,51 @@ components:
           $ref: "#/components/schemas/Post"
         user:
           $ref: "#/components/schemas/User"
+    PostLike:
+      type: object
+      required:
+        - uuid
+        - post
+        - user
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        post:
+          $ref: "#/components/schemas/Post"
+        user:
+          $ref: "#/components/schemas/User"
+    NewPostLike:
+      type: object
+    ReplyLike:
+      type: object
+      required:
+        - uuid
+        - reply
+        - user
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        post:
+          $ref: "#/components/schemas/Reply"
+        user:
+          $ref: "#/components/schemas/User"
+    NewReplyLike:
+      type: object
+    ImageLike:
+      type: object
+      required:
+        - uuid
+        - image
+        - user
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        post:
+          $ref: "#/components/schemas/Image"
+        user:
+          $ref: "#/components/schemas/User"
+    NewImageLike:
+      type: object

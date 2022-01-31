@@ -9,19 +9,18 @@
 
 package model
 
-import (
-	"github.com/google/uuid"
-	"time"
-)
+import "time"
 
 type Post struct {
-	Uuid *uuid.UUID `json:"uuid"`
+	Uuid string `json:"uuid"`
 
 	Text string `json:"text,omitempty"`
 
-	User User `json:"user,omitempty"`
+	Likes uint `json:"likes"`
 
-	Replies []Reply `json:"replies"`
+	Replies uint `json:"replies"`
+
+	User User `json:"user,omitempty"`
 
 	Visibility Visibility `json:"visibility,omitempty"`
 

@@ -6,12 +6,13 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
+	"github.com/google/uuid"
 )
 
 type ReportService struct {
-	userRepository *repository.UserRepository
-	postRepository *repository.PostRepository
-	replyRepository *repository.ReplyRepository
+	userRepository   *repository.UserRepository
+	postRepository   *repository.PostRepository
+	replyRepository  *repository.ReplyRepository
 	reportRepository *repository.ReportRepository
 }
 
@@ -43,7 +44,7 @@ func (r *ReportService) CreatePostReport(newReport *model.NewPostReport) (*model
 		return nil, err
 	}
 
-	post, err := r.postRepository.FindOneByUuid(*newReport.Post.Uuid)
+	post, err := r.postRepository.FindOneByUuid(uuid.MustParse(newReport.Post.Uuid))
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +61,7 @@ func (r *ReportService) CreateReplyReport(newReport *model.NewReplyReport) (*mod
 		return nil, err
 	}
 
-	reply, err := r.replyRepository.FindOneByUuid(*newReport.Reply.Uuid)
+	reply, err := r.replyRepository.FindOneByUuid(uuid.MustParse(newReport.Reply.Uuid))
 	if err != nil {
 		return nil, err
 	}
