@@ -25,6 +25,8 @@ type Reply struct {
 
 	Likes uint `json:"likes"`
 
+	SelfLiked bool `json:"selfLiked,omitempty"`
+
 	User User `json:"user"`
 }
 

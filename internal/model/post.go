@@ -20,6 +20,8 @@ type Post struct {
 
 	Replies uint `json:"replies"`
 
+	SelfLiked bool `json:"selfLiked,omitempty"`
+
 	User User `json:"user,omitempty"`
 
 	Visibility Visibility `json:"visibility,omitempty"`

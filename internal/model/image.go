@@ -23,4 +23,6 @@ type Image struct {
 	Post Post `json:"post"`
 
 	User User `json:"user"`
+
+	SelfLiked bool `json:"selfLiked,omitempty"`
 }

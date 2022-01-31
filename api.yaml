@@ -482,6 +482,8 @@ components:
           type: integer
         replies:
           type: integer
+        selfLiked:
+          type: boolean
         user:
           $ref: "#/components/schemas/User"
         visibility:
@@ -531,6 +533,8 @@ components:
           type: string
         likes:
           type: integer
+        selfLiked:
+          type: boolean
         user:
           $ref: "#/components/schemas/User"
     NewReply:
@@ -686,6 +690,8 @@ components:
         created_at:
           type: string
           format: date-time
+        selfLiked:
+          type: boolean
         post:
           $ref: "#/components/schemas/Post"
         user:

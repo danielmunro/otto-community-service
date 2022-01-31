@@ -14,6 +14,7 @@ type Reply struct {
 	Visibility model.Visibility
 	Uuid       *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	PostID     uint
+	Post       *Post
 	Reports    []*Report `gorm:"polymorphic:Reported;"`
 	Likes      uint
 }
