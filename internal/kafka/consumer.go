@@ -43,7 +43,7 @@ func updateUserImage(userRepository *repository.UserRepository, data []byte) {
 	userUuid := user["uuid"].(string)
 	s3Key := result["s3_key"].(string)
 	log.Print("update user profile pic :: {}, {}, {}", userUuid, s3Key, result)
-	userEntity, err := userRepository.FindOneByUuid(userUuid)
+	userEntity, err := userRepository.FindOneByUuid(uuid.MustParse(userUuid))
 	if err != nil {
 		log.Print("user not found when updating profile pic")
 		return
@@ -64,7 +64,7 @@ func readUser(userRepository *repository.UserRepository, data []byte) {
 	if err != nil {
 		return
 	}
-	userEntity, err := userRepository.FindOneByUuid(userModel.Uuid)
+	userEntity, err := userRepository.FindOneByUuid(uuid.MustParse(userModel.Uuid))
 	if err == nil {
 		userEntity.UpdateUserProfileFromModel(userModel)
 		userRepository.Save(userEntity)
