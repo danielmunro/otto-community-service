@@ -7,6 +7,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"log"
 )
 
 type LikeService struct {
@@ -29,6 +30,8 @@ func CreateLikeService(likeRepository *repository.LikeRepository) *LikeService {
 }
 
 func (l *LikeService) CreateLikeForPost(postUuid uuid.UUID, userUuid uuid.UUID) (*model.PostLike, error) {
+	log.Print("CreateLikeForPost, post uuid :: ", postUuid)
+	log.Print("CreateLikeForPost, user uuid :: ", userUuid)
 	post, err := l.postRepository.FindOneByUuid(postUuid)
 	if err != nil {
 		return nil, err
