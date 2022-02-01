@@ -17,6 +17,8 @@ func main() {
 		&entity.Follow{},
 		&entity.Report{},
 		&entity.Image{},
+		&entity.PostLike{},
+		&entity.ReplyLike{},
 	)
 	conn.Model(&entity.Post{}).
 		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
@@ -31,4 +33,10 @@ func main() {
 	conn.Model(&entity.Image{}).
 		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
 		AddForeignKey("post_id", "posts(id)", "RESTRICT", "RESTRICT")
+	conn.Model(&entity.PostLike{}).
+		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
+		AddForeignKey("post_id", "posts(id)", "RESTRICT", "RESTRICT")
+	conn.Model(&entity.ReplyLike{}).
+		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
+		AddForeignKey("reply_id", "replies(id)", "RESTRICT", "RESTRICT")
 }
