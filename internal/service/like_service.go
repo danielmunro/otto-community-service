@@ -7,7 +7,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
-	"log"
 )
 
 type LikeService struct {
@@ -20,18 +19,12 @@ func CreateDefaultLikeService() *LikeService {
 	conn := db.CreateDefaultConnection()
 	return &LikeService{
 		likeRepository: repository.CreateLikeRepository(conn),
-	}
-}
-
-func CreateLikeService(likeRepository *repository.LikeRepository) *LikeService {
-	return &LikeService{
-		likeRepository: likeRepository,
+		postRepository: repository.CreatePostRepository(conn),
+		userRepository: repository.CreateUserRepository(conn),
 	}
 }
 
 func (l *LikeService) CreateLikeForPost(postUuid uuid.UUID, userUuid uuid.UUID) (*model.PostLike, error) {
-	log.Print("CreateLikeForPost, post uuid :: ", postUuid)
-	log.Print("CreateLikeForPost, user uuid :: ", userUuid)
 	post, err := l.postRepository.FindOneByUuid(postUuid)
 	if err != nil {
 		return nil, err
