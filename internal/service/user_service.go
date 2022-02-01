@@ -25,7 +25,7 @@ func CreateUserService(userRepository *repository.UserRepository) *UserService {
 }
 
 func (s *UserService) DeleteUser(userUuid uuid.UUID) error {
-	userEntity, err := s.userRepository.FindOneByUuid(userUuid.String())
+	userEntity, err := s.userRepository.FindOneByUuid(userUuid)
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (s *UserService) CreateUser(newUser *model.User) *entity.User {
 }
 
 func (s *UserService) GetUser(userUuid uuid.UUID) (*model.User, error) {
-	userEntity, err := s.userRepository.FindOneByUuid(userUuid.String())
+	userEntity, err := s.userRepository.FindOneByUuid(userUuid)
 	if err != nil {
 		return nil, err
 	}

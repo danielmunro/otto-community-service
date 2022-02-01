@@ -62,7 +62,7 @@ func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model
 }
 
 func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
-	user, err := p.userRepository.FindOneByUuid(newPost.User.Uuid)
+	user, err := p.userRepository.FindOneByUuid(uuid.MustParse(newPost.User.Uuid))
 	if err != nil {
 		return nil, err
 	}

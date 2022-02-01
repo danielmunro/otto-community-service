@@ -32,12 +32,12 @@ func CreateFollowService(userRepository *repository.UserRepository, followReposi
 }
 
 func (f *FollowService) CreateFollow(userUuid uuid.UUID, follow *model.NewFollow) (*model.Follow, error) {
-	user, err := f.userRepository.FindOneByUuid(userUuid.String())
+	user, err := f.userRepository.FindOneByUuid(userUuid)
 	if err != nil {
 		return nil, err
 	}
 
-	followingUser, err := f.userRepository.FindOneByUuid(follow.Following.Uuid)
+	followingUser, err := f.userRepository.FindOneByUuid(uuid.MustParse(follow.Following.Uuid))
 	if err != nil {
 		return nil, errors.New("follower not found")
 	}
@@ -93,7 +93,7 @@ func (f *FollowService) DeleteFollow(followUuid uuid.UUID, userUuid uuid.UUID) e
 		log.Print("follow not found :: ", followUuid)
 		return errors.New("follow not found")
 	}
-	user, _ := f.userRepository.FindOneByUuid(userUuid.String())
+	user, _ := f.userRepository.FindOneByUuid(userUuid)
 	if follow.UserID != user.ID {
 		return errors.New("not allowed")
 	}

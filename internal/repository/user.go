@@ -25,7 +25,7 @@ func (u *UserRepository) FindOne(id uint) (*entity.User, error) {
 	return user, nil
 }
 
-func (u *UserRepository) FindOneByUuid(uuid string) (*entity.User, error) {
+func (u *UserRepository) FindOneByUuid(uuid uuid.UUID) (*entity.User, error) {
 	user := &entity.User{}
 	u.conn.Where("uuid = ?", uuid).Find(user)
 	if user.ID == 0 {

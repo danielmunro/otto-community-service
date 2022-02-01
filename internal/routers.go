@@ -121,6 +121,13 @@ var routes = Routes{
 	},
 
 	{
+		"CreateNewPostLikeV1",
+		strings.ToUpper("Post"),
+		"/post/{uuid}/like",
+		controller.CreateNewPostLikeV1,
+	},
+
+	{
 		"CreateNewPostV1",
 		strings.ToUpper("Post"),
 		"/post",

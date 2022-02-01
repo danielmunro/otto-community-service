@@ -28,3 +28,7 @@ func (l *LikeRepository) FindLikesForPosts(postUuids []uuid.UUID) []*entity.Post
 	l.conn.Raw(query, postUuids).Preload("Posts").Scan(&postLikes)
 	return postLikes
 }
+
+func (l *LikeRepository) CreatePostLike(postLike *entity.PostLike) {
+	l.conn.Create(postLike)
+}

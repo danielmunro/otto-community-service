@@ -35,7 +35,7 @@ func CreateReplyService(
 }
 
 func (r *ReplyService) CreateReply(reply *model.NewReply) (*model.Reply, error) {
-	user, err := r.userRepository.FindOneByUuid(reply.User.Uuid)
+	user, err := r.userRepository.FindOneByUuid(uuid.MustParse(reply.User.Uuid))
 	if err != nil {
 		return nil, err
 	}
