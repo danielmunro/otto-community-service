@@ -4,6 +4,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
+	"log"
 	"strings"
 )
 
@@ -24,6 +25,7 @@ func (l *LikeRepository) FindLikesForPosts(postUuids []uuid.UUID) []*entity.Post
 	}
 	query = strings.TrimRight(query, ", ")
 	query += "))"
+	log.Print("query debug", query)
 	var postLikes []*entity.PostLike
 	l.conn.Raw(query, postUuids).Preload("Posts").Scan(&postLikes)
 	return postLikes
