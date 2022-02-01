@@ -39,7 +39,7 @@ func CreateConnection(host string, port string, dbname string, user string, pass
 		sqlConnection.SetMaxOpenConns(75)
 		sqlConnection.SetMaxIdleConns(10)
 		sqlConnection.SetConnMaxLifetime(time.Hour)
-		//dbConn.LogMode(true)
+		dbConn.LogMode(true)
 	}
 	return dbConn
 }
