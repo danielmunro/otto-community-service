@@ -18,6 +18,7 @@ type PostService struct {
 	postRepository   *repository.PostRepository
 	followRepository *repository.FollowRepository
 	imageRepository  *repository.ImageRepository
+	likeRepository   *repository.LikeRepository
 }
 
 func CreateDefaultPostService() *PostService {
@@ -27,6 +28,7 @@ func CreateDefaultPostService() *PostService {
 		repository.CreateUserRepository(conn),
 		repository.CreateFollowRepository(conn),
 		repository.CreateImageRepository(conn),
+		repository.CreateLikeRepository(conn),
 	)
 }
 
@@ -34,12 +36,14 @@ func CreatePostService(
 	postRepository *repository.PostRepository,
 	userRepository *repository.UserRepository,
 	followRepository *repository.FollowRepository,
-	imageRepository *repository.ImageRepository) *PostService {
+	imageRepository *repository.ImageRepository,
+	likeRepository *repository.LikeRepository) *PostService {
 	return &PostService{
 		userRepository,
 		postRepository,
 		followRepository,
 		imageRepository,
+		likeRepository,
 	}
 }
 
@@ -138,7 +142,28 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 	sort.SliceStable(allPosts, func(i, j int) bool {
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
-	return removeDuplicatePosts(allPosts), nil
+	fullList := removeDuplicatePosts(allPosts)
+	postUuids := p.getPostUUIDs(fullList)
+	postLikes := p.likeRepository.FindLikesForPosts(postUuids)
+	likedPosts := make(map[uuid.UUID]bool)
+	for _, postLike := range postLikes {
+		likedPosts[*postLike.Post.Uuid] = true
+	}
+	for _, item := range fullList {
+		postUuid := uuid.MustParse(item.Uuid)
+		if likedPosts[postUuid] {
+			item.SelfLiked = true
+		}
+	}
+	return fullList, nil
+}
+
+func (p *PostService) getPostUUIDs(posts []*model.Post) []uuid.UUID {
+	postIDs := make([]uuid.UUID, len(posts))
+	for i, post := range posts {
+		postIDs[i] = uuid.MustParse(post.Uuid)
+	}
+	return postIDs
 }
 
 func (p *PostService) canSee(viewerUuid *uuid.UUID, post *entity.Post) bool {
