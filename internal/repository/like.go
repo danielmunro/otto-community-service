@@ -17,7 +17,7 @@ func CreateLikeRepository(conn *gorm.DB) *LikeRepository {
 func (l *LikeRepository) FindLikesForPosts(postIds []uint) []*entity.PostLike {
 	query := "SELECT * " +
 		"FROM post_likes " +
-		"WHERE post_id IN (?)"
+		"WHERE post_id IN (?) AND deleted_at IS NULL"
 	var postLikes []*entity.PostLike
 	l.conn.Raw(query, postIds).Scan(&postLikes)
 	return postLikes
@@ -29,7 +29,7 @@ func (l *LikeRepository) CreatePostLike(postLike *entity.PostLike) {
 
 func (l *LikeRepository) FindByPostAndUser(post *entity.Post, user *entity.User) (*entity.PostLike, error) {
 	postLike := &entity.PostLike{}
-	l.conn.Where("user_id = ? and post_id = ?", user.ID, post.ID).Find(postLike)
+	l.conn.Where("user_id = ? and post_id = ? and deleted_at is null", user.ID, post.ID).Find(postLike)
 	if postLike.ID == 0 {
 		return nil, errors.New("no post like found")
 	}
