@@ -19,7 +19,7 @@ func (l *LikeRepository) FindLikesForPosts(postUuids []uuid.UUID) []*entity.Post
 		"FROM post_likes " +
 		"WHERE post_id IN (SELECT id FROM posts WHERE uuid IN (?))"
 	var postLikes []*entity.PostLike
-	l.conn.Raw(query, postUuids).Preload("Posts").Scan(&postLikes)
+	l.conn.Raw(query, postUuids).Preload("Post").Scan(&postLikes)
 	return postLikes
 }
 
