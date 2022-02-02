@@ -23,8 +23,12 @@ func (l *LikeRepository) FindLikesForPosts(postIds []uint) []*entity.PostLike {
 	return postLikes
 }
 
-func (l *LikeRepository) CreatePostLike(postLike *entity.PostLike) {
+func (l *LikeRepository) Create(postLike *entity.PostLike) {
 	l.conn.Create(postLike)
+}
+
+func (l *LikeRepository) Save(postLike *entity.PostLike) {
+	l.conn.Save(postLike)
 }
 
 func (l *LikeRepository) FindByPostAndUser(post *entity.Post, user *entity.User) (*entity.PostLike, error) {

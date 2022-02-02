@@ -33,12 +33,19 @@ func (l *LikeService) CreateLikeForPost(postUuid uuid.UUID, userUuid uuid.UUID) 
 	if err != nil {
 		return nil, err
 	}
-	postLike := &entity.PostLike{
+	postLike, err := l.likeRepository.FindByPostAndUser(post, user)
+	if postLike != nil && err == nil {
+		// undelete
+		postLike.DeletedAt = nil
+		l.likeRepository.Save(postLike)
+		return mapper.GetPostLikeModelFromEntity(postLike), nil
+	}
+	newPostLike := &entity.PostLike{
 		Post: post,
 		User: user,
 	}
-	l.likeRepository.CreatePostLike(postLike)
-	return mapper.GetPostLikeModelFromEntity(postLike), nil
+	l.likeRepository.Create(newPostLike)
+	return mapper.GetPostLikeModelFromEntity(newPostLike), nil
 }
 
 func (l *LikeService) DeleteLikeForPost(postUuid uuid.UUID, userUuid uuid.UUID) error {
