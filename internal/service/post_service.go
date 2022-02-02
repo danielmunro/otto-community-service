@@ -9,6 +9,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"log"
 	"sort"
 	"time"
 )
@@ -147,6 +148,8 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 	postLikes := p.likeRepository.FindLikesForPosts(postUuids)
 	likedPosts := make(map[uuid.UUID]bool)
 	for _, postLike := range postLikes {
+		log.Print("post like", postLike)
+		log.Print("post like post", postLike.Post)
 		likedPosts[*postLike.Post.Uuid] = true
 	}
 	for _, item := range fullList {
