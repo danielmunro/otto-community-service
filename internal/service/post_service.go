@@ -9,7 +9,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
-	"log"
 	"sort"
 	"time"
 )
@@ -94,10 +93,11 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 }
 
 func (p *PostService) GetNewPosts(username string, limit int) []*model.Post {
-	followPosts, _ := p.GetPostsForUserFollows(username, limit)
-	userPosts, _ := p.GetPostsForUser(username, limit)
+	user, _ := p.userRepository.FindOneByUsername(username)
+	followPosts := p.postRepository.FindByUserFollows(username, limit)
+	userPosts := p.postRepository.FindByUser(user, limit)
 	allPosts := append(followPosts, userPosts...)
-	return removeDuplicatePosts(allPosts)
+	return mapper.GetPostModelsFromEntities(removeDuplicatePosts(allPosts))
 }
 
 func (p *PostService) GetPostsForUser(username string, limit int) ([]*model.Post, error) {
@@ -123,20 +123,21 @@ func (p *PostService) GetAllPosts(limit int) []*model.Post {
 }
 
 func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, error) {
-	var selfPosts []*model.Post
-	var followingPosts []*model.Post
-	var publicPosts []*model.Post
+	var selfPosts []*entity.Post
+	var followingPosts []*entity.Post
+	var publicPosts []*entity.Post
 	remaining := constants.UserPostsDefaultPageSize
 	if username != nil {
-		selfPosts, _ = p.GetPostsForUser(*username, limit)
+		user, _ := p.userRepository.FindOneByUsername(*username)
+		selfPosts = p.postRepository.FindByUser(user, limit)
 		remaining -= len(selfPosts)
 	}
 	if remaining > 0 && username != nil {
-		followingPosts, _ = p.GetPostsForUserFollows(*username, remaining)
+		followingPosts = p.postRepository.FindByUserFollows(*username, remaining)
 		remaining -= len(followingPosts)
 	}
 	if remaining > 0 {
-		publicPosts = p.GetAllPosts(remaining)
+		publicPosts = p.postRepository.FindAll(remaining)
 	}
 	allPosts := append(selfPosts, followingPosts...)
 	allPosts = append(allPosts, publicPosts...)
@@ -144,27 +145,25 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
 	fullList := removeDuplicatePosts(allPosts)
-	postUuids := p.getPostUUIDs(fullList)
-	postLikes := p.likeRepository.FindLikesForPosts(postUuids)
-	likedPosts := make(map[uuid.UUID]bool)
+	postIds := p.getPostIDs(fullList)
+	postLikes := p.likeRepository.FindLikesForPosts(postIds)
+	likedPosts := make(map[uint]bool)
 	for _, postLike := range postLikes {
-		log.Print("post like", postLike)
-		log.Print("post like post", postLike.Post)
-		likedPosts[*postLike.Post.Uuid] = true
+		likedPosts[postLike.PostID] = true
 	}
-	for _, item := range fullList {
-		postUuid := uuid.MustParse(item.Uuid)
-		if likedPosts[postUuid] {
-			item.SelfLiked = true
+	fullListModels := mapper.GetPostModelsFromEntities(fullList)
+	for i, item := range fullList {
+		if likedPosts[item.ID] {
+			fullListModels[i].SelfLiked = true
 		}
 	}
-	return fullList, nil
+	return fullListModels, nil
 }
 
-func (p *PostService) getPostUUIDs(posts []*model.Post) []uuid.UUID {
-	postIDs := make([]uuid.UUID, len(posts))
+func (p *PostService) getPostIDs(posts []*entity.Post) []uint {
+	postIDs := make([]uint, len(posts))
 	for i, post := range posts {
-		postIDs[i] = uuid.MustParse(post.Uuid)
+		postIDs[i] = post.ID
 	}
 	return postIDs
 }
@@ -187,12 +186,12 @@ func (p *PostService) canSee(viewerUuid *uuid.UUID, post *entity.Post) bool {
 	return true
 }
 
-func removeDuplicatePosts(posts []*model.Post) []*model.Post {
-	var dedup []*model.Post
-	allKeys := make(map[string]bool)
+func removeDuplicatePosts(posts []*entity.Post) []*entity.Post {
+	var dedup []*entity.Post
+	allKeys := make(map[uint]bool)
 	for _, item := range posts {
-		if value := allKeys[item.Uuid]; !value {
-			allKeys[item.Uuid] = true
+		if value := allKeys[item.ID]; !value {
+			allKeys[item.ID] = true
 			dedup = append(dedup, item)
 		}
 	}
