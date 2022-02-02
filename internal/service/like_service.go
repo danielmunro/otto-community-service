@@ -40,3 +40,20 @@ func (l *LikeService) CreateLikeForPost(postUuid uuid.UUID, userUuid uuid.UUID) 
 	l.likeRepository.CreatePostLike(postLike)
 	return mapper.GetPostLikeModelFromEntity(postLike), nil
 }
+
+func (l *LikeService) DeleteLikeForPost(postUuid uuid.UUID, userUuid uuid.UUID) error {
+	post, err := l.postRepository.FindOneByUuid(postUuid)
+	if err != nil {
+		return err
+	}
+	user, err := l.userRepository.FindOneByUuid(userUuid)
+	if err != nil {
+		return err
+	}
+	postLike, err := l.likeRepository.FindByPostAndUser(post, user)
+	if err != nil {
+		return nil
+	}
+	l.likeRepository.DeletePostLike(postLike)
+	return nil
+}

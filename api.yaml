@@ -100,6 +100,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PostLike'
+    delete:
+      operationId: deleteLikeForPostV1
+      summary: delete like for post
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: like deleted
   /post/{uuid}/reply:
     get:
       operationId: getPostRepliesV1

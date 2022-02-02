@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/jinzhu/gorm"
 )
@@ -24,4 +25,17 @@ func (l *LikeRepository) FindLikesForPosts(postIds []uint) []*entity.PostLike {
 
 func (l *LikeRepository) CreatePostLike(postLike *entity.PostLike) {
 	l.conn.Create(postLike)
+}
+
+func (l *LikeRepository) FindByPostAndUser(post *entity.Post, user *entity.User) (*entity.PostLike, error) {
+	postLike := &entity.PostLike{}
+	l.conn.Where("user_id = ? and post_id = ?", user.ID, post.ID).Find(postLike)
+	if postLike.ID == 0 {
+		return nil, errors.New("no post like found")
+	}
+	return postLike, nil
+}
+
+func (l *LikeRepository) DeletePostLike(postLike *entity.PostLike) {
+	l.conn.Delete(postLike)
 }

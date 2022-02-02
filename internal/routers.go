@@ -149,6 +149,13 @@ var routes = Routes{
 	},
 
 	{
+		"DeleteLikeForPostV1",
+		strings.ToUpper("Delete"),
+		"/post/{uuid}/like",
+		controller.DeleteLikeForPostV1,
+	},
+
+	{
 		"DeletePostV1",
 		strings.ToUpper("Delete"),
 		"/post/{uuid}",
