@@ -1,9 +1,7 @@
 package entity
 
-import "github.com/jinzhu/gorm"
-
 type ReplyLike struct {
-	gorm.Model
+	ID      uint `gorm:"primary_key"`
 	UserID  uint
 	User    *User
 	ReplyID uint
