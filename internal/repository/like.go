@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/jinzhu/gorm"
-	"log"
 )
 
 type LikeRepository struct {
@@ -38,6 +37,5 @@ func (l *LikeRepository) FindByPostAndUser(post *entity.Post, user *entity.User)
 }
 
 func (l *LikeRepository) DeletePostLike(postLike *entity.PostLike) {
-	log.Print("delete post like :: ", postLike.ID)
-	l.conn.Delete(&entity.PostLike{}, postLike.ID)
+	l.conn.Delete(postLike)
 }

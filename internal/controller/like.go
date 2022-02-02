@@ -24,7 +24,8 @@ func DeleteLikeForPostV1(w http.ResponseWriter, r *http.Request) {
 	uuidParam := uuid.MustParse(params["uuid"])
 
 	service.CreateDefaultAuthService().DoWithValidSession(w, r, func(session *model2.Session) (interface{}, error) {
-		return service.CreateDefaultLikeService().CreateLikeForPost(uuidParam, uuid.MustParse(session.User.Uuid))
+		_ = service.CreateDefaultLikeService().DeleteLikeForPost(uuidParam, uuid.MustParse(session.User.Uuid))
+		return nil, nil
 	})
 
 }
