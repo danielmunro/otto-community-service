@@ -9,6 +9,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"log"
 	"sort"
 	"time"
 )
@@ -149,8 +150,10 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 	fullList := removeDuplicatePosts(allPosts)
 	var fullListModels []*model.Post
 	if user != nil {
+		log.Print("[post likes] getting likes for posts")
 		fullListModels = p.populateModelsWithLikes(fullList, *user.Uuid)
 	} else {
+		log.Print("[post likes] no user found")
 		fullListModels = mapper.GetPostModelsFromEntities(fullList)
 	}
 	return fullListModels, nil
@@ -159,6 +162,7 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewerUuid uuid.UUID) []*model.Post {
 	postIds := p.getPostIDs(posts)
 	postLikes := p.likeRepository.FindLikesForPosts(postIds, viewerUuid)
+	log.Print("post likes :: ", len(postLikes))
 	likedPosts := make(map[uint]bool)
 	for _, postLike := range postLikes {
 		likedPosts[postLike.PostID] = true
