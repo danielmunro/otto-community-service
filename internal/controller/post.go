@@ -75,6 +75,7 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	session := authService.GetSessionFromRequest(r)
 	var viewerUsername string
 	if session != nil {
+		log.Print("session found, user ID :: ", session.User.Uuid)
 		viewerUser, _ := service.CreateDefaultUserService().GetUser(uuid.MustParse(session.User.Uuid))
 		viewerUsername = viewerUser.Username
 	}
