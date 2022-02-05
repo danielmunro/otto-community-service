@@ -108,6 +108,7 @@ func (p *PostService) GetPostsForUser(username string, viewerUuid *uuid.UUID, li
 	}
 	postEntities := p.postRepository.FindByUser(user, limit)
 	var fullListModels []*model.Post
+	log.Print("get posts for user, viewerUuid :: ", viewerUuid)
 	if viewerUuid != nil {
 		viewer, _ := p.userRepository.FindOneByUuid(*viewerUuid)
 		fullListModels = p.populateModelsWithLikes(postEntities, viewer)
@@ -174,6 +175,7 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewer *entity.User) []*model.Post {
 	postIds := p.getPostIDs(posts)
 	postLikes := p.likeRepository.FindLikesForPosts(postIds, viewer)
+	log.Print("post likes viewer ID :: ", viewer.ID)
 	log.Print("post likes :: ", len(postLikes))
 	likedPosts := make(map[uint]bool)
 	for _, postLike := range postLikes {
