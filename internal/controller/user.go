@@ -7,6 +7,7 @@ import (
 	uuid2 "github.com/danielmunro/otto-community-service/internal/uuid"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
@@ -16,7 +17,10 @@ func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
 	username := params["username"]
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
 	var viewerUuid uuid.UUID
+	log.Print("GetUserPostsV1 :: ", session)
+	log.Print("session UUID :: ", session.User.Uuid)
 	if session != nil {
+		log.Print("viewerUuid :: ", viewerUuid)
 		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
 	posts, _ := service.CreateDefaultPostService().GetPostsForUser(
