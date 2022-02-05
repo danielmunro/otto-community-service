@@ -3,7 +3,6 @@ package repository
 import (
 	"errors"
 	"github.com/danielmunro/otto-community-service/internal/entity"
-	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 )
 
@@ -15,12 +14,12 @@ func CreateLikeRepository(conn *gorm.DB) *LikeRepository {
 	return &LikeRepository{conn}
 }
 
-func (l *LikeRepository) FindLikesForPosts(postIds []uint, userUuid uuid.UUID) []*entity.PostLike {
+func (l *LikeRepository) FindLikesForPosts(postIds []uint, viewer *entity.User) []*entity.PostLike {
 	query := "SELECT * " +
 		"FROM post_likes " +
 		"WHERE post_id IN (?) and user_id = ?"
 	var postLikes []*entity.PostLike
-	l.conn.Raw(query, postIds, userUuid).Scan(&postLikes)
+	l.conn.Raw(query, postIds, viewer.ID).Scan(&postLikes)
 	return postLikes
 }
 
