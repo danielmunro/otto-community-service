@@ -213,7 +213,7 @@ func Test_PostService_GetUserPosts(t *testing.T) {
 	}
 
 	// when
-	posts, _ := postService.GetPostsForUser(testUser.Username, constants.UserPostsDefaultPageSize)
+	posts, _ := postService.GetPostsForUser(testUser.Username, nil, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, len(posts) == 5)
@@ -230,7 +230,7 @@ func Test_PostService_GetUserPosts_FailsFor_MissingUser(t *testing.T) {
 	}
 
 	// when
-	posts, err := postService.GetPostsForUser(testUserUuid.String(), constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPostsForUser(testUserUuid.String(), nil, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, posts == nil)

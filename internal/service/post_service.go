@@ -101,12 +101,20 @@ func (p *PostService) GetNewPosts(username string, limit int) []*model.Post {
 	return mapper.GetPostModelsFromEntities(removeDuplicatePosts(allPosts))
 }
 
-func (p *PostService) GetPostsForUser(username string, limit int) ([]*model.Post, error) {
+func (p *PostService) GetPostsForUser(username string, viewerUuid *uuid.UUID, limit int) ([]*model.Post, error) {
 	user, err := p.userRepository.FindOneByUsername(username)
 	if err != nil {
 		return nil, err
 	}
-	return mapper.GetPostModelsFromEntities(p.postRepository.FindByUser(user, limit)), nil
+	postEntities := p.postRepository.FindByUser(user, limit)
+	var fullListModels []*model.Post
+	if viewerUuid != nil {
+		viewer, _ := p.userRepository.FindOneByUuid(*viewerUuid)
+		fullListModels = p.populateModelsWithLikes(postEntities, viewer)
+	} else {
+		fullListModels = mapper.GetPostModelsFromEntities(postEntities)
+	}
+	return fullListModels, nil
 }
 
 func (p *PostService) GetPostsForUserFollows(username string, viewerUserUuid uuid.UUID, limit int) ([]*model.Post, error) {
