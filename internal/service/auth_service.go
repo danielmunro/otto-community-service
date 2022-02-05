@@ -41,7 +41,7 @@ func (a *AuthService) GetSessionFromRequest(r *http.Request) *model.Session {
 		session, err := a.getSession(sessionToken)
 		log.Print("session :: ", session)
 		log.Print("error :: ", err)
-		if err != nil && session != nil {
+		if err == nil && session != nil {
 			log.Print("valid session found")
 			return session
 		}
