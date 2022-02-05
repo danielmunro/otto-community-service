@@ -108,13 +108,14 @@ func (p *PostService) GetPostsForUser(username string, limit int) ([]*model.Post
 	return mapper.GetPostModelsFromEntities(p.postRepository.FindByUser(user, limit)), nil
 }
 
-func (p *PostService) GetPostsForUserFollows(username string, limit int) ([]*model.Post, error) {
+func (p *PostService) GetPostsForUserFollows(username string, viewerUserUuid uuid.UUID, limit int) ([]*model.Post, error) {
 	_, err := p.userRepository.FindOneByUsername(username)
 	if err != nil {
 		return nil, err
 	}
 	posts := p.postRepository.FindByUserFollows(username, limit)
-	return mapper.GetPostModelsFromEntities(posts), nil
+	postModels := p.populateModelsWithLikes(posts, viewerUserUuid)
+	return postModels, nil
 }
 
 func (p *PostService) GetAllPosts(limit int) []*model.Post {
@@ -127,8 +128,9 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 	var followingPosts []*entity.Post
 	var publicPosts []*entity.Post
 	remaining := constants.UserPostsDefaultPageSize
+	var user *entity.User
 	if username != nil {
-		user, _ := p.userRepository.FindOneByUsername(*username)
+		user, _ = p.userRepository.FindOneByUsername(*username)
 		selfPosts = p.postRepository.FindByUser(user, limit)
 		remaining -= len(selfPosts)
 	}
@@ -145,19 +147,29 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
 	fullList := removeDuplicatePosts(allPosts)
-	postIds := p.getPostIDs(fullList)
-	postLikes := p.likeRepository.FindLikesForPosts(postIds)
+	var fullListModels []*model.Post
+	if user != nil {
+		fullListModels = p.populateModelsWithLikes(fullList, *user.Uuid)
+	} else {
+		fullListModels = mapper.GetPostModelsFromEntities(fullList)
+	}
+	return fullListModels, nil
+}
+
+func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewerUuid uuid.UUID) []*model.Post {
+	postIds := p.getPostIDs(posts)
+	postLikes := p.likeRepository.FindLikesForPosts(postIds, viewerUuid)
 	likedPosts := make(map[uint]bool)
 	for _, postLike := range postLikes {
 		likedPosts[postLike.PostID] = true
 	}
-	fullListModels := mapper.GetPostModelsFromEntities(fullList)
-	for i, item := range fullList {
+	fullListModels := mapper.GetPostModelsFromEntities(posts)
+	for i, item := range posts {
 		if likedPosts[item.ID] {
 			fullListModels[i].SelfLiked = true
 		}
 	}
-	return fullListModels, nil
+	return fullListModels
 }
 
 func (p *PostService) getPostIDs(posts []*entity.Post) []uint {

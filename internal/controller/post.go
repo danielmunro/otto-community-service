@@ -46,7 +46,12 @@ func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
 	limit := constants.UserPostsDefaultPageSize
 	params := mux.Vars(r)
 	username := params["username"]
-	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(username, limit)
+	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
+	var viewerUuid uuid.UUID
+	if session != nil {
+		viewerUuid = uuid.MustParse(session.User.Uuid)
+	}
+	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(username, viewerUuid, limit)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return

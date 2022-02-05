@@ -251,7 +251,7 @@ func Test_CanGetPosts_ForUserFollows(t *testing.T) {
 	}
 
 	// when
-	posts, err := postService.GetPostsForUserFollows(testUser.Username, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPostsForUserFollows(testUser.Username, *testUser.Uuid, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, err == nil)
