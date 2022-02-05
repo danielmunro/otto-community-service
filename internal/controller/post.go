@@ -75,8 +75,10 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	session := authService.GetSessionFromRequest(r)
 	var viewerUsername string
 	if session != nil {
-		viewerUsername = session.User.Username
+		viewerUser, _ := service.CreateDefaultUserService().GetUser(uuid.MustParse(session.User.Uuid))
+		viewerUsername = viewerUser.Username
 	}
+	log.Print("viewer username :: ", viewerUsername)
 	limit := constants.UserPostsDefaultPageSize
 	var posts []*model.Post
 	posts, _ = service.CreateDefaultPostService().GetPosts(&viewerUsername, limit)
