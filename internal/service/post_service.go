@@ -159,13 +159,10 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
 	fullList := removeDuplicatePosts(allPosts)
-	var fullListModels []*model.Post
 	if user != nil {
-		fullListModels = p.populateModelsWithLikes(fullList, user)
-	} else {
-		fullListModels = mapper.GetPostModelsFromEntities(fullList)
+		return p.populateModelsWithLikes(fullList, user), nil
 	}
-	return fullListModels, nil
+	return mapper.GetPostModelsFromEntities(fullList), nil
 }
 
 func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewer *entity.User) []*model.Post {
