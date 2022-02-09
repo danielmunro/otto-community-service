@@ -16,15 +16,3 @@ func GetPostReportModelFromEntity(user *entity.User, post *entity.Post, report *
 		},
 	}
 }
-
-func GetReplyReportModelFromEntity(user *entity.User, reply *entity.Reply, report *entity.Report) *model.ReplyReport {
-	return &model.ReplyReport{
-		Uuid:      report.Uuid.String(),
-		CreatedAt: report.CreatedAt,
-		Text:      report.Text,
-		User:      model.User{Uuid: user.Uuid.String()},
-		Reply: model.Reply{
-			Uuid: reply.Uuid.String(),
-		},
-	}
-}

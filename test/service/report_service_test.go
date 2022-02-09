@@ -69,7 +69,7 @@ func Test_ReplyReport_HappyPath(t *testing.T) {
 	replyUuid := uuid.MustParse(reply.Uuid)
 
 	// when
-	report, err := reportService.CreateReplyReport(model.CreateNewReplyReport(user2.Uuid, &replyUuid, "this is offensive"))
+	report, err := reportService.CreateReplyReport(model.CreateNewPostReport(user2.Uuid, &replyUuid, "this is offensive"))
 
 	// then
 	test.Assert(t, err == nil)

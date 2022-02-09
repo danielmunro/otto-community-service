@@ -13,17 +13,13 @@ func main() {
 	conn.AutoMigrate(
 		&entity.User{},
 		&entity.Post{},
-		&entity.Reply{},
 		&entity.Follow{},
 		&entity.Report{},
 		&entity.Image{},
 		&entity.PostLike{},
-		&entity.ReplyLike{},
 	)
 	conn.Model(&entity.Post{}).
 		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
-	conn.Model(&entity.Reply{}).
-		AddForeignKey("post_id", "posts(id)", "RESTRICT", "RESTRICT")
 	conn.Model(&entity.Follow{}).
 		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
 		AddForeignKey("following_id", "users(id)", "RESTRICT", "RESTRICT")
@@ -36,7 +32,4 @@ func main() {
 	conn.Model(&entity.PostLike{}).
 		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
 		AddForeignKey("post_id", "posts(id)", "RESTRICT", "RESTRICT")
-	conn.Model(&entity.ReplyLike{}).
-		AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT").
-		AddForeignKey("reply_id", "replies(id)", "RESTRICT", "RESTRICT")
 }

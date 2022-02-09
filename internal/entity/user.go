@@ -17,7 +17,6 @@ type User struct {
 	Birthday   time.Time
 	Follows    []*Follow
 	Posts      []*Post
-	Replies    []*Reply
 }
 
 func (u *User) UpdateUserProfileFromModel(user *model.User) {

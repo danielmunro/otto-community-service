@@ -34,7 +34,7 @@ func CreateReplyService(
 	}
 }
 
-func (r *ReplyService) CreateReply(reply *model.NewReply) (*model.Reply, error) {
+func (r *ReplyService) CreateReply(reply *model.NewReply) (*model.Post, error) {
 	user, err := r.userRepository.FindOneByUuid(uuid.MustParse(reply.User.Uuid))
 	if err != nil {
 		return nil, err
@@ -47,14 +47,14 @@ func (r *ReplyService) CreateReply(reply *model.NewReply) (*model.Reply, error) 
 	r.replyRepository.Create(replyEntity)
 	post.Replies += 1
 	r.postRepository.Save(post)
-	return mapper.GetReplyModelFromEntity(replyEntity), nil
+	return mapper.GetPostModelFromEntity(replyEntity), nil
 }
 
-func (r *ReplyService) GetRepliesForPost(postUuid uuid.UUID) ([]*model.Reply, error) {
+func (r *ReplyService) GetRepliesForPost(postUuid uuid.UUID) ([]*model.Post, error) {
 	post, err := r.postRepository.FindOneByUuid(postUuid)
 	if err != nil {
 		return nil, err
 	}
 	replies := r.replyRepository.FindRepliesForPost(post)
-	return mapper.GetReplyModelsFromEntities(replies), nil
+	return mapper.GetPostModelsFromEntities(replies), nil
 }

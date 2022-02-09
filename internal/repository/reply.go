@@ -16,21 +16,21 @@ func CreateReplyRepository(conn *gorm.DB) *ReplyRepository {
 	return &ReplyRepository{conn}
 }
 
-func (r *ReplyRepository) Create(reply *entity.Reply) {
+func (r *ReplyRepository) Create(reply *entity.Post) {
 	r.conn.Create(reply)
 }
 
-func (r *ReplyRepository) FindRepliesForPost(post *entity.Post) []*entity.Reply {
-	var replies []*entity.Reply
+func (r *ReplyRepository) FindRepliesForPost(post *entity.Post) []*entity.Post {
+	var replies []*entity.Post
 	r.conn.Preload("User").
-		Where("post_id = ?", post.ID).
+		Where("reply_to_post_id = ?", post.ID).
 		Order("id desc").
 		Find(&replies)
 	return replies
 }
 
-func (r *ReplyRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Reply, error) {
-	reply := &entity.Reply{}
+func (r *ReplyRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
+	reply := &entity.Post{}
 	r.conn.Where("uuid = ?", uuid).Find(reply)
 	if reply.ID == 0 {
 		return nil, errors.New(constants.ErrorMessagePostNotFound)

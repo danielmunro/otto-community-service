@@ -55,19 +55,19 @@ func (r *ReportService) CreatePostReport(newReport *model.NewPostReport) (*model
 	return mapper.GetPostReportModelFromEntity(user, post, report), nil
 }
 
-func (r *ReportService) CreateReplyReport(newReport *model.NewReplyReport) (*model.ReplyReport, error) {
+func (r *ReportService) CreateReplyReport(newReport *model.NewPostReport) (*model.PostReport, error) {
 	user, err := r.userRepository.FindOneByUuid(uuid.MustParse(newReport.User.Uuid))
 	if err != nil {
 		return nil, err
 	}
 
-	reply, err := r.replyRepository.FindOneByUuid(uuid.MustParse(newReport.Reply.Uuid))
+	reply, err := r.replyRepository.FindOneByUuid(uuid.MustParse(newReport.Post.Uuid))
 	if err != nil {
 		return nil, err
 	}
 
-	report := entity.CreateReportReplyEntity(user, reply, newReport)
+	report := entity.CreateReportPostEntity(user, reply, newReport)
 	r.reportRepository.Create(report)
 
-	return mapper.GetReplyReportModelFromEntity(user, reply, report), nil
+	return mapper.GetPostReportModelFromEntity(user, reply, report), nil
 }

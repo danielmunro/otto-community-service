@@ -26,13 +26,3 @@ func CreateReportPostEntity(reporter *User, post *Post, report *model.NewPostRep
 		ReportedType: "Post",
 	}
 }
-
-func CreateReportReplyEntity(reporter *User, reply *Reply, report *model.NewReplyReport) *Report {
-	return &Report{
-		Text:         report.Text,
-		UserID:       reporter.ID,
-		Visibility:   model.PRIVATE,
-		ReportedID:   reply.ID,
-		ReportedType: "Reply",
-	}
-}

@@ -19,7 +19,7 @@ func CreatePostReportV1(w http.ResponseWriter, r *http.Request) {
 
 // CreateReplyReportV1 - report a reply
 func CreateReplyReportV1(w http.ResponseWriter, r *http.Request) {
-	newReport := model.DecodeRequestToNewReplyReport(r)
+	newReport := model.DecodeRequestToNewPostReport(r)
 	userUuid := uuid.MustParse(newReport.User.Uuid)
 	service.CreateDefaultAuthService().
 		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
