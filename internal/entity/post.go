@@ -39,6 +39,19 @@ func CreatePost(user *User, post *model.NewPost) *Post {
 	}
 }
 
+func CreateShare(user *User, post *Post, share *model.NewShare) *Post {
+	postUuid := uuid.New()
+	return &Post{
+		Uuid:        &postUuid,
+		UserID:      user.ID,
+		User:        user,
+		Text:        share.Text,
+		Visibility:  model.PUBLIC,
+		SharePost:   post,
+		SharePostID: post.ID,
+	}
+}
+
 func CreateReply(user *User, post *Post, reply *model.NewReply) *Post {
 	return &Post{
 		Text:          reply.Text,

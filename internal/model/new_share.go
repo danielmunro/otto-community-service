@@ -10,17 +10,24 @@
 package model
 
 import (
-	"time"
+	"encoding/json"
+	"net/http"
 )
 
-type Reshare struct {
-	Uuid string `json:"uuid"`
-
-	CreatedAt time.Time `json:"created_at"`
-
+type NewShare struct {
 	Text string `json:"text,omitempty"`
 
 	User User `json:"user"`
 
 	Post Post `json:"post"`
+}
+
+func DecodeRequestToNewShare(r *http.Request) *NewShare {
+	decoder := json.NewDecoder(r.Body)
+	var data *NewShare
+	err := decoder.Decode(&data)
+	if err != nil {
+		panic(err)
+	}
+	return data
 }

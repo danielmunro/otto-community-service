@@ -214,9 +214,9 @@ paths:
         '201':
           description: |-
             201 response
-  /reshare:
+  /share:
     post:
-      operationId: createAReshare
+      operationId: createShareV1
       summary: create a reshare
       requestBody:
         description: reshare to create
@@ -224,15 +224,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewReshare"
+              $ref: "#/components/schemas/NewShare"
       responses:
         '201':
           description: |-
             201 response
-  /rehare/{uuid}:
+  /share/{uuid}:
     get:
-      operationId: getReshare
-      summary: get a reshare
+      operationId: getShareV1
+      summary: get a share
       parameters:
         - in: path
           name: uuid
@@ -246,7 +246,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Reshare'
+                $ref: '#/components/schemas/Share'
         '404':
           description: |-
             404 response
@@ -563,7 +563,7 @@ components:
           type: string
         user:
           $ref: "#/components/schemas/User"
-    Reshare:
+    Share:
       type: object
       required:
         - uuid
@@ -582,7 +582,7 @@ components:
           $ref: "#/components/schemas/User"
         post:
           $ref: "#/components/schemas/Post"
-    NewReshare:
+    NewShare:
       type: object
       required:
         - user

@@ -114,10 +114,10 @@ var routes = Routes{
 	},
 
 	{
-		"CreateAReshare",
+		"CreateAShare",
 		strings.ToUpper("Post"),
-		"/reshare",
-		CreateAReshare,
+		"/share",
+		controller.CreateShareV1,
 	},
 
 	{
@@ -184,10 +184,10 @@ var routes = Routes{
 	},
 
 	{
-		"GetReshare",
+		"GetShareV1",
 		strings.ToUpper("Get"),
-		"/rehare/{uuid}",
-		GetReshare,
+		"/share/{uuid}",
+		controller.GetShareV1,
 	},
 
 	{

@@ -9,7 +9,15 @@
 
 package model
 
-type NewReshare struct {
+import (
+	"time"
+)
+
+type Share struct {
+	Uuid string `json:"uuid"`
+
+	CreatedAt time.Time `json:"created_at,omitempty"`
+
 	Text string `json:"text,omitempty"`
 
 	User User `json:"user"`
