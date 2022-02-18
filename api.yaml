@@ -497,6 +497,8 @@ components:
           type: integer
         selfLiked:
           type: boolean
+        share:
+          $ref: "#/components/schemas/Post"
         user:
           $ref: "#/components/schemas/User"
         visibility:
