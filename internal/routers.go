@@ -121,6 +121,13 @@ var routes = Routes{
 	},
 
 	{
+		"GetSharesV1",
+		strings.ToUpper("Get"),
+		"/user/{username}/share",
+		controller.GetSharesV1,
+	},
+
+	{
 		"CreateNewPostLikeV1",
 		strings.ToUpper("Post"),
 		"/post/{uuid}/like",

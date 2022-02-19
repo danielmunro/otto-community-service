@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	"github.com/google/uuid"
@@ -14,6 +15,20 @@ func GetShareV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	uuidParam := uuid.MustParse(params["uuid"])
 	share, err := service.CreateDefaultShareService().GetShare(uuidParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	data, _ := json.Marshal(share)
+	_, _ = w.Write(data)
+}
+
+// GetSharesV1 - get shares
+func GetSharesV1(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	usernameParam := params["username"]
+	limit := constants.UserPostsDefaultPageSize
+	share, err := service.CreateDefaultShareService().GetShares(usernameParam, limit)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return

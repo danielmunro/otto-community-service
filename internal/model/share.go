@@ -20,6 +20,8 @@ type Share struct {
 
 	Text string `json:"text,omitempty"`
 
+	SelfLiked bool `json:"selfLiked,omitempty"`
+
 	User User `json:"user"`
 
 	Post Post `json:"post"`
