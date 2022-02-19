@@ -28,7 +28,7 @@ func GetSharesV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	usernameParam := params["username"]
 	limit := constants.UserPostsDefaultPageSize
-	share, err := service.CreateDefaultShareService().GetShares(usernameParam, limit)
+	share, err := service.CreateDefaultShareService().GetShares(&usernameParam, limit)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
