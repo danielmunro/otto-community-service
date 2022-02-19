@@ -123,7 +123,7 @@ var routes = Routes{
 	{
 		"GetSharesV1",
 		strings.ToUpper("Get"),
-		"/user/{username}/share",
+		"/share",
 		controller.GetSharesV1,
 	},
 
