@@ -25,10 +25,15 @@ func GetShareV1(w http.ResponseWriter, r *http.Request) {
 
 // GetSharesV1 - get shares
 func GetSharesV1(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	usernameParam := params["username"]
+	authService := service.CreateDefaultAuthService()
+	session := authService.GetSessionFromRequest(r)
+	var viewerUsername string
+	if session != nil {
+		viewerUser, _ := service.CreateDefaultUserService().GetUser(uuid.MustParse(session.User.Uuid))
+		viewerUsername = viewerUser.Username
+	}
 	limit := constants.UserPostsDefaultPageSize
-	share, err := service.CreateDefaultShareService().GetShares(&usernameParam, limit)
+	share, err := service.CreateDefaultShareService().GetShares(&viewerUsername, limit)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
