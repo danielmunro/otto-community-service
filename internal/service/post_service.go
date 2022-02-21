@@ -9,6 +9,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"log"
 	"sort"
 	"time"
 )
@@ -162,7 +163,19 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 	if user != nil {
 		return p.populateModelsWithLikes(fullList, user), nil
 	}
+	postsWithShares := p.countPostsWithShares(fullList)
+	log.Print("posts with shares, count :: ", postsWithShares)
 	return mapper.GetPostModelsFromEntities(fullList), nil
+}
+
+func (p *PostService) countPostsWithShares(posts []*entity.Post) int {
+	amount := 0
+	for _, post := range posts {
+		if post.SharePostID != 0 {
+			amount += 0
+		}
+	}
+	return amount
 }
 
 func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewer *entity.User) []*model.Post {
