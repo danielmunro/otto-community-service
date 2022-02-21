@@ -172,7 +172,7 @@ func (p *PostService) countPostsWithShares(posts []*entity.Post) int {
 	amount := 0
 	for _, post := range posts {
 		if post.SharePostID != 0 {
-			amount += 0
+			amount += 1
 		}
 	}
 	return amount
