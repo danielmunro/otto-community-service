@@ -9,7 +9,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
-	"log"
 	"sort"
 	"time"
 )
@@ -160,22 +159,28 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
 	fullList := removeDuplicatePosts(allPosts)
-	postsWithShares := p.countPostsWithShares(fullList)
-	log.Print("posts with shares, count :: ", postsWithShares)
+	p.populateSharePosts(fullList)
 	if user != nil {
 		return p.populateModelsWithLikes(fullList, user), nil
 	}
 	return mapper.GetPostModelsFromEntities(fullList), nil
 }
 
-func (p *PostService) countPostsWithShares(posts []*entity.Post) int {
-	amount := 0
-	for _, post := range posts {
+func (p *PostService) populateSharePosts(posts []*entity.Post) {
+	postIDs := make([]uint, len(posts))
+	postMap := make([]int, len(posts))
+	j := 0
+	for i, post := range posts {
 		if post.SharePostID != 0 {
-			amount += 1
+			postIDs[j] = post.SharePostID
+			postMap[post.SharePostID] = i
+			j += 1
 		}
 	}
-	return amount
+	shares := p.postRepository.FindByIDs(postIDs)
+	for _, share := range shares {
+		posts[postMap[share.ID]].SharePost = share
+	}
 }
 
 func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewer *entity.User) []*model.Post {

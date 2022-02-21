@@ -6,6 +6,10 @@ import (
 )
 
 func GetPostModelFromEntity(post *entity.Post) *model.Post {
+	var sharePost *model.Post
+	if post.SharePost != nil {
+		sharePost = GetPostModelFromEntity(post.SharePost)
+	}
 	return &model.Post{
 		Uuid:       post.Uuid.String(),
 		Text:       post.Text,
@@ -15,6 +19,7 @@ func GetPostModelFromEntity(post *entity.Post) *model.Post {
 		Images:     GetImageModelsFromEntities(post.Images),
 		Likes:      post.Likes,
 		Replies:    post.Replies,
+		Share:      sharePost,
 	}
 }
 

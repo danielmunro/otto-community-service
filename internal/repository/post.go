@@ -77,3 +77,17 @@ func (p *PostRepository) FindAll(limit int) []*entity.Post {
 		Find(&posts)
 	return posts
 }
+
+func (p *PostRepository) FindByIDs(ids []uint) []*entity.Post {
+	var posts []*entity.Post
+	p.conn.
+		Preload("User").
+		Preload("Images").
+		Preload("SharePost").
+		Table("posts").
+		Joins("join users on posts.user_id = users.id").
+		Where("posts.deleted_at IS NULL AND posts.id IN (?)", ids).
+		Order("id desc").
+		Find(&posts)
+	return posts
+}

@@ -22,6 +22,8 @@ type Post struct {
 
 	SelfLiked bool `json:"selfLiked,omitempty"`
 
+	Share *Post `json:"share,omitempty"`
+
 	User User `json:"user,omitempty"`
 
 	Visibility Visibility `json:"visibility,omitempty"`
