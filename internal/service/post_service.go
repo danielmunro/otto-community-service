@@ -160,11 +160,11 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 		return allPosts[i].CreatedAt.After(allPosts[j].CreatedAt)
 	})
 	fullList := removeDuplicatePosts(allPosts)
+	postsWithShares := p.countPostsWithShares(fullList)
+	log.Print("posts with shares, count :: ", postsWithShares)
 	if user != nil {
 		return p.populateModelsWithLikes(fullList, user), nil
 	}
-	postsWithShares := p.countPostsWithShares(fullList)
-	log.Print("posts with shares, count :: ", postsWithShares)
 	return mapper.GetPostModelsFromEntities(fullList), nil
 }
 
