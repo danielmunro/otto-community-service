@@ -9,7 +9,7 @@ import (
 func GetPostModelFromEntity(post *entity.Post) *model.Post {
 	var sharePost *model.Post
 	log.Print("GetPostModelFromEntity :: ", post.ID)
-	if post.SharePostID != 0 {
+	if post.SharePost != nil && post.SharePost.User != nil {
 		log.Print("share post user :: ", post.SharePost.User)
 		log.Print("share post user :: ", post.SharePost.User.Uuid)
 		sharePost = GetPostModelFromEntity(post.SharePost)
