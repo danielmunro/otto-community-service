@@ -9,6 +9,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"log"
 	"sort"
 	"time"
 )
@@ -181,6 +182,8 @@ func (p *PostService) populateSharePosts(posts []*entity.Post) {
 	for _, share := range shares {
 		posts[postMap[share.ID]].SharePost = share
 	}
+	log.Print("debug populateSharePosts :: ", j)
+	log.Print("shares found :: ", len(shares))
 }
 
 func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewer *entity.User) []*model.Post {
