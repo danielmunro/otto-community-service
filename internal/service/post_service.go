@@ -184,7 +184,9 @@ func (p *PostService) populateSharePosts(posts []*entity.Post) {
 	}
 	log.Print("debug populateSharePosts :: ", j)
 	log.Print("shares found :: ", len(shares))
-	log.Print("test :: ", shares[0].User)
+	if len(shares) > 0 {
+		log.Print("test :: ", shares[0].User)
+	}
 }
 
 func (p *PostService) populateModelsWithLikes(posts []*entity.Post, viewer *entity.User) []*model.Post {
