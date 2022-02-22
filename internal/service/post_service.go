@@ -168,7 +168,7 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 
 func (p *PostService) populateSharePosts(posts []*entity.Post) {
 	postIDs := make([]uint, len(posts))
-	postMap := make([]int, len(posts))
+	postMap := make(map[uint]int)
 	j := 0
 	for i, post := range posts {
 		if post.SharePostID != 0 {
