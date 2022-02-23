@@ -58,7 +58,10 @@ func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model
 	if !p.canSee(viewerUuid, post) {
 		return nil, errors.New("not accessible")
 	}
-	return mapper.GetPostModelFromEntity(post), nil
+	posts := make([]*entity.Post, 1)
+	posts[0] = post
+	postsWithShare := p.populateSharePosts(posts)
+	return mapper.GetPostModelFromEntity(postsWithShare[0]), nil
 }
 
 func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
@@ -97,7 +100,7 @@ func (p *PostService) GetNewPosts(username string, limit int) []*model.Post {
 	followPosts := p.postRepository.FindByUserFollows(username, limit)
 	userPosts := p.postRepository.FindByUser(user, limit)
 	allPosts := append(followPosts, userPosts...)
-	return mapper.GetPostModelsFromEntities(removeDuplicatePosts(allPosts))
+	return mapper.GetPostModelsFromEntities(p.populateSharePosts(removeDuplicatePosts(allPosts)))
 }
 
 func (p *PostService) GetPostsForUser(username string, viewerUuid *uuid.UUID, limit int) ([]*model.Post, error) {
@@ -105,7 +108,7 @@ func (p *PostService) GetPostsForUser(username string, viewerUuid *uuid.UUID, li
 	if err != nil {
 		return nil, err
 	}
-	postEntities := p.postRepository.FindByUser(user, limit)
+	postEntities := p.populateSharePosts(p.postRepository.FindByUser(user, limit))
 	var fullListModels []*model.Post
 	if viewerUuid != nil {
 		viewer, _ := p.userRepository.FindOneByUuid(*viewerUuid)
@@ -125,7 +128,7 @@ func (p *PostService) GetPostsForUserFollows(username string, viewerUserUuid uui
 	if err != nil {
 		return nil, err
 	}
-	posts := p.postRepository.FindByUserFollows(username, limit)
+	posts := p.populateSharePosts(p.postRepository.FindByUserFollows(username, limit))
 	postModels := p.populateModelsWithLikes(posts, viewer)
 	return postModels, nil
 }
