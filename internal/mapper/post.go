@@ -3,15 +3,11 @@ package mapper
 import (
 	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/danielmunro/otto-community-service/internal/model"
-	"log"
 )
 
 func GetPostModelFromEntity(post *entity.Post) *model.Post {
 	var sharePost *model.Post
-	log.Print("GetPostModelFromEntity :: ", post.ID)
 	if post.SharePost != nil && post.SharePost.User != nil {
-		log.Print("share post user :: ", post.SharePost.User)
-		log.Print("share post user :: ", post.SharePost.User.Uuid)
 		sharePost = GetPostModelFromEntity(post.SharePost)
 	}
 	return &model.Post{
