@@ -24,6 +24,7 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 
 // GetPostV1 - get a post
 func GetPostV1(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "max-age=60")
 	authService := service.CreateDefaultAuthService()
 	session := authService.GetSessionFromRequest(r)
 	var viewerUuid uuid.UUID
@@ -39,7 +40,6 @@ func GetPostV1(w http.ResponseWriter, r *http.Request) {
 	}
 	data, _ := json.Marshal(post)
 	_, _ = w.Write(data)
-	w.Header().Set("Cache-Control", "max-age=60")
 }
 
 // GetUserFollowsPostsV1 - get a user's friend's posts
@@ -72,6 +72,7 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 
 // GetPostsV1 - get posts
 func GetPostsV1(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "max-age=30")
 	authService := service.CreateDefaultAuthService()
 	session := authService.GetSessionFromRequest(r)
 	var viewerUsername string
@@ -84,7 +85,6 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	posts, _ = service.CreateDefaultPostService().GetPosts(&viewerUsername, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
-	w.Header().Set("Cache-Control", "max-age=30")
 }
 
 // DeletePostV1 - delete a post

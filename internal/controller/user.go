@@ -12,6 +12,7 @@ import (
 
 // GetUserPostsV1 - get posts by a user
 func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "max-age=30")
 	params := mux.Vars(r)
 	username := params["username"]
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
@@ -23,7 +24,6 @@ func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
 		username, &viewerUuid, constants.UserPostsDefaultPageSize)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
-	w.Header().Set("Cache-Control", "max-age=30")
 }
 
 // GetUserV1 - get a user
