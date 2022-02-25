@@ -2,6 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: community-service
+  annotations:
+    ad.datadoghq.com/nginx.logs: '[{"source":"community-service","service":"community-service"}]'
+  labels:
+    app: community-service
 spec:
   type: ClusterIP
   selector:
