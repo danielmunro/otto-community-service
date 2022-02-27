@@ -113,6 +113,26 @@ paths:
       responses:
         '200':
           description: like deleted
+  /user/{uuid}/like:
+    get:
+      operationId: getLikedPostsV1
+      summary: get liked posts
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: liked posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
   /post/{uuid}/reply:
     get:
       operationId: getPostRepliesV1

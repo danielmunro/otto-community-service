@@ -87,6 +87,23 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(data)
 }
 
+// GetLikedPostsV1 - get liked posts
+func GetLikedPostsV1(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "max-age=30")
+	authService := service.CreateDefaultAuthService()
+	session := authService.GetSessionFromRequest(r)
+	var viewerUsername string
+	if session != nil {
+		viewerUser, _ := service.CreateDefaultUserService().GetUser(uuid.MustParse(session.User.Uuid))
+		viewerUsername = viewerUser.Username
+	}
+	limit := constants.UserPostsDefaultPageSize
+	var posts []*model.Post
+	posts, _ = service.CreateDefaultPostService().GetPosts(&viewerUsername, limit)
+	data, _ := json.Marshal(posts)
+	_, _ = w.Write(data)
+}
+
 // DeletePostV1 - delete a post
 func DeletePostV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()

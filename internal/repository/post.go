@@ -33,6 +33,21 @@ func (p *PostRepository) FindByUser(user *entity.User, limit int) []*entity.Post
 	return posts
 }
 
+func (p *PostRepository) FindByLikes(user *entity.User, limit int) []*entity.Post {
+	var posts []*entity.Post
+	p.conn.
+		Preload("User").
+		Preload("Images").
+		Preload("SharePost").
+		Table("posts").
+		Joins("join post_likes on post_likes.user_id = posts.user_id").
+		Where("post_likes.user_id = ? AND deleted_at IS NULL AND reply_to_post_id = 0", user.ID).
+		Order("id desc").
+		Limit(limit).
+		Find(&posts)
+	return posts
+}
+
 func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 	post := &entity.Post{}
 	p.conn.

@@ -168,6 +168,15 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 	return mapper.GetPostModelsFromEntities(fullList), nil
 }
 
+func (p *PostService) GetLikedPosts(username string, limit int) ([]*model.Post, error) {
+	user, err := p.userRepository.FindOneByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	posts := p.postRepository.FindByLikes(user, limit)
+	return mapper.GetPostModelsFromEntities(posts), nil
+}
+
 func (p *PostService) populateSharePosts(posts []*entity.Post) []*entity.Post {
 	postIDs := make([]uint, len(posts))
 	postMap := make(map[uint]int)
