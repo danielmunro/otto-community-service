@@ -90,16 +90,11 @@ func GetPostsV1(w http.ResponseWriter, r *http.Request) {
 // GetLikedPostsV1 - get liked posts
 func GetLikedPostsV1(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "max-age=30")
-	authService := service.CreateDefaultAuthService()
-	session := authService.GetSessionFromRequest(r)
-	var viewerUsername string
-	if session != nil {
-		viewerUser, _ := service.CreateDefaultUserService().GetUser(uuid.MustParse(session.User.Uuid))
-		viewerUsername = viewerUser.Username
-	}
+	params := mux.Vars(r)
+	username := params["username"]
 	limit := constants.UserPostsDefaultPageSize
 	var posts []*model.Post
-	posts, _ = service.CreateDefaultPostService().GetPosts(&viewerUsername, limit)
+	posts, _ = service.CreateDefaultPostService().GetLikedPosts(username, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

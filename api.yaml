@@ -113,17 +113,14 @@ paths:
       responses:
         '200':
           description: like deleted
-  /user/{uuid}/like:
+  /user/{username}/like:
     get:
       operationId: getLikedPostsV1
       summary: get liked posts
       parameters:
         - in: path
-          name: uuid
+          name: username
           required: true
-          schema:
-            type: string
-            format: uuid
       responses:
         '200':
           description: liked posts
