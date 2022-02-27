@@ -40,7 +40,7 @@ func (p *PostRepository) FindByLikes(user *entity.User, limit int) []*entity.Pos
 		Preload("Images").
 		Preload("SharePost").
 		Table("posts").
-		Joins("join post_likes on post_likes.post_id = posts.post_id").
+		Joins("join post_likes on post_likes.post_id = posts.id").
 		Where("post_likes.user_id = ? AND deleted_at IS NULL AND reply_to_post_id = 0", user.ID).
 		Order("id desc").
 		Limit(limit).
