@@ -174,7 +174,11 @@ func (p *PostService) GetLikedPosts(username string, limit int) ([]*model.Post, 
 		return nil, err
 	}
 	posts := p.postRepository.FindByLikes(user, limit)
-	return mapper.GetPostModelsFromEntities(posts), nil
+	models := mapper.GetPostModelsFromEntities(posts)
+	for _, m := range models {
+		m.SelfLiked = true
+	}
+	return models, nil
 }
 
 func (p *PostService) populateSharePosts(posts []*entity.Post) []*entity.Post {
