@@ -476,6 +476,11 @@ components:
           type: string
         bio_message:
           type: string
+        role:
+          $ref: "#/components/schemas/Role"
+        is_banned:
+          type: boolean
+          default: false
         posts:
           type: array
           items:
@@ -790,3 +795,9 @@ components:
           $ref: "#/components/schemas/User"
     NewImageLike:
       type: object
+    Role:
+      type: string
+      enum:
+        - user
+        - moderator
+        - admin

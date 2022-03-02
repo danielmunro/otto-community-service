@@ -14,6 +14,8 @@ type User struct {
 	ProfilePic string
 	Name       string
 	BioMessage string
+	Role       string `gorm:"default:user"`
+	IsBanned   bool   `gorm:"default:false"`
 	Birthday   time.Time
 	Follows    []*Follow
 	Posts      []*Post

@@ -14,7 +14,6 @@ func GetUserModelsFromEntities(users []*entity.User) []*model.User {
 	return userModels
 }
 
-
 func GetUserModelFromEntity(user *entity.User) *model.User {
 	return &model.User{
 		Uuid:       user.Uuid.String(),
@@ -23,6 +22,8 @@ func GetUserModelFromEntity(user *entity.User) *model.User {
 		Name:       user.Name,
 		BioMessage: user.BioMessage,
 		CreatedAt:  user.CreatedAt,
+		Role:       model.Role(user.Role),
+		IsBanned:   user.IsBanned,
 	}
 }
 
@@ -34,5 +35,7 @@ func GetUserEntityFromModel(user *model.User) *entity.User {
 		ProfilePic: user.ProfilePic,
 		Name:       user.Name,
 		BioMessage: user.BioMessage,
+		Role:       string(user.Role),
+		IsBanned:   user.IsBanned,
 	}
 }

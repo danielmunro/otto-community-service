@@ -25,6 +25,10 @@ type User struct {
 
 	BioMessage string `json:"bio_message,omitempty"`
 
+	Role Role `json:"role,omitempty"`
+
+	IsBanned bool `json:"is_banned,omitempty"`
+
 	ProfilePic string `json:"profile_pic,omitempty"`
 
 	CreatedAt time.Time `json:"created_at,omitempty"`
