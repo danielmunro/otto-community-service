@@ -14,7 +14,7 @@ type User struct {
 	ProfilePic string
 	Name       string
 	BioMessage string
-	Role       string `gorm:"default:user"`
+	Role       string `gorm:"default:'user'"`
 	IsBanned   bool   `gorm:"default:false"`
 	Birthday   time.Time
 	Follows    []*Follow
@@ -27,4 +27,6 @@ func (u *User) UpdateUserProfileFromModel(user *model.User) {
 	u.BioMessage = user.BioMessage
 	u.Birthday = user.Birthday
 	u.Username = user.Username
+	u.Role = string(user.Role)
+	u.IsBanned = user.IsBanned
 }
