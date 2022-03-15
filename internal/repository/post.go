@@ -91,7 +91,7 @@ func (p *PostRepository) FindAll(limit int) []*entity.Post {
 		Preload("SharePost").
 		Table("posts").
 		Joins("join users on posts.user_id = users.id").
-		Where("posts.deleted_at AND users.is_banned = false IS NULL AND users.deleted_at IS NULL AND posts.reply_to_post_id = 0").
+		Where("posts.deleted_at IS NULL AND users.is_banned = false AND users.deleted_at IS NULL AND posts.reply_to_post_id = 0").
 		Order("id desc").
 		Limit(limit).
 		Find(&posts)
