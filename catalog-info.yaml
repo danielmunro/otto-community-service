@@ -13,6 +13,7 @@ spec:
   definition:
     $text: https://github.com/danielmunro/otto-community-service/blob/main/api.yaml
   dependsOn:
+    - component:user-service
     - resource:community-service-db
     - resource:kafka
 ---
