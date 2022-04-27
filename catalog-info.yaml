@@ -12,8 +12,9 @@ spec:
   owner: dev-team
   definition:
     $text: https://github.com/danielmunro/otto-community-service/blob/main/api.yaml
+  consumesApis:
+    - user-service
   dependsOn:
-    - api:user-service
     - resource:community-service-db
     - resource:kafka
 ---
