@@ -13,7 +13,7 @@ spec:
   providesApis:
     - community-service-api
   dependsOn:
-    - api:user-service
+    - api:user-service-api
     - resource:community-service-db
     - resource:kafka
 ---
