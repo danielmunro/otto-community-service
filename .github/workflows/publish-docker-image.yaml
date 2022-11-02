@@ -1,0 +1,21 @@
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u danielmunro --password-stdin
+      - run: docker build -t ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }} .
+      - run: docker push ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }}
+      - run: mv ./cmd/kafka/main.go .
+      - run: mv Dockerfile-consumer Dockerfile
+      - run: docker build -t ghcr.io/danielmunro/otto-community-service-consumer:${{ github.ref_name }} .
+      - run: docker push ghcr.io/danielmunro/otto-community-service-consumer:${{ github.ref_name }}

@@ -13,11 +13,10 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/controller"
 	"github.com/danielmunro/otto-community-service/internal/service"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"strings"
-
-	"github.com/gorilla/mux"
 )
 
 type Route struct {

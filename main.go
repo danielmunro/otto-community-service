@@ -13,6 +13,7 @@ import (
 	"github.com/danielmunro/otto-community-service/internal"
 	"github.com/danielmunro/otto-community-service/internal/middleware"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 )
@@ -23,7 +24,8 @@ func main() {
 
 func serveHttp() {
 	router := internal.NewRouter()
+	handler := cors.Default().Handler(router)
 	log.Print("http listening on 8081")
 	log.Fatal(http.ListenAndServe(":8081",
-		middleware.ContentTypeMiddleware(router)))
+		middleware.ContentTypeMiddleware(handler)))
 }
