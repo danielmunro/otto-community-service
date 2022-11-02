@@ -24,7 +24,7 @@ func main() {
 
 func serveHttp() {
 	router := internal.NewRouter()
-	handler := cors.Default().Handler(router)
+	handler := cors.AllowAll().Handler(router)
 	log.Print("http listening on 8081")
 	log.Fatal(http.ListenAndServe(":8081",
 		middleware.ContentTypeMiddleware(handler)))
