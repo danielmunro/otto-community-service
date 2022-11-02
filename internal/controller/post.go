@@ -25,11 +25,23 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 // UpdatePostV1 - update a post
 func UpdatePostV1(w http.ResponseWriter, r *http.Request) {
 	postModel := model.DecodeRequestToPost(r)
-	userUuid := uuid.MustParse(postModel.User.Uuid)
-	service.CreateDefaultAuthService().
-		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
-			return nil, service.CreateDefaultPostService().UpdatePost(postModel)
-		})
+	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
+	svc := service.CreateDefaultPostService()
+	userUuid := uuid.MustParse(session.User.Uuid)
+	postUuid := uuid.MustParse(postModel.Uuid)
+	post, err := svc.GetPost(&userUuid, postUuid)
+	if err != nil {
+		w.WriteHeader(404)
+		return
+	}
+	if post.User.Uuid != session.User.Uuid {
+		w.WriteHeader(403)
+		return
+	}
+	err = svc.UpdatePost(postModel)
+	if err != nil {
+		w.WriteHeader(400)
+	}
 }
 
 // GetPostV1 - get a post
