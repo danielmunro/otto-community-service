@@ -81,6 +81,16 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 	return mapper.GetPostModelFromEntity(post), nil
 }
 
+func (p *PostService) UpdatePost(postModel *model.Post) error {
+	postEntity, err := p.postRepository.FindOneByUuid(uuid.MustParse(postModel.Uuid))
+	if err != nil {
+		return err
+	}
+	postEntity.Text = postModel.Text
+	p.postRepository.Save(postEntity)
+	return nil
+}
+
 func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 	post, err := p.postRepository.FindOneByUuid(postUuid)
 	if err != nil {

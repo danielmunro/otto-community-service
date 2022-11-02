@@ -22,6 +22,16 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 		})
 }
 
+// UpdatePostV1 - update a post
+func UpdatePostV1(w http.ResponseWriter, r *http.Request) {
+	postModel := model.DecodeRequestToPost(r)
+	userUuid := uuid.MustParse(postModel.User.Uuid)
+	service.CreateDefaultAuthService().
+		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
+			return nil, service.CreateDefaultPostService().UpdatePost(postModel)
+		})
+}
+
 // GetPostV1 - get a post
 func GetPostV1(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "max-age=60")

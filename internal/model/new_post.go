@@ -32,6 +32,16 @@ func DecodeRequestToNewPost(r *http.Request) *NewPost {
 	return data
 }
 
+func DecodeRequestToPost(r *http.Request) *Post {
+	decoder := json.NewDecoder(r.Body)
+	var data *Post
+	err := decoder.Decode(&data)
+	if err != nil {
+		panic(err)
+	}
+	return data
+}
+
 func CreateNewPost(userUuid *uuid.UUID, message string) *NewPost {
 	return &NewPost{
 		Text: message,

@@ -11,7 +11,8 @@ func WriteResponse(w http.ResponseWriter, object interface{}, err error) {
 		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
-	data, _ := json.Marshal(object)
-	w.WriteHeader(http.StatusCreated)
-	_, _ = w.Write(data)
+	if object != nil {
+		data, _ := json.Marshal(object)
+		_, _ = w.Write(data)
+	}
 }

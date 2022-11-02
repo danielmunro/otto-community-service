@@ -244,4 +244,11 @@ var routes = Routes{
 		"/new-posts/{username}",
 		controller.GetNewPostsV1,
 	},
+
+	{
+		"UpdatePostV1",
+		strings.ToUpper("Put"),
+		"/post",
+		controller.UpdatePostV1,
+	},
 }

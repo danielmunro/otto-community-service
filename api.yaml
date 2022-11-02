@@ -18,6 +18,19 @@ paths:
         '201':
           description: |-
             201 response
+    put:
+      operationId: updatePostV1
+      summary: update a post
+      requestBody:
+        description: post to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Post"
+      responses:
+        '200':
+          description: post updated
     get:
       operationId: getPostsV1
       summary: get posts
