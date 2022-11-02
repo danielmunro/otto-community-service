@@ -113,7 +113,7 @@ paths:
       responses:
         '200':
           description: like deleted
-  /user/{username}/like:
+  /likes/{username}:
     get:
       operationId: getLikedPostsV1
       summary: get liked posts
@@ -279,7 +279,7 @@ paths:
         '404':
           description: |-
             404 response
-  /user/{username}/posts:
+  /posts/{username}:
     get:
       operationId: getUserPostsV1
       summary: get user posts
@@ -299,7 +299,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
-  /user/{username}/follow-posts:
+  /follow-posts/{username}:
     get:
       operationId: getPostsForUserFollowsV1
       summary: get posts for a user's follows
@@ -319,7 +319,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
-  /user/{username}/new-posts:
+  /new-posts/{username}:
     get:
       operationId: getNewPostsV1
       summary: get new posts
@@ -339,7 +339,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
-  /user/{username}/follows:
+  /follows/{username}:
     get:
       operationId: getUserFollowsV1
       summary: get user follows
@@ -381,7 +381,7 @@ paths:
       responses:
         '201':
           description: Follow created
-  /user/{username}/followers:
+  /followers/{username}:
     get:
       operationId: getUserFollowersV1
       summary: get user followers
@@ -403,7 +403,7 @@ paths:
                   $ref: "#/components/schemas/Follow"
         '404':
           description: No user found
-  /user/{username}/suggested-follows:
+  /suggested-follows/{username}:
     get:
       operationId: getSuggestedFollowsForUserV1
       summary: get suggested follows for user
