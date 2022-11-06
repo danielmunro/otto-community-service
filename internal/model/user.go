@@ -23,7 +23,7 @@ type User struct {
 
 	Name string `json:"name,omitempty"`
 
-	Birthday time.Time `json:"birthday,omitempty"`
+	Birthday string `json:"birthday,omitempty"`
 
 	BioMessage string `json:"bio_message,omitempty"`
 
