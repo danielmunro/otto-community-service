@@ -4,7 +4,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
-	"time"
 )
 
 type User struct {
@@ -16,7 +15,7 @@ type User struct {
 	BioMessage string
 	Role       string `gorm:"default:'user'"`
 	IsBanned   bool   `gorm:"default:false"`
-	Birthday   time.Time
+	Birthday   string
 	Follows    []*Follow
 	Posts      []*Post
 }
