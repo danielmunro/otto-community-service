@@ -57,7 +57,7 @@ func readUser(userRepository *repository.UserRepository, data []byte) {
 	log.Print("consuming user message ", string(data))
 	userModel, err := model.DecodeMessageToUser(data)
 	if err != nil {
-		log.Print("error decoding message to user, skipping", string(data))
+		log.Print("error decoding message to user error :: ", err)
 		return
 	}
 	_, err = uuid.Parse(userModel.Uuid)

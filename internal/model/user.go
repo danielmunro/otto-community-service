@@ -19,6 +19,8 @@ type User struct {
 
 	Username string `json:"username,omitempty"`
 
+	CurrentEmail string `json:"current_email,omitempty"`
+
 	Name string `json:"name,omitempty"`
 
 	Birthday time.Time `json:"birthday,omitempty"`
@@ -32,6 +34,8 @@ type User struct {
 	ProfilePic string `json:"profile_pic,omitempty"`
 
 	CreatedAt time.Time `json:"created_at,omitempty"`
+
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 
 	Posts []Post `json:"posts,omitempty"`
 
