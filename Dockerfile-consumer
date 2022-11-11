@@ -1,5 +1,5 @@
 FROM golang:1.17
-WORKDIR /go/src/github.com/danielmunro/otto-community-service
+WORKDIR /go/src
 COPY . .
 RUN go get -d -v ./...
 RUN go build
