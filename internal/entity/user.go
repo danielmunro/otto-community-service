@@ -12,10 +12,8 @@ type User struct {
 	Username   string     `gorm:"unique;not null"`
 	ProfilePic string
 	Name       string
-	BioMessage string
 	Role       string `gorm:"default:'user'"`
 	IsBanned   bool   `gorm:"default:false"`
-	Birthday   string
 	Follows    []*Follow
 	Posts      []*Post
 }
@@ -23,8 +21,6 @@ type User struct {
 func (u *User) UpdateUserProfileFromModel(user *model.User) {
 	u.Name = user.Name
 	u.ProfilePic = user.ProfilePic
-	u.BioMessage = user.BioMessage
-	u.Birthday = user.Birthday
 	u.Username = user.Username
 	u.Role = string(user.Role)
 	u.IsBanned = user.IsBanned

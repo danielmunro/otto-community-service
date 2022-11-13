@@ -20,7 +20,6 @@ func GetUserModelFromEntity(user *entity.User) *model.User {
 		Username:   user.Username,
 		ProfilePic: user.ProfilePic,
 		Name:       user.Name,
-		BioMessage: user.BioMessage,
 		CreatedAt:  user.CreatedAt,
 		Role:       model.Role(user.Role),
 		IsBanned:   user.IsBanned,
@@ -34,7 +33,6 @@ func GetUserEntityFromModel(user *model.User) *entity.User {
 		Username:   user.Username,
 		ProfilePic: user.ProfilePic,
 		Name:       user.Name,
-		BioMessage: user.BioMessage,
 		Role:       string(user.Role),
 		IsBanned:   user.IsBanned,
 	}
