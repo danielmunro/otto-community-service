@@ -21,10 +21,8 @@ func CreateImage(user *User, post *Post, image *model.NewImage) *Image {
 	imageUuid := uuid.MustParse(image.Uuid)
 	return &Image{
 		UserID: user.ID,
-		User:   user,
 		S3Key:  image.S3Key,
 		Uuid:   &imageUuid,
-		Post:   post,
 		PostID: post.ID,
 	}
 }

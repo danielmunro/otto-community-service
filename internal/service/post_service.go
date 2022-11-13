@@ -77,9 +77,8 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 		p.imageRepository.Create(imageEntity)
 		imageEntities = append(imageEntities, imageEntity)
 	}
-	post.Images = imageEntities
-	post.User = user
-	return mapper.GetPostModelFromEntity(post), nil
+	search, _ := p.postRepository.FindOneByUuid(*post.Uuid)
+	return mapper.GetPostModelFromEntity(search), nil
 }
 
 func (p *PostService) UpdatePost(postModel *model.Post) error {
