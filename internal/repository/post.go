@@ -24,6 +24,10 @@ func (p *PostRepository) Save(entity *entity.Post) {
 	p.conn.Save(entity)
 }
 
+func (p *PostRepository) Delete(entity *entity.Post) {
+	p.conn.Delete(entity)
+}
+
 func (p *PostRepository) FindDraftsByUser(user *entity.User, limit int) []*entity.Post {
 	return p.FindByUser(user, limit, true)
 }

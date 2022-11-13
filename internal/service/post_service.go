@@ -9,8 +9,8 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
+	"log"
 	"sort"
-	"time"
 )
 
 type PostService struct {
@@ -97,11 +97,10 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 		return err
 	}
 	if *post.User.Uuid != userUuid {
+		log.Print("cannot delete post :: ", post.User.Uuid, " :: ", userUuid)
 		return errors.New("access denied")
 	}
-	now := time.Now()
-	post.DeletedAt = &now
-	p.postRepository.Save(post)
+	p.postRepository.Delete(post)
 	return nil
 }
 
