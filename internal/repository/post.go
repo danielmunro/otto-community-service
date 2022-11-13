@@ -16,6 +16,10 @@ func CreatePostRepository(conn *gorm.DB) *PostRepository {
 	return &PostRepository{conn}
 }
 
+func (p *PostRepository) Create(entity *entity.Post) {
+	p.conn.Create(entity)
+}
+
 func (p *PostRepository) Save(entity *entity.Post) {
 	p.conn.Save(entity)
 }

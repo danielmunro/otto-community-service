@@ -70,7 +70,7 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 		return nil, err
 	}
 	post := entity.CreatePost(user, newPost)
-	p.postRepository.Save(post)
+	p.postRepository.Create(post)
 	var imageEntities []*entity.Image
 	for _, newImage := range newPost.Images {
 		imageEntity := entity.CreateImage(user, post, &newImage)
