@@ -78,6 +78,7 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 		imageEntities = append(imageEntities, imageEntity)
 	}
 	post.Images = imageEntities
+	post.User = user
 	return mapper.GetPostModelFromEntity(post), nil
 }
 

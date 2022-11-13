@@ -34,7 +34,6 @@ func CreatePost(user *User, post *model.NewPost) *Post {
 	return &Post{
 		Uuid:       &postUuid,
 		UserID:     user.ID,
-		User:       user,
 		Text:       post.Text,
 		Draft:      post.Draft,
 		Visibility: post.Visibility,
