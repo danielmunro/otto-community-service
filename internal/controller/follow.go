@@ -12,14 +12,26 @@ import (
 	"net/http"
 )
 
-// CreateNewFollowV1 - create a new follow
-func CreateNewFollowV1(w http.ResponseWriter, r *http.Request) {
-	newFollowModel := mapper.DecodeRequestToNewFollow(r)
-	userUuid := iUuid.GetUuidFromPathSecondPosition(r.URL.Path)
-	service.CreateDefaultAuthService().
-		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
-			return service.CreateDefaultFollowService().CreateFollow(userUuid, newFollowModel)
-		})
+// CreateFollowV1 - create a follow
+func CreateFollowV1(w http.ResponseWriter, r *http.Request) {
+	newFollowModel, err := mapper.DecodeRequestToNewFollow(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
+	if session == nil {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	follow, err := service.CreateDefaultFollowService().CreateFollow(uuid.MustParse(session.User.Uuid), newFollowModel)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+	data, _ := json.Marshal(follow)
+	_, _ = w.Write(data)
 }
 
 // GetUserFollowersByUsernameV1 - get user followers

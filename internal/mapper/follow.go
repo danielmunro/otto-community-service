@@ -7,14 +7,14 @@ import (
 	"net/http"
 )
 
-func DecodeRequestToNewFollow(r *http.Request) *model.NewFollow {
+func DecodeRequestToNewFollow(r *http.Request) (*model.NewFollow, error) {
 	decoder := json.NewDecoder(r.Body)
 	var data *model.NewFollow
 	err := decoder.Decode(&data)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return data
+	return data, nil
 }
 
 func GetFollowModelFromEntity(follow *entity.Follow, user *entity.User, following *entity.User) *model.Follow {

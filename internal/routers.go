@@ -85,13 +85,6 @@ var routes = Routes{
 	},
 
 	{
-		"AddUserFollowV1",
-		strings.ToUpper("Post"),
-		"/follows/{username}",
-		controller.CreateNewFollowV1,
-	},
-
-	{
 		"CreateAReplyV1",
 		strings.ToUpper("Post"),
 		"/reply",
@@ -117,6 +110,13 @@ var routes = Routes{
 		strings.ToUpper("Post"),
 		"/share",
 		controller.CreateShareV1,
+	},
+
+	{
+		"CreateFollowV1",
+		strings.ToUpper("Post"),
+		"/follow",
+		controller.CreateFollowV1,
 	},
 
 	{

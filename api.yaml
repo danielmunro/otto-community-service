@@ -387,26 +387,6 @@ paths:
                   $ref: "#/components/schemas/Follow"
         '404':
           description: No user found
-    post:
-      operationId: addUserFollowV1
-      summary: add a follow
-      parameters:
-        - in: path
-          name: username
-          description: a username
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: follow to create
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/NewFollow"
-      responses:
-        '201':
-          description: Follow created
   /followers/{username}:
     get:
       operationId: getUserFollowersV1
@@ -463,6 +443,20 @@ paths:
       responses:
         '201':
           description: session created
+  /follow:
+    post:
+      operationId: createFollowV1
+      summary: add a follow
+      requestBody:
+        description: follow to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewFollow"
+      responses:
+        '201':
+          description: Follow created
   /follow/{uuid}:
     delete:
       operationId: deleteFollowV1

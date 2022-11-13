@@ -31,20 +31,18 @@ func CreateFollowService(userRepository *repository.UserRepository, followReposi
 	}
 }
 
-func (f *FollowService) CreateFollow(userUuid uuid.UUID, follow *model.NewFollow) (*model.Follow, error) {
-	user, err := f.userRepository.FindOneByUuid(userUuid)
+func (f *FollowService) CreateFollow(sessionUserUuid uuid.UUID, follow *model.NewFollow) (*model.Follow, error) {
+	user, err := f.userRepository.FindOneByUuid(sessionUserUuid)
 	if err != nil {
 		return nil, err
 	}
-
-	followingUser, err := f.userRepository.FindOneByUuid(uuid.MustParse(follow.Following.Uuid))
+	toFollow, err := f.userRepository.FindOneByUuid(uuid.MustParse(follow.Following.Uuid))
 	if err != nil {
-		return nil, errors.New("follower not found")
+		return nil, err
 	}
-
-	followEntity := entity.GetFollowEntityFromModel(user, followingUser)
+	followEntity := entity.GetFollowEntityFromModel(user, toFollow)
 	f.followRepository.Create(followEntity)
-	return mapper.GetFollowModelFromEntity(followEntity, user, followingUser), nil
+	return mapper.GetFollowModelFromEntity(followEntity, user, toFollow), nil
 }
 
 func (f *FollowService) GetUserFollowers(username string) ([]*model.Follow, error) {
