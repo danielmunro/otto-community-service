@@ -108,7 +108,7 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 func (p *PostService) GetNewPosts(username string, limit int) []*model.Post {
 	user, _ := p.userRepository.FindOneByUsername(username)
 	followPosts := p.postRepository.FindByUserFollows(username, limit)
-	userPosts := p.postRepository.FindByUser(user, limit)
+	userPosts := p.postRepository.FindPublishedByUser(user, limit)
 	allPosts := append(followPosts, userPosts...)
 	return mapper.GetPostModelsFromEntities(p.populateSharePosts(removeDuplicatePosts(allPosts)))
 }
@@ -118,7 +118,7 @@ func (p *PostService) GetPostsForUser(username string, viewerUuid *uuid.UUID, li
 	if err != nil {
 		return nil, err
 	}
-	postEntities := p.populateSharePosts(p.postRepository.FindByUser(user, limit))
+	postEntities := p.populateSharePosts(p.postRepository.FindPublishedByUser(user, limit))
 	var fullListModels []*model.Post
 	if viewerUuid != nil {
 		viewer, _ := p.userRepository.FindOneByUuid(*viewerUuid)
@@ -148,6 +148,12 @@ func (p *PostService) GetAllPosts(limit int) []*model.Post {
 	return mapper.GetPostModelsFromEntities(posts)
 }
 
+func (p *PostService) GetDraftPosts(username string, limit int) []*model.Post {
+	user, _ := p.userRepository.FindOneByUsername(username)
+	posts := p.postRepository.FindDraftsByUser(user, limit)
+	return mapper.GetPostModelsFromEntities(posts)
+}
+
 func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, error) {
 	var selfPosts []*entity.Post
 	var followingPosts []*entity.Post
@@ -156,7 +162,7 @@ func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, erro
 	var user *entity.User
 	if username != nil {
 		user, _ = p.userRepository.FindOneByUsername(*username)
-		selfPosts = p.postRepository.FindByUser(user, limit)
+		selfPosts = p.postRepository.FindPublishedByUser(user, limit)
 		remaining -= len(selfPosts)
 	}
 	if remaining > 0 && username != nil {
@@ -238,6 +244,9 @@ func (p *PostService) canSee(viewerUuid *uuid.UUID, post *entity.Post) bool {
 		return true
 	}
 	if viewerUuid == nil {
+		return false
+	}
+	if post.Draft && viewerUuid != post.User.Uuid {
 		return false
 	}
 	if post.Visibility == model.PRIVATE && viewerUuid != post.User.Uuid {

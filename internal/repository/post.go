@@ -20,7 +20,15 @@ func (p *PostRepository) Save(entity *entity.Post) {
 	p.conn.Save(entity)
 }
 
-func (p *PostRepository) FindByUser(user *entity.User, limit int) []*entity.Post {
+func (p *PostRepository) FindDraftsByUser(user *entity.User, limit int) []*entity.Post {
+	return p.FindByUser(user, limit, true)
+}
+
+func (p *PostRepository) FindPublishedByUser(user *entity.User, limit int) []*entity.Post {
+	return p.FindByUser(user, limit, false)
+}
+
+func (p *PostRepository) FindByUser(user *entity.User, limit int, draft bool) []*entity.Post {
 	var posts []*entity.Post
 	p.conn.
 		Preload("User").
@@ -28,7 +36,7 @@ func (p *PostRepository) FindByUser(user *entity.User, limit int) []*entity.Post
 		Preload("SharePost").
 		Table("posts").
 		Joins("JOIN users ON posts.user_id = users.id").
-		Where("posts.user_id = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.reply_to_post_id = 0", user.ID).
+		Where("posts.user_id = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.reply_to_post_id = 0 AND posts.draft = ?", user.ID, draft).
 		Order("posts.id desc").
 		Limit(limit).
 		Find(&posts)
@@ -44,7 +52,7 @@ func (p *PostRepository) FindByLikes(user *entity.User, limit int) []*entity.Pos
 		Table("posts").
 		Joins("join post_likes on post_likes.post_id = posts.id").
 		Joins("JOIN users ON posts.user_id = users.id").
-		Where("post_likes.user_id = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.reply_to_post_id = 0", user.ID).
+		Where("post_likes.user_id = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.reply_to_post_id = 0 AND posts.draft = false", user.ID).
 		Order("posts.id desc").
 		Limit(limit).
 		Find(&posts)
@@ -59,7 +67,7 @@ func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 		Preload("SharePost").
 		Table("posts").
 		Joins("JOIN users ON posts.user_id = users.id").
-		Where("posts.uuid = ? AND users.is_banned = false AND posts.deleted_at IS NULL", uuid).
+		Where("posts.uuid = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.draft = false", uuid).
 		Find(post)
 	if post.ID == 0 {
 		return nil, errors.New(constants.ErrorMessagePostNotFound)
@@ -76,7 +84,7 @@ func (p *PostRepository) FindByUserFollows(username string, limit int) []*entity
 		Table("posts").
 		Joins("join follows on follows.following_id = posts.user_id").
 		Joins("join users on follows.user_id = users.id").
-		Where("users.username = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.reply_to_post_id = 0", username).
+		Where("users.username = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.reply_to_post_id = 0 AND posts.draft = false", username).
 		Order("id desc").
 		Limit(limit).
 		Find(&posts)
@@ -91,7 +99,7 @@ func (p *PostRepository) FindAll(limit int) []*entity.Post {
 		Preload("SharePost").
 		Table("posts").
 		Joins("join users on posts.user_id = users.id").
-		Where("posts.deleted_at IS NULL AND users.is_banned = false AND users.deleted_at IS NULL AND posts.reply_to_post_id = 0").
+		Where("posts.deleted_at IS NULL AND users.is_banned = false AND users.deleted_at IS NULL AND posts.reply_to_post_id = 0 AND posts.draft = false").
 		Order("id desc").
 		Limit(limit).
 		Find(&posts)
@@ -106,7 +114,7 @@ func (p *PostRepository) FindByIDs(ids []uint) []*entity.Post {
 		Preload("SharePost").
 		Table("posts").
 		Joins("join users on posts.user_id = users.id").
-		Where("posts.deleted_at IS NULL AND users.is_banned = false AND posts.id IN (?)", ids).
+		Where("posts.deleted_at IS NULL AND users.is_banned = false AND posts.id IN (?) AND posts.draft = false", ids).
 		Order("id desc").
 		Find(&posts)
 	return posts

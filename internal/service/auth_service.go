@@ -38,9 +38,10 @@ func (a *AuthService) GetSessionFromRequest(r *http.Request) *model.Session {
 	sessionToken := a.getSessionToken(r)
 	if sessionToken != "" {
 		session, err := a.getSession(sessionToken)
-		if err == nil && session != nil {
-			return session
+		if err != nil {
+			log.Print("error getting session :: ", err)
 		}
+		return session
 	}
 	return nil
 }
@@ -98,7 +99,7 @@ func (a *AuthService) getSession(sessionId string) (*model.Session, error) {
 	if response == nil || response.StatusCode != http.StatusOK {
 		return nil, errors.New("no session found")
 	}
-	session := DecodeRequestToNewSession(response)
+	session, _ := DecodeRequestToNewSession(response)
 	return session, nil
 }
 
@@ -106,12 +107,12 @@ func (a *AuthService) getSessionToken(r *http.Request) string {
 	return r.Header.Get("x-session-token")
 }
 
-func DecodeRequestToNewSession(r *http.Response) *model.Session {
+func DecodeRequestToNewSession(r *http.Response) (*model.Session, error) {
 	decoder := json.NewDecoder(r.Body)
 	var session *model.Session
 	err := decoder.Decode(&session)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return session
+	return session, nil
 }

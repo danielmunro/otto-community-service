@@ -169,6 +169,13 @@ var routes = Routes{
 	},
 
 	{
+		"GetDraftPostsV1",
+		strings.ToUpper("Get"),
+		"/post/draft",
+		controller.GetDraftPostsV1,
+	},
+
+	{
 		"GetLikedPostsV1",
 		strings.ToUpper("Get"),
 		"/likes/{username}",

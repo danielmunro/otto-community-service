@@ -17,29 +17,30 @@ import (
 
 type NewPost struct {
 	Text       string     `json:"text"`
+	Draft      bool       `json:"draft"`
 	User       User       `json:"user"`
 	Visibility Visibility `json:"access,omitempty"`
 	Images     []NewImage `json:"images,omitempty"`
 }
 
-func DecodeRequestToNewPost(r *http.Request) *NewPost {
+func DecodeRequestToNewPost(r *http.Request) (*NewPost, error) {
 	decoder := json.NewDecoder(r.Body)
 	var data *NewPost
 	err := decoder.Decode(&data)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return data
+	return data, nil
 }
 
-func DecodeRequestToPost(r *http.Request) *Post {
+func DecodeRequestToPost(r *http.Request) (*Post, error) {
 	decoder := json.NewDecoder(r.Body)
 	var data *Post
 	err := decoder.Decode(&data)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return data
+	return data, nil
 }
 
 func CreateNewPost(userUuid *uuid.UUID, message string) *NewPost {

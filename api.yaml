@@ -43,6 +43,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Post'
+  /post/draft:
+    get:
+      operationId: getDraftPostsV1
+      summary: get draft posts
+      responses:
+        '200':
+          description: a list of draft posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
   /post/{uuid}:
     get:
       operationId: getPostV1
@@ -531,6 +544,7 @@ components:
         - uuid
         - replies
         - likes
+        - draft
         - created_at
       properties:
         uuid:
@@ -538,6 +552,8 @@ components:
           format: uuid
         text:
           type: string
+        draft:
+          type: boolean
         likes:
           type: integer
         replies:
@@ -562,9 +578,12 @@ components:
       required:
         - text
         - user
+        - draft
       properties:
         text:
           type: string
+        draft:
+          type: boolean
         user:
           $ref: "#/components/schemas/User"
         visibility:

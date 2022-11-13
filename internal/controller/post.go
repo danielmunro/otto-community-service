@@ -14,7 +14,7 @@ import (
 
 // CreateNewPostV1 - create a new post
 func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
-	newPostModel := model.DecodeRequestToNewPost(r)
+	newPostModel, _ := model.DecodeRequestToNewPost(r)
 	userUuid := uuid.MustParse(newPostModel.User.Uuid)
 	service.CreateDefaultAuthService().
 		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
@@ -24,7 +24,7 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 
 // UpdatePostV1 - update a post
 func UpdatePostV1(w http.ResponseWriter, r *http.Request) {
-	postModel := model.DecodeRequestToPost(r)
+	postModel, _ := model.DecodeRequestToPost(r)
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
 	svc := service.CreateDefaultPostService()
 	userUuid := uuid.MustParse(session.User.Uuid)
@@ -88,6 +88,23 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	username := params["username"]
 	posts := service.CreateDefaultPostService().GetNewPosts(username, limit)
+	data, _ := json.Marshal(posts)
+	_, _ = w.Write(data)
+}
+
+// GetDraftPostsV1 - get draft posts
+func GetDraftPostsV1(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "max-age=30")
+	authService := service.CreateDefaultAuthService()
+	session := authService.GetSessionFromRequest(r)
+	if session == nil {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	posts := service.CreateDefaultPostService().GetDraftPosts(
+		session.User.Username,
+		constants.UserPostsDefaultPageSize,
+	)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }

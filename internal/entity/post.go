@@ -9,6 +9,7 @@ import (
 type Post struct {
 	gorm.Model
 	Text          string
+	Draft         bool
 	UserID        uint
 	User          *User
 	Visibility    model.Visibility `gorm:"default:'public'"`
@@ -35,6 +36,7 @@ func CreatePost(user *User, post *model.NewPost) *Post {
 		UserID:     user.ID,
 		User:       user,
 		Text:       post.Text,
+		Draft:      post.Draft,
 		Visibility: post.Visibility,
 	}
 }
