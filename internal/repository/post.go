@@ -75,7 +75,7 @@ func (p *PostRepository) FindOneByUuid(uuid uuid.UUID) (*entity.Post, error) {
 		Preload("SharePost").
 		Table("posts").
 		Joins("JOIN users ON posts.user_id = users.id").
-		Where("posts.uuid = ? AND users.is_banned = false AND posts.deleted_at IS NULL AND posts.draft = false", uuid).
+		Where("posts.uuid = ? AND users.is_banned = false AND posts.deleted_at IS NULL", uuid).
 		Find(post)
 	if post.ID == 0 {
 		return nil, errors.New(constants.ErrorMessagePostNotFound)
