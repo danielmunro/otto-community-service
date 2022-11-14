@@ -88,6 +88,7 @@ func (p *PostService) UpdatePost(postModel *model.Post) error {
 		return err
 	}
 	postEntity.Text = postModel.Text
+	postEntity.Draft = postModel.Draft
 	p.postRepository.Save(postEntity)
 	return nil
 }
