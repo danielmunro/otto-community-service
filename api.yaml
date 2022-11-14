@@ -3,7 +3,7 @@ info:
   title: Otto user service
   version: "1.0"
 paths:
-  /post/firehose:
+  /post:
     get:
       operationId: getPostsFirehoseV1
       summary: get posts from various places
@@ -16,7 +16,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Post'
-  /post:
     post:
       operationId: createNewPostV1
       summary: create a new post

@@ -183,17 +183,17 @@ var routes = Routes{
 	},
 
 	{
+		"GetPostsFirehoseV1",
+		strings.ToUpper("Get"),
+		"/post",
+		controller.GetPostsFirehoseV1,
+	},
+
+	{
 		"GetPostV1",
 		strings.ToUpper("Get"),
 		"/post/{uuid}",
 		controller.GetPostV1,
-	},
-
-	{
-		"GetPostsFirehoseV1",
-		strings.ToUpper("Get"),
-		"/post/firehose",
-		controller.GetPostsFirehoseV1,
 	},
 
 	{
