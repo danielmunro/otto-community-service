@@ -3,6 +3,19 @@ info:
   title: Otto user service
   version: "1.0"
 paths:
+  /post/firehose:
+    get:
+      operationId: getPostsFirehoseV1
+      summary: get posts from various places
+      responses:
+        '200':
+          description: a list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
   /post:
     post:
       operationId: createNewPostV1
@@ -31,9 +44,16 @@ paths:
       responses:
         '200':
           description: post updated
+  /post/user/{username}:
     get:
       operationId: getPostsV1
       summary: get posts
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: a list of posts

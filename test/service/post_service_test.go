@@ -151,7 +151,7 @@ func Test_GetPosts(t *testing.T) {
 	testUser := createTestUser()
 
 	// when
-	posts, err := postService.GetPosts(&testUser.Username, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPostsFirehose(&testUser.Username, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, err == nil)
@@ -163,7 +163,7 @@ func Test_GetPosts_NoSession(t *testing.T) {
 	postService := service.CreateDefaultPostService()
 
 	// when
-	posts, err := postService.GetPosts(nil, constants.UserPostsDefaultPageSize)
+	posts, err := postService.GetPostsFirehose(nil, constants.UserPostsDefaultPageSize)
 
 	// then
 	test.Assert(t, err == nil)

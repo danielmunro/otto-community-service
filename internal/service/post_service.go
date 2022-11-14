@@ -155,7 +155,13 @@ func (p *PostService) GetDraftPosts(username string, limit int) []*model.Post {
 	return mapper.GetPostModelsFromEntities(posts)
 }
 
-func (p *PostService) GetPosts(username *string, limit int) ([]*model.Post, error) {
+func (p *PostService) GetPosts(username string, limit int) []*model.Post {
+	user, _ := p.userRepository.FindOneByUsername(username)
+	posts := p.postRepository.FindPublishedByUser(user, limit)
+	return mapper.GetPostModelsFromEntities(posts)
+}
+
+func (p *PostService) GetPostsFirehose(username *string, limit int) ([]*model.Post, error) {
 	var selfPosts []*entity.Post
 	var followingPosts []*entity.Post
 	var publicPosts []*entity.Post
