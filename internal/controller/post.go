@@ -109,19 +109,6 @@ func GetDraftPostsV1(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(data)
 }
 
-// GetPostsV1 - get posts
-func GetPostsV1(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Cache-Control", "max-age=30")
-	params := mux.Vars(r)
-	username := params["username"]
-	posts := service.CreateDefaultPostService().GetPosts(
-		username,
-		constants.UserPostsDefaultPageSize,
-	)
-	data, _ := json.Marshal(posts)
-	_, _ = w.Write(data)
-}
-
 // GetPostsFirehoseV1 - get posts
 func GetPostsFirehoseV1(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "max-age=30")

@@ -204,13 +204,6 @@ var routes = Routes{
 	},
 
 	{
-		"GetPostsV1",
-		strings.ToUpper("Get"),
-		"/post/user/{username}",
-		controller.GetPostsV1,
-	},
-
-	{
 		"GetShareV1",
 		strings.ToUpper("Get"),
 		"/share/{uuid}",
