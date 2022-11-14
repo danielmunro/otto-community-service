@@ -78,7 +78,8 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 		imageEntities = append(imageEntities, imageEntity)
 	}
 	search, _ := p.postRepository.FindOneByUuid(*post.Uuid)
-	return mapper.GetPostModelFromEntity(search), nil
+	postsWithShare := p.populateSharePosts([]*entity.Post{search})
+	return mapper.GetPostModelFromEntity(postsWithShare[0]), nil
 }
 
 func (p *PostService) UpdatePost(postModel *model.Post) error {
