@@ -19,7 +19,10 @@ func InitializeAndRunLoop() {
 }
 
 func loopKafkaReader(userRepository *repository.UserRepository) error {
-	reader := GetReader()
+	reader, err := GetReader()
+	if err != nil {
+		return err
+	}
 	for {
 		log.Print("listening for kafka messages")
 		data, err := reader.ReadMessage(-1)

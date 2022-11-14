@@ -1,9 +1,12 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/entity"
+	kafka2 "github.com/danielmunro/otto-community-service/internal/kafka"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
@@ -15,6 +18,7 @@ import (
 type FollowService struct {
 	userRepository   *repository.UserRepository
 	followRepository *repository.FollowRepository
+	kafkaWriter      *kafka.Producer
 }
 
 func CreateDefaultFollowService() *FollowService {
@@ -28,6 +32,7 @@ func CreateFollowService(userRepository *repository.UserRepository, followReposi
 	return &FollowService{
 		userRepository,
 		followRepository,
+		kafka2.CreateWriter(),
 	}
 }
 
@@ -42,7 +47,12 @@ func (f *FollowService) CreateFollow(sessionUserUuid uuid.UUID, follow *model.Ne
 	}
 	followEntity := entity.GetFollowEntityFromModel(user, toFollow)
 	f.followRepository.Create(followEntity)
-	return mapper.GetFollowModelFromEntity(followEntity, user, toFollow), nil
+	followModel := mapper.GetFollowModelFromEntity(followEntity, user, toFollow)
+	err = f.publishFollowToKafka(followModel)
+	if err != nil {
+		log.Print("error publishing follow to kafka :: ", err)
+	}
+	return followModel, nil
 }
 
 func (f *FollowService) GetUserFollowers(username string) ([]*model.Follow, error) {
@@ -99,4 +109,19 @@ func (f *FollowService) DeleteFollow(followUuid uuid.UUID, userUuid uuid.UUID) e
 	follow.DeletedAt = &deletedAt
 	f.followRepository.Update(follow)
 	return nil
+}
+
+func (f *FollowService) publishFollowToKafka(follow *model.Follow) error {
+	topic := "follows"
+	data, _ := json.Marshal(follow)
+	return f.kafkaWriter.Produce(
+		&kafka.Message{
+			Value: data,
+			TopicPartition: kafka.TopicPartition{
+				Topic:     &topic,
+				Partition: kafka.PartitionAny,
+			},
+		},
+		nil,
+	)
 }
