@@ -53,10 +53,10 @@ func GetPostV1(w http.ResponseWriter, r *http.Request) {
 	if session != nil {
 		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
-	post, err := service.CreateDefaultPostService().GetPost(
+	post, _ := service.CreateDefaultPostService().GetPost(
 		&viewerUuid,
 		iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
-	if err != nil {
+	if post == nil || post.Draft && post.User.Uuid != viewerUuid.String() {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
