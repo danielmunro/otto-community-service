@@ -13,6 +13,7 @@ func GetPostModelFromEntity(post *entity.Post) *model.Post {
 	return &model.Post{
 		Uuid:       post.Uuid.String(),
 		Text:       post.Text,
+		Draft:      post.Draft,
 		User:       *GetUserModelFromEntity(post.User),
 		CreatedAt:  post.CreatedAt,
 		Visibility: post.Visibility,
