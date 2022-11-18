@@ -121,8 +121,11 @@ func (p *PostService) GetPostsForUser(username string, viewerUuid *uuid.UUID, li
 	}
 	postEntities := p.populateSharePosts(p.postRepository.FindPublishedByUser(user, limit))
 	var fullListModels []*model.Post
+	var viewer *entity.User
 	if viewerUuid != nil {
-		viewer, _ := p.userRepository.FindOneByUuid(*viewerUuid)
+		viewer, _ = p.userRepository.FindOneByUuid(*viewerUuid)
+	}
+	if viewer != nil {
 		fullListModels = p.populateModelsWithLikes(postEntities, viewer)
 	} else {
 		fullListModels = mapper.GetPostModelsFromEntities(postEntities)
