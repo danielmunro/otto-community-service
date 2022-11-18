@@ -12,6 +12,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/rs/cors v1.8.2
 	golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421
+	github.com/gorilla/feeds v1.1.1
 )
 
 require (

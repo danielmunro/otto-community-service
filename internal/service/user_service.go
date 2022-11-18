@@ -49,6 +49,14 @@ func (s *UserService) GetUser(userUuid uuid.UUID) (*model.User, error) {
 	return mapper.GetUserModelFromEntity(userEntity), nil
 }
 
+func (s *UserService) GetUserByUsername(username string) (*model.User, error) {
+	userEntity, err := s.userRepository.FindOneByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	return mapper.GetUserModelFromEntity(userEntity), nil
+}
+
 func (s *UserService) GetSuggestedFollowsForUser(userUuid uuid.UUID) []*model.User {
 	userEntities := s.userRepository.FindUsersNotFollowing(userUuid)
 	return mapper.GetUserModelsFromEntities(userEntities)

@@ -239,6 +239,13 @@ var routes = Routes{
 	},
 
 	{
+		"GetUserPostsRSSV1",
+		strings.ToUpper("Get"),
+		"/posts/{username}/rss",
+		controller.GetUserPostsRSSV1,
+	},
+
+	{
 		"GetUserPostsV1",
 		strings.ToUpper("Get"),
 		"/posts/{username}",

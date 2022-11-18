@@ -325,6 +325,26 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Post"
+  /posts/{username}/rss:
+    get:
+      operationId: getUserPostsRSSV1
+      summary: get user posts
+      parameters:
+        - in: path
+          name: username
+          description: a username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A user's posts
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
   /follow-posts/{username}:
     get:
       operationId: getPostsForUserFollowsV1
