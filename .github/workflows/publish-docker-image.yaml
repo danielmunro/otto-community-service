@@ -3,11 +3,8 @@ on:
     tags:
       - '*'
 jobs:
-  publish-docker-image:
+  run-tests:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
@@ -24,7 +21,14 @@ jobs:
           KAFKA_SASL_MECHANISM: PLAIN
           KAFKA_SASL_USERNAME: ${{ secrets.KAFKA_SASL_USERNAME }}
           KAFKA_SASL_PASSWORD: ${{ secrets.KAFKA_SASL_PASSWORD }}
-      - run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u danielmunro --password-stdin
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
       - run: docker build -t ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }} .
       - run: docker push ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }}
       - run: mv ./cmd/kafka/main.go .
