@@ -29,6 +29,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
+      - run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u danielmunro --password-stdin
       - run: docker build -t ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }} .
       - run: docker push ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }}
       - run: mv ./cmd/kafka/main.go .
