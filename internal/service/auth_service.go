@@ -10,7 +10,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/danielmunro/otto-community-service/internal/util"
-	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"log"
 	"net/http"
@@ -44,30 +43,6 @@ func (a *AuthService) GetSessionFromRequest(r *http.Request) *model.Session {
 		return session
 	}
 	return nil
-}
-
-func (a *AuthService) DoWithValidSessionAndUser(w http.ResponseWriter, r *http.Request, userUuid uuid.UUID, doAction func() (interface{}, error)) {
-	sessionToken := a.getSessionToken(r)
-	if sessionToken == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte("missing required header: x-session-token"))
-		return
-	}
-	session, err := a.getSession(sessionToken)
-	if err == nil {
-		log.Print("session validation succeeded, userUuid: ", userUuid.String(), ", sessionUuid: ", session.User.Uuid)
-	} else {
-		log.Print("session validation failed, err: ", err, ", userUuid: ", userUuid.String())
-	}
-	if err != nil || userUuid.String() != session.User.Uuid {
-		log.Print("FAILED! Either error, or Uuid mismatch :: ", err, userUuid)
-		err := errors.New("invalid session")
-		w.WriteHeader(http.StatusForbidden)
-		_, _ = w.Write([]byte(err.Error()))
-		return
-	}
-	object, err := doAction()
-	util.WriteResponse(w, object, err)
 }
 
 func (a *AuthService) DoWithValidSession(w http.ResponseWriter, r *http.Request, doAction func(session *model.Session) (interface{}, error)) {

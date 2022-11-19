@@ -5,18 +5,23 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
-	"github.com/google/uuid"
 	"net/http"
 )
 
 // CreateAReplyV1 - create a reply
 func CreateAReplyV1(w http.ResponseWriter, r *http.Request) {
+	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
+	if session == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 	newReplyModel := model.DecodeRequestToNewReply(r)
-	userUuid := uuid.MustParse(newReplyModel.User.Uuid)
-	service.CreateDefaultAuthService().
-		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
-			return service.CreateDefaultReplyService().CreateReply(newReplyModel)
-		})
+	reply, err := service.CreateDefaultReplyService().CreateReply(newReplyModel)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	data, _ := json.Marshal(reply)
+	_, _ = w.Write(data)
 }
 
 func GetPostRepliesV1(w http.ResponseWriter, r *http.Request) {

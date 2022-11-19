@@ -14,12 +14,12 @@ import (
 
 // CreateNewPostV1 - create a new post
 func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
-	newPostModel, _ := model.DecodeRequestToNewPost(r)
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
 	if session == nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+	newPostModel, _ := model.DecodeRequestToNewPost(r)
 	post, err := service.CreatePostService().CreatePost(newPostModel)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
@@ -79,12 +78,14 @@ func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
 
 // DeleteFollowV1 - delete a follow
 func DeleteFollowV1(w http.ResponseWriter, r *http.Request) {
+	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
+	if session == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 	followUuid := iUuid.GetUuidFromPathSecondPosition(r.URL.Path)
-	service.CreateDefaultAuthService().DoWithValidSession(w, r, func(session *model.Session) (interface{}, error) {
-		err := service.CreateDefaultFollowService().DeleteFollow(followUuid, uuid.MustParse(session.User.Uuid))
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		return nil, err
-	})
+	err := service.CreateDefaultFollowService().DeleteFollow(followUuid, uuid.MustParse(session.User.Uuid))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
