@@ -22,7 +22,7 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 	newPostModel, _ := model.DecodeRequestToNewPost(r)
 	post, err := service.CreatePostService().CreatePost(newPostModel)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	data, _ := json.Marshal(post)
