@@ -23,7 +23,7 @@ func createReplyModel(post *model.Post, user *entity.User) *model.NewReply {
 func Test_GetReplies_ForPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	replyService := service.CreateDefaultReplyService()
 	post, err := postService.CreatePost(model.CreateNewPost(testUser.Uuid, "this is a test"))
 

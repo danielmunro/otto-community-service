@@ -18,7 +18,7 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 	userUuid := uuid.MustParse(newPostModel.User.Uuid)
 	service.CreateDefaultAuthService().
 		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
-			return service.CreateDefaultPostService().CreatePost(newPostModel)
+			return service.CreatePostService().CreatePost(newPostModel)
 		})
 }
 
@@ -26,7 +26,7 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 func UpdatePostV1(w http.ResponseWriter, r *http.Request) {
 	postModel, _ := model.DecodeRequestToPost(r)
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
-	svc := service.CreateDefaultPostService()
+	svc := service.CreatePostService()
 	userUuid := uuid.MustParse(session.User.Uuid)
 	postUuid := uuid.MustParse(postModel.Uuid)
 	post, err := svc.GetPost(&userUuid, postUuid)
@@ -53,7 +53,7 @@ func GetPostV1(w http.ResponseWriter, r *http.Request) {
 	if session != nil {
 		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
-	post, err := service.CreateDefaultPostService().GetPost(
+	post, err := service.CreatePostService().GetPost(
 		&viewerUuid,
 		iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {
@@ -74,7 +74,7 @@ func GetUserFollowsPostsV1(w http.ResponseWriter, r *http.Request) {
 	if session != nil {
 		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
-	posts, err := service.CreateDefaultPostService().GetPostsForUserFollows(username, viewerUuid, limit)
+	posts, err := service.CreatePostService().GetPostsForUserFollows(username, viewerUuid, limit)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -87,7 +87,7 @@ func GetNewPostsV1(w http.ResponseWriter, r *http.Request) {
 	limit := constants.UserPostsDefaultPageSize
 	params := mux.Vars(r)
 	username := params["username"]
-	posts := service.CreateDefaultPostService().GetNewPosts(username, limit)
+	posts := service.CreatePostService().GetNewPosts(username, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
@@ -101,7 +101,7 @@ func GetDraftPostsV1(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
-	posts := service.CreateDefaultPostService().GetDraftPosts(
+	posts := service.CreatePostService().GetDraftPosts(
 		session.User.Username,
 		constants.UserPostsDefaultPageSize,
 	)
@@ -121,7 +121,7 @@ func GetPostsFirehoseV1(w http.ResponseWriter, r *http.Request) {
 	}
 	limit := constants.UserPostsDefaultPageSize
 	var posts []*model.Post
-	posts, _ = service.CreateDefaultPostService().GetPostsFirehose(&viewerUsername, limit)
+	posts, _ = service.CreatePostService().GetPostsFirehose(&viewerUsername, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
@@ -133,7 +133,7 @@ func GetLikedPostsV1(w http.ResponseWriter, r *http.Request) {
 	username := params["username"]
 	limit := constants.UserPostsDefaultPageSize
 	var posts []*model.Post
-	posts, _ = service.CreateDefaultPostService().GetLikedPosts(username, limit)
+	posts, _ = service.CreatePostService().GetLikedPosts(username, limit)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
 }
@@ -154,7 +154,7 @@ func DeletePostV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	userUuid := uuid.MustParse(session.User.Uuid)
-	err = service.CreateDefaultPostService().DeletePost(postUuid, userUuid)
+	err = service.CreatePostService().DeletePost(postUuid, userUuid)
 	if err != nil {
 		log.Print("delete error, error :: ", err)
 		w.WriteHeader(http.StatusBadRequest)

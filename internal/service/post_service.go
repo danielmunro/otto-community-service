@@ -1,10 +1,13 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/entity"
+	kafka2 "github.com/danielmunro/otto-community-service/internal/kafka"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
@@ -19,31 +22,18 @@ type PostService struct {
 	followRepository *repository.FollowRepository
 	imageRepository  *repository.ImageRepository
 	likeRepository   *repository.LikeRepository
+	kafkaWriter      *kafka.Producer
 }
 
-func CreateDefaultPostService() *PostService {
+func CreatePostService() *PostService {
 	conn := db.CreateDefaultConnection()
-	return CreatePostService(
-		repository.CreatePostRepository(conn),
-		repository.CreateUserRepository(conn),
-		repository.CreateFollowRepository(conn),
-		repository.CreateImageRepository(conn),
-		repository.CreateLikeRepository(conn),
-	)
-}
-
-func CreatePostService(
-	postRepository *repository.PostRepository,
-	userRepository *repository.UserRepository,
-	followRepository *repository.FollowRepository,
-	imageRepository *repository.ImageRepository,
-	likeRepository *repository.LikeRepository) *PostService {
 	return &PostService{
-		userRepository,
-		postRepository,
-		followRepository,
-		imageRepository,
-		likeRepository,
+		postRepository:   repository.CreatePostRepository(conn),
+		userRepository:   repository.CreateUserRepository(conn),
+		followRepository: repository.CreateFollowRepository(conn),
+		imageRepository:  repository.CreateImageRepository(conn),
+		likeRepository:   repository.CreateLikeRepository(conn),
+		kafkaWriter:      kafka2.CreateWriter(),
 	}
 }
 
@@ -79,7 +69,9 @@ func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
 	}
 	search, _ := p.postRepository.FindOneByUuid(*post.Uuid)
 	postsWithShare := p.populateSharePosts([]*entity.Post{search})
-	return mapper.GetPostModelFromEntity(postsWithShare[0]), nil
+	postModel := mapper.GetPostModelFromEntity(postsWithShare[0])
+	err = p.publishPostToKafka(postModel)
+	return postModel, err
 }
 
 func (p *PostService) UpdatePost(postModel *model.Post) error {
@@ -90,6 +82,7 @@ func (p *PostService) UpdatePost(postModel *model.Post) error {
 	postEntity.Text = postModel.Text
 	postEntity.Draft = postModel.Draft
 	p.postRepository.Save(postEntity)
+	err = p.publishPostToKafka(postModel)
 	return nil
 }
 
@@ -247,6 +240,21 @@ func (p *PostService) getPostIDs(posts []*entity.Post) []uint {
 		postIDs[i] = post.ID
 	}
 	return postIDs
+}
+
+func (p *PostService) publishPostToKafka(post *model.Post) error {
+	topic := "posts"
+	data, _ := json.Marshal(post)
+	return p.kafkaWriter.Produce(
+		&kafka.Message{
+			Value: data,
+			TopicPartition: kafka.TopicPartition{
+				Topic:     &topic,
+				Partition: kafka.PartitionAny,
+			},
+		},
+		nil,
+	)
 }
 
 func (p *PostService) canSee(viewerUuid *uuid.UUID, post *entity.Post) bool {

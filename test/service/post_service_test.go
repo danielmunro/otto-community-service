@@ -19,7 +19,7 @@ func createTestUser() *entity.User {
 func Test_PostService_CreatePublic_NewPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// when
 	response, err := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
@@ -33,7 +33,7 @@ func Test_PostService_CreatePublic_NewPost(t *testing.T) {
 func Test_PostService_CreateNewPost_WithPrivateVisibility(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// given
 	newPost := model.CreateNewPost(testUser.Uuid, message)
@@ -50,7 +50,7 @@ func Test_PostService_CreateNewPost_WithPrivateVisibility(t *testing.T) {
 func Test_PostService_Respects_PrivateVisibility(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	newPost := model.CreateNewPost(testUser.Uuid, message)
 	newPost.Visibility = model.PRIVATE
 	response, err := postService.CreatePost(newPost)
@@ -66,7 +66,7 @@ func Test_PostService_Respects_PrivateVisibility(t *testing.T) {
 func Test_PostService_CreateNewPost_WithFollowingVisibility(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// given
 	newPost := model.CreateNewPost(testUser.Uuid, message)
@@ -87,7 +87,7 @@ func Test_PostService_Respects_FollowingVisibility(t *testing.T) {
 	testUser3 := createTestUser()
 	_, _ = service.CreateDefaultFollowService().CreateFollow(
 		*testUser1.Uuid, &model.NewFollow{Following: model.User{Uuid: testUser2.Uuid.String()}})
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	newPost := model.CreateNewPost(testUser1.Uuid, message)
 	newPost.Visibility = model.FOLLOWING
 	response, _ := postService.CreatePost(newPost)
@@ -107,7 +107,7 @@ func Test_PostService_Respects_FollowingVisibility(t *testing.T) {
 func Test_PostService_CreateNewPost_Fails_WhenUserNotFound(t *testing.T) {
 	// setup
 	userUuid, _ := uuid.NewRandom()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// when
 	response, err := postService.CreatePost(model.CreateNewPost(&userUuid, message))
@@ -120,7 +120,7 @@ func Test_PostService_CreateNewPost_Fails_WhenUserNotFound(t *testing.T) {
 func Test_PostService_Can_DeletePost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
 
 	// when
@@ -133,7 +133,7 @@ func Test_PostService_Can_DeletePost(t *testing.T) {
 func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
 	_ = postService.DeletePost(uuid.MustParse(postModel.Uuid), *testUser.Uuid)
 
@@ -147,7 +147,7 @@ func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 
 func Test_GetPosts(t *testing.T) {
 	// setup
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	testUser := createTestUser()
 
 	// when
@@ -160,7 +160,7 @@ func Test_GetPosts(t *testing.T) {
 
 func Test_GetPosts_NoSession(t *testing.T) {
 	// setup
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// when
 	posts, err := postService.GetPostsFirehose(nil, constants.UserPostsDefaultPageSize)
@@ -173,7 +173,7 @@ func Test_GetPosts_NoSession(t *testing.T) {
 func Test_GetPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// given
 	post, err := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
@@ -192,7 +192,7 @@ func Test_GetPost(t *testing.T) {
 
 func Test_GetPost_Fails_WhenNotFound(t *testing.T) {
 	// setup
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// when
 	post, err := postService.GetPost(nil, uuid.New())
@@ -205,7 +205,7 @@ func Test_GetPost_Fails_WhenNotFound(t *testing.T) {
 func Test_PostService_GetUserPosts(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// given
 	for i := 0; i < 5; i++ {
@@ -222,7 +222,7 @@ func Test_PostService_GetUserPosts(t *testing.T) {
 func Test_PostService_GetUserPosts_FailsFor_MissingUser(t *testing.T) {
 	// setup
 	testUserUuid, _ := uuid.NewRandom()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 
 	// given
 	for i := 0; i < 5; i++ {
@@ -241,7 +241,7 @@ func Test_CanGetPosts_ForUserFollows(t *testing.T) {
 	// setup
 	testUser := createTestUser()
 	following := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	followService := service.CreateDefaultFollowService()
 	_, _ = followService.CreateFollow(*testUser.Uuid, &model.NewFollow{Following: model.User{Uuid: following.Uuid.String()}})
 

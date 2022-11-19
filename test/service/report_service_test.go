@@ -12,7 +12,7 @@ import (
 func Test_PostReport_HappyPath(t *testing.T) {
 	// setup
 	user1 := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	post, _ := postService.CreatePost(model.CreateNewPost(user1.Uuid, ""))
 	user2 := createTestUser()
 	reportService := service.CreateDefaultReportService()
@@ -59,7 +59,7 @@ func Test_PostReport_Fails_WhenUserMissing(t *testing.T) {
 func Test_ReplyReport_HappyPath(t *testing.T) {
 	// setup
 	user1 := createTestUser()
-	postService := service.CreateDefaultPostService()
+	postService := service.CreatePostService()
 	post, _ := postService.CreatePost(model.CreateNewPost(user1.Uuid, ""))
 	replyService := service.CreateDefaultReplyService()
 	postUuid := uuid.MustParse(post.Uuid)

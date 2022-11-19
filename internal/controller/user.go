@@ -31,7 +31,7 @@ func GetUserPostsRSSV1(w http.ResponseWriter, r *http.Request) {
 	if user.Name != "" {
 		nameToShow = user.Name + " (" + nameToShow + ")"
 	}
-	posts, _ := service.CreateDefaultPostService().GetPostsForUser(
+	posts, _ := service.CreatePostService().GetPostsForUser(
 		username, &viewerUuid, constants.UserPostsDefaultPageSize)
 	feed := &feeds.Feed{
 		Title:       "RSS for @" + username + " - Third place",
@@ -68,7 +68,7 @@ func GetUserPostsV1(w http.ResponseWriter, r *http.Request) {
 	if session != nil {
 		viewerUuid = uuid.MustParse(session.User.Uuid)
 	}
-	posts, _ := service.CreateDefaultPostService().GetPostsForUser(
+	posts, _ := service.CreatePostService().GetPostsForUser(
 		username, &viewerUuid, constants.UserPostsDefaultPageSize)
 	data, _ := json.Marshal(posts)
 	_, _ = w.Write(data)
