@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: community-service-consumer
-          image: ghcr.io/danielmunro/otto-community-service:v0.1.27
+          image: ghcr.io/danielmunro/otto-community-service-consumer:v0.1.27
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
