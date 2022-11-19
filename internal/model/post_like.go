@@ -10,8 +10,6 @@
 package model
 
 type PostLike struct {
-	Uuid string `json:"uuid"`
-
 	Post Post `json:"post"`
 
 	User User `json:"user"`

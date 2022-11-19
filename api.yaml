@@ -796,13 +796,9 @@ components:
     PostLike:
       type: object
       required:
-        - uuid
         - post
         - user
       properties:
-        uuid:
-          type: string
-          format: uuid
         post:
           $ref: "#/components/schemas/Post"
         user:

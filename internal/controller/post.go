@@ -15,11 +15,18 @@ import (
 // CreateNewPostV1 - create a new post
 func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 	newPostModel, _ := model.DecodeRequestToNewPost(r)
-	userUuid := uuid.MustParse(newPostModel.User.Uuid)
-	service.CreateDefaultAuthService().
-		DoWithValidSessionAndUser(w, r, userUuid, func() (interface{}, error) {
-			return service.CreatePostService().CreatePost(newPostModel)
-		})
+	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
+	if session == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	post, err := service.CreatePostService().CreatePost(newPostModel)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	data, _ := json.Marshal(post)
+	_, _ = w.Write(data)
 }
 
 // UpdatePostV1 - update a post
@@ -28,17 +35,7 @@ func UpdatePostV1(w http.ResponseWriter, r *http.Request) {
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
 	svc := service.CreatePostService()
 	userUuid := uuid.MustParse(session.User.Uuid)
-	postUuid := uuid.MustParse(postModel.Uuid)
-	post, err := svc.GetPost(&userUuid, postUuid)
-	if err != nil {
-		w.WriteHeader(404)
-		return
-	}
-	if post.User.Uuid != session.User.Uuid {
-		w.WriteHeader(403)
-		return
-	}
-	err = svc.UpdatePost(postModel)
+	err := svc.UpdatePost(userUuid, postModel)
 	if err != nil {
 		w.WriteHeader(400)
 	}
