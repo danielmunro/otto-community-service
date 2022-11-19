@@ -1,0 +1,20 @@
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: "The tag to deploy"
+        required: true
+        type: string
+jobs:
+  publish-tag:
+    runs-on: ubuntu-latest
+      steps:
+        - uses: chrisdickinson/setup-yq@latest
+        - run: yq -i '.spec.template.spec.containers[0].image = "ghcr.io/danielmunro/otto-community-service-consumer:${{ inputs.tag }}"' kustomize/dev/deployment-consumer.yaml
+        - run: yq -i '.spec.template.spec.containers[0].image = "ghcr.io/danielmunro/otto-community-service:${{ inputs.tag }}"' kustomize/dev/deployment-consumer.yaml
+        - run: yq -i '.spec.template.spec.containers[0].image = "ghcr.io/danielmunro/otto-community-service-consumer:${{ inputs.tag }}"' kustomize/prod/deployment-consumer.yaml
+        - run: yq -i '.spec.template.spec.containers[0].image = "ghcr.io/danielmunro/otto-community-service:${{ inputs.tag }}"' kustomize/prod/deployment-consumer.yaml
+        - uses: EndBug/add-and-commit@v9
+          with:
+            default_author: github_actions
+            message: "Deploy version ${{ inputs.tag }}"
