@@ -99,6 +99,8 @@ func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
 		return errors.New("access denied")
 	}
 	p.postRepository.Delete(post)
+	postModel := mapper.GetPostModelFromEntity(post)
+	err = p.publishPostToKafka(postModel)
 	return nil
 }
 
