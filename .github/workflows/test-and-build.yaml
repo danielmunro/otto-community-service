@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: main
       - uses: actions/setup-go@v3
       - run: go vet ./...
       - run: go test -json -coverprofile=cover.out ./... > result.json
@@ -34,6 +36,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: main
       - run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u danielmunro --password-stdin
       - run: docker build -t ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }} .
       - run: docker push ghcr.io/danielmunro/otto-community-service:${{ github.ref_name }}
