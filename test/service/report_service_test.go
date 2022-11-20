@@ -13,7 +13,7 @@ func Test_PostReport_HappyPath(t *testing.T) {
 	// setup
 	user1 := createTestUser()
 	postService := service.CreatePostService()
-	post, _ := postService.CreatePost(model.CreateNewPost(user1.Uuid, ""))
+	post, _ := postService.CreatePost(*user1.Uuid, model.CreateNewPost(user1.Uuid, ""))
 	user2 := createTestUser()
 	reportService := service.CreateDefaultReportService()
 	postUuid := uuid.MustParse(post.Uuid)
@@ -60,7 +60,7 @@ func Test_ReplyReport_HappyPath(t *testing.T) {
 	// setup
 	user1 := createTestUser()
 	postService := service.CreatePostService()
-	post, _ := postService.CreatePost(model.CreateNewPost(user1.Uuid, ""))
+	post, _ := postService.CreatePost(*user1.Uuid, model.CreateNewPost(user1.Uuid, ""))
 	replyService := service.CreateDefaultReplyService()
 	postUuid := uuid.MustParse(post.Uuid)
 	reply, _ := replyService.CreateReply(model.CreateNewReply(user1.Uuid, &postUuid, "test message"))

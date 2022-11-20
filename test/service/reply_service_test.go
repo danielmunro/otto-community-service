@@ -25,7 +25,7 @@ func Test_GetReplies_ForPost(t *testing.T) {
 	testUser := createTestUser()
 	postService := service.CreatePostService()
 	replyService := service.CreateDefaultReplyService()
-	post, err := postService.CreatePost(model.CreateNewPost(testUser.Uuid, "this is a test"))
+	post, err := postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, "this is a test"))
 
 	// expect
 	test.Assert(t, err == nil)

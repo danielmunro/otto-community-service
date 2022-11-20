@@ -22,7 +22,7 @@ func Test_PostService_CreatePublic_NewPost(t *testing.T) {
 	postService := service.CreatePostService()
 
 	// when
-	response, err := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+	response, err := postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, message))
 
 	// then
 	test.Assert(t, err == nil)
@@ -40,7 +40,7 @@ func Test_PostService_CreateNewPost_WithPrivateVisibility(t *testing.T) {
 	newPost.Visibility = model.PRIVATE
 
 	// when
-	response, err := postService.CreatePost(newPost)
+	response, err := postService.CreatePost(*testUser.Uuid, newPost)
 
 	// then
 	test.Assert(t, err == nil)
@@ -53,7 +53,7 @@ func Test_PostService_Respects_PrivateVisibility(t *testing.T) {
 	postService := service.CreatePostService()
 	newPost := model.CreateNewPost(testUser.Uuid, message)
 	newPost.Visibility = model.PRIVATE
-	response, err := postService.CreatePost(newPost)
+	response, err := postService.CreatePost(*testUser.Uuid, newPost)
 
 	// when
 	post, err := postService.GetPost(nil, uuid.MustParse(response.Uuid))
@@ -73,7 +73,7 @@ func Test_PostService_CreateNewPost_WithFollowingVisibility(t *testing.T) {
 	newPost.Visibility = model.FOLLOWING
 
 	// when
-	response, err := postService.CreatePost(newPost)
+	response, err := postService.CreatePost(*testUser.Uuid, newPost)
 
 	// then
 	test.Assert(t, err == nil)
@@ -90,7 +90,7 @@ func Test_PostService_Respects_FollowingVisibility(t *testing.T) {
 	postService := service.CreatePostService()
 	newPost := model.CreateNewPost(testUser1.Uuid, message)
 	newPost.Visibility = model.FOLLOWING
-	response, _ := postService.CreatePost(newPost)
+	response, _ := postService.CreatePost(*testUser1.Uuid, newPost)
 
 	// when
 	post1, err1 := postService.GetPost(testUser2.Uuid, uuid.MustParse(response.Uuid))
@@ -110,7 +110,7 @@ func Test_PostService_CreateNewPost_Fails_WhenUserNotFound(t *testing.T) {
 	postService := service.CreatePostService()
 
 	// when
-	response, err := postService.CreatePost(model.CreateNewPost(&userUuid, message))
+	response, err := postService.CreatePost(userUuid, model.CreateNewPost(&userUuid, message))
 
 	// then
 	test.Assert(t, err != nil)
@@ -121,7 +121,7 @@ func Test_PostService_Can_DeletePost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
 	postService := service.CreatePostService()
-	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+	postModel, _ := postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, message))
 
 	// when
 	err := postService.DeletePost(uuid.MustParse(postModel.Uuid), *testUser.Uuid)
@@ -134,7 +134,7 @@ func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
 	postService := service.CreatePostService()
-	postModel, _ := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+	postModel, _ := postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, message))
 	_ = postService.DeletePost(uuid.MustParse(postModel.Uuid), *testUser.Uuid)
 
 	// when
@@ -176,7 +176,7 @@ func Test_GetPost(t *testing.T) {
 	postService := service.CreatePostService()
 
 	// given
-	post, err := postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+	post, err := postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, message))
 
 	// expect
 	test.Assert(t, post != nil)
@@ -209,7 +209,7 @@ func Test_PostService_GetUserPosts(t *testing.T) {
 
 	// given
 	for i := 0; i < 5; i++ {
-		_, _ = postService.CreatePost(model.CreateNewPost(testUser.Uuid, message))
+		_, _ = postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, message))
 	}
 
 	// when
@@ -226,7 +226,7 @@ func Test_PostService_GetUserPosts_FailsFor_MissingUser(t *testing.T) {
 
 	// given
 	for i := 0; i < 5; i++ {
-		_, _ = postService.CreatePost(model.CreateNewPost(&testUserUuid, message))
+		_, _ = postService.CreatePost(testUserUuid, model.CreateNewPost(&testUserUuid, message))
 	}
 
 	// when
@@ -247,7 +247,7 @@ func Test_CanGetPosts_ForUserFollows(t *testing.T) {
 
 	// given
 	for i := 0; i < 5; i++ {
-		_, _ = postService.CreatePost(model.CreateNewPost(following.Uuid, message))
+		_, _ = postService.CreatePost(*testUser.Uuid, model.CreateNewPost(following.Uuid, message))
 	}
 
 	// when
