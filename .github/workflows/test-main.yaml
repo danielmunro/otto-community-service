@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
       - run: go vet ./...
-      - run: go test -coverprofile=cover.out ./...
+      - run: go test -race -covermode=atomic -coverprofile=cover.out ./...
         env:
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
@@ -21,7 +21,6 @@ jobs:
           KAFKA_SASL_MECHANISM: PLAIN
           KAFKA_SASL_USERNAME: ${{ secrets.KAFKA_SASL_USERNAME }}
           KAFKA_SASL_PASSWORD: ${{ secrets.KAFKA_SASL_PASSWORD }}
-      - run: go tool cover -xml=cover.out
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
