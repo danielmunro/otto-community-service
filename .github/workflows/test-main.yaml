@@ -21,6 +21,7 @@ jobs:
           KAFKA_SASL_MECHANISM: PLAIN
           KAFKA_SASL_USERNAME: ${{ secrets.KAFKA_SASL_USERNAME }}
           KAFKA_SASL_PASSWORD: ${{ secrets.KAFKA_SASL_PASSWORD }}
+      - run: go tool cover -xml=cover.out
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
