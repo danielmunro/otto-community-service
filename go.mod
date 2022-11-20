@@ -16,8 +16,6 @@ require (
 )
 
 require (
-	github.com/AlekSi/gocov-xml v1.1.0 // indirect
-	github.com/axw/gocov v1.1.0 // indirect
 	github.com/golang/protobuf v1.2.0 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
