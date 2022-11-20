@@ -54,10 +54,13 @@ func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model
 	return mapper.GetPostModelFromEntity(postsWithShare[0]), nil
 }
 
-func (p *PostService) CreatePost(newPost *model.NewPost) (*model.Post, error) {
+func (p *PostService) CreatePost(userUuid uuid.UUID, newPost *model.NewPost) (*model.Post, error) {
 	user, err := p.userRepository.FindOneByUuid(uuid.MustParse(newPost.User.Uuid))
 	if err != nil {
 		return nil, err
+	}
+	if userUuid.String() != newPost.User.Uuid {
+		return nil, errors.New("cannot create a post for another user")
 	}
 	post := entity.CreatePost(user, newPost)
 	p.postRepository.Create(post)
