@@ -247,7 +247,7 @@ func Test_CanGetPosts_ForUserFollows(t *testing.T) {
 
 	// given
 	for i := 0; i < 5; i++ {
-		_, _ = postService.CreatePost(*testUser.Uuid, model.CreateNewPost(following.Uuid, message))
+		_, _ = postService.CreatePost(*following.Uuid, model.CreateNewPost(following.Uuid, message))
 	}
 
 	// when
