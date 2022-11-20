@@ -20,7 +20,7 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newPostModel, _ := model.DecodeRequestToNewPost(r)
-	post, err := service.CreatePostService().CreatePost(newPostModel)
+	post, err := service.CreatePostService().CreatePost(uuid.MustParse(session.User.Uuid), newPostModel)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
