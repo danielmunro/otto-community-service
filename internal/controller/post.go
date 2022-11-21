@@ -39,12 +39,8 @@ func GetPostV1(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "max-age=60")
 	authService := service.CreateDefaultAuthService()
 	session := authService.GetSessionFromRequest(r)
-	var viewerUuid uuid.UUID
-	if session != nil {
-		viewerUuid = uuid.MustParse(session.User.Uuid)
-	}
 	post, err := service.CreatePostService().GetPost(
-		&viewerUuid,
+		session,
 		iUuid.GetUuidFromPathSecondPosition(r.URL.Path))
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)

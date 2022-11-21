@@ -39,7 +39,7 @@ func CreatePostService() *PostService {
 	}
 }
 
-func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model.Post, error) {
+func (p *PostService) GetPost(session *model2.Session, postUuid uuid.UUID) (*model.Post, error) {
 	post, err := p.postRepository.FindOneByUuid(postUuid)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model
 	if post.User == nil {
 		return nil, errors.New(constants.ErrorMessageUserNotFound)
 	}
-	if !p.canSee(viewerUuid, post) {
+	if !p.canSee(session, post) {
 		return nil, errors.New("not accessible")
 	}
 	posts := make([]*entity.Post, 1)
@@ -260,25 +260,19 @@ func (p *PostService) publishPostToKafka(post *model.Post) error {
 	)
 }
 
-func (p *PostService) canSee(viewerUuid *uuid.UUID, post *entity.Post) bool {
+func (p *PostService) canSee(session *model2.Session, post *entity.Post) bool {
 	if post.Visibility == model.PUBLIC {
 		return true
 	}
-	if viewerUuid == nil {
+	if session == nil {
 		return false
 	}
-	if post.Draft && viewerUuid != post.User.Uuid {
+	if (post.Draft || post.Visibility == model.PRIVATE) && !p.securityService.Owns(session, post) {
 		return false
 	}
-	if post.Visibility == model.PRIVATE && viewerUuid != post.User.Uuid {
-		return false
-	}
-	follow := p.followRepository.FindByUserAndFollowing(*post.User.Uuid, *viewerUuid)
-	if follow == nil {
-		return false
-	}
-
-	return true
+	sessionUuid := uuid.MustParse(session.User.Uuid)
+	follow := p.followRepository.FindByUserAndFollowing(*post.User.Uuid, sessionUuid)
+	return follow != nil
 }
 
 func removeDuplicatePosts(posts []*entity.Post) []*entity.Post {
