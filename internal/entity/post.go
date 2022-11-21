@@ -26,6 +26,10 @@ type Post struct {
 	SharePost     *Post
 }
 
+func (p *Post) GetOwnerUUID() string {
+	return p.User.Uuid.String()
+}
+
 func CreatePost(user *User, post *model.NewPost) *Post {
 	if post.Visibility == "" {
 		post.Visibility = model.PUBLIC

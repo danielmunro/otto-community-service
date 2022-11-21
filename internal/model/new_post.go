@@ -23,6 +23,10 @@ type NewPost struct {
 	Images     []NewImage `json:"images,omitempty"`
 }
 
+func (n *NewPost) GetOwnerUUID() string {
+	return n.User.Uuid
+}
+
 func DecodeRequestToNewPost(r *http.Request) (*NewPost, error) {
 	decoder := json.NewDecoder(r.Body)
 	var data *NewPost

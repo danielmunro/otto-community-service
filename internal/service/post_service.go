@@ -57,7 +57,7 @@ func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model
 }
 
 func (p *PostService) CreatePost(session *model2.Session, newPost *model.NewPost) (*model.Post, error) {
-	if !p.securityService.CanCreateNewPost(session, newPost) {
+	if !p.securityService.CanCreate(session, newPost) {
 		return nil, errors.New("cannot create a new post")
 	}
 	user, err := p.userRepository.FindOneByUuid(uuid.MustParse(newPost.User.Uuid))
@@ -81,7 +81,7 @@ func (p *PostService) CreatePost(session *model2.Session, newPost *model.NewPost
 
 func (p *PostService) UpdatePost(session *model2.Session, postModel *model.Post) error {
 	postEntity, err := p.postRepository.FindOneByUuid(uuid.MustParse(postModel.Uuid))
-	if err != nil || !p.securityService.OwnsPost(session, postEntity) {
+	if err != nil || !p.securityService.Owns(session, postEntity) {
 		return errors.New("user cannot update post")
 	}
 	postEntity.Text = postModel.Text
@@ -96,7 +96,7 @@ func (p *PostService) DeletePost(session *model2.Session, postUuid uuid.UUID) er
 	if err != nil {
 		return err
 	}
-	if !p.securityService.OwnsPost(session, post) {
+	if !p.securityService.Owns(session, post) {
 		return errors.New("cannot delete post")
 	}
 	p.postRepository.Delete(post)
