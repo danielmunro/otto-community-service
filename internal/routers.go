@@ -54,8 +54,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func Signup(w http.ResponseWriter, r *http.Request) {
-	res, err := service.CreateDefaultSessionService().CreateSession(
-		model.CreateNewSession("dan+6211@danmunro.com", "my-awesome-new-pAssword-123!"))
+	res, err := service.CreateDefaultAuthService().CreateSession(
+		*model.CreateNewSession("dan+6211@danmunro.com", "my-awesome-new-pAssword-123!"))
 	if err != nil {
 		log.Fatal(err)
 	}

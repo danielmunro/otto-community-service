@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-// GetUserV1 - get a user
+// CreateSessionV1 - create a session
 func CreateSessionV1(w http.ResponseWriter, r *http.Request) {
 	newSession := model.DecodeRequestToNewSession(r)
-	user, err := service.CreateDefaultSessionService().CreateSession(newSession)
+	user, err := service.CreateDefaultAuthService().CreateSession(*newSession)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
