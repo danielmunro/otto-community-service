@@ -13,7 +13,6 @@ import (
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/repository"
 	"github.com/google/uuid"
-	"log"
 	"sort"
 )
 
@@ -82,7 +81,7 @@ func (p *PostService) CreatePost(session *model2.Session, newPost *model.NewPost
 
 func (p *PostService) UpdatePost(session *model2.Session, postModel *model.Post) error {
 	postEntity, err := p.postRepository.FindOneByUuid(uuid.MustParse(postModel.Uuid))
-	if err != nil || !p.securityService.CanUpdatePost(session, postEntity) {
+	if err != nil || !p.securityService.OwnsPost(session, postEntity) {
 		return errors.New("user cannot update post")
 	}
 	postEntity.Text = postModel.Text
@@ -92,14 +91,13 @@ func (p *PostService) UpdatePost(session *model2.Session, postModel *model.Post)
 	return nil
 }
 
-func (p *PostService) DeletePost(postUuid uuid.UUID, userUuid uuid.UUID) error {
+func (p *PostService) DeletePost(session *model2.Session, postUuid uuid.UUID) error {
 	post, err := p.postRepository.FindOneByUuid(postUuid)
 	if err != nil {
 		return err
 	}
-	if *post.User.Uuid != userUuid {
-		log.Print("cannot delete post :: ", post.User.Uuid, " :: ", userUuid)
-		return errors.New("access denied")
+	if !p.securityService.OwnsPost(session, post) {
+		return errors.New("cannot delete post")
 	}
 	p.postRepository.Delete(post)
 	postModel := mapper.GetPostModelFromEntity(post)
