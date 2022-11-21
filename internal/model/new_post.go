@@ -11,20 +11,14 @@ package model
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
 	"net/http"
 )
 
 type NewPost struct {
 	Text       string     `json:"text"`
 	Draft      bool       `json:"draft"`
-	User       User       `json:"user"`
 	Visibility Visibility `json:"access,omitempty"`
 	Images     []NewImage `json:"images,omitempty"`
-}
-
-func (n *NewPost) GetOwnerUUID() string {
-	return n.User.Uuid
 }
 
 func DecodeRequestToNewPost(r *http.Request) (*NewPost, error) {
@@ -47,11 +41,8 @@ func DecodeRequestToPost(r *http.Request) (*Post, error) {
 	return data, nil
 }
 
-func CreateNewPost(userUuid *uuid.UUID, message string) *NewPost {
+func CreateNewPost(message string) *NewPost {
 	return &NewPost{
 		Text: message,
-		User: User{
-			Uuid: userUuid.String(),
-		},
 	}
 }

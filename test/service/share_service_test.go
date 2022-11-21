@@ -14,7 +14,7 @@ func Test_ShareService_CanCreate_NewShare(t *testing.T) {
 	session := model2.CreateSessionModelFromString(*testUser.Uuid)
 	postService := service.CreatePostService()
 	shareService := service.CreateDefaultShareService()
-	post, _ := postService.CreatePost(session, model.CreateNewPost(testUser.Uuid, message))
+	post, _ := postService.CreatePost(session, model.CreateNewPost(message))
 	newShare := &model.NewShare{
 		Text: "Yo",
 		User: model.User{

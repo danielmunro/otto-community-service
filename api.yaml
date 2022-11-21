@@ -591,15 +591,12 @@ components:
       type: object
       required:
         - text
-        - user
         - draft
       properties:
         text:
           type: string
         draft:
           type: boolean
-        user:
-          $ref: "#/components/schemas/User"
         visibility:
           $ref: "#/components/schemas/Visibility"
         images:
@@ -637,14 +634,11 @@ components:
       required:
         - post
         - text
-        - user
       properties:
         post:
           $ref: "#/components/schemas/Post"
         text:
           type: string
-        user:
-          $ref: "#/components/schemas/User"
     Share:
       type: object
       required:

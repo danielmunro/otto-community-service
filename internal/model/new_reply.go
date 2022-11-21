@@ -18,8 +18,6 @@ type NewReply struct {
 	Post Post `json:"post"`
 
 	Text string `json:"text"`
-
-	User User `json:"user"`
 }
 
 func DecodeRequestToNewReply(r *http.Request) *NewReply {

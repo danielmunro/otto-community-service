@@ -1,6 +1,7 @@
 package service
 
 import (
+	model2 "github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/danielmunro/otto-community-service/internal/mapper"
@@ -13,29 +14,21 @@ type ReplyService struct {
 	userRepository  *repository.UserRepository
 	postRepository  *repository.PostRepository
 	replyRepository *repository.ReplyRepository
+	securityService *SecurityService
 }
 
-func CreateDefaultReplyService() *ReplyService {
+func CreateReplyService() *ReplyService {
 	conn := db.CreateDefaultConnection()
-	return CreateReplyService(
-		repository.CreateReplyRepository(conn),
-		repository.CreatePostRepository(conn),
-		repository.CreateUserRepository(conn))
-}
-
-func CreateReplyService(
-	replyRepository *repository.ReplyRepository,
-	postRepository *repository.PostRepository,
-	userRepository *repository.UserRepository) *ReplyService {
 	return &ReplyService{
-		userRepository,
-		postRepository,
-		replyRepository,
+		repository.CreateUserRepository(conn),
+		repository.CreatePostRepository(conn),
+		repository.CreateReplyRepository(conn),
+		&SecurityService{},
 	}
 }
 
-func (r *ReplyService) CreateReply(reply *model.NewReply) (*model.Post, error) {
-	user, err := r.userRepository.FindOneByUuid(uuid.MustParse(reply.User.Uuid))
+func (r *ReplyService) CreateReply(session *model2.Session, reply *model.NewReply) (*model.Post, error) {
+	user, err := r.userRepository.FindOneByUuid(uuid.MustParse(session.User.Uuid))
 	if err != nil {
 		return nil, err
 	}

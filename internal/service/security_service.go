@@ -11,10 +11,6 @@ func CreateSecurityService() *SecurityService {
 	return &SecurityService{}
 }
 
-func (s *SecurityService) CanCreate(session *model2.Session, ownable ownable.Ownable) bool {
-	return session != nil && session.User.Uuid == ownable.GetOwnerUUID()
-}
-
 func (s *SecurityService) Owns(session *model2.Session, ownable ownable.Ownable) bool {
 	return session != nil && session.User.Uuid == ownable.GetOwnerUUID()
 }

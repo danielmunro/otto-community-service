@@ -57,10 +57,7 @@ func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model
 }
 
 func (p *PostService) CreatePost(session *model2.Session, newPost *model.NewPost) (*model.Post, error) {
-	if !p.securityService.CanCreate(session, newPost) {
-		return nil, errors.New("cannot create a new post")
-	}
-	user, err := p.userRepository.FindOneByUuid(uuid.MustParse(newPost.User.Uuid))
+	user, err := p.userRepository.FindOneByUuid(uuid.MustParse(session.User.Uuid))
 	if err != nil {
 		return nil, err
 	}

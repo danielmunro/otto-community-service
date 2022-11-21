@@ -30,12 +30,9 @@ type Reply struct {
 	User User `json:"user"`
 }
 
-func CreateNewReply(userUuid *uuid.UUID, postUuid *uuid.UUID, message string) *NewReply {
+func CreateNewReply(postUuid *uuid.UUID, message string) *NewReply {
 	return &NewReply{
 		Text: message,
-		User: User{
-			Uuid: userUuid.String(),
-		},
 		Post: Post{
 			Uuid: postUuid.String(),
 		},

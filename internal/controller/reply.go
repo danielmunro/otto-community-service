@@ -16,7 +16,7 @@ func CreateAReplyV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newReplyModel := model.DecodeRequestToNewReply(r)
-	reply, err := service.CreateDefaultReplyService().CreateReply(newReplyModel)
+	reply, err := service.CreateReplyService().CreateReply(session, newReplyModel)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -26,7 +26,7 @@ func CreateAReplyV1(w http.ResponseWriter, r *http.Request) {
 
 func GetPostRepliesV1(w http.ResponseWriter, r *http.Request) {
 	postUuid := iUuid.GetUuidFromPathSecondPosition(r.URL.Path)
-	replies, err := service.CreateDefaultReplyService().GetRepliesForPost(postUuid)
+	replies, err := service.CreateReplyService().GetRepliesForPost(postUuid)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

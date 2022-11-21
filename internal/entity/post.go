@@ -60,10 +60,10 @@ func CreateShare(user *User, post *Post, share *model.NewShare) *Post {
 func CreateReply(user *User, post *Post, reply *model.NewReply) *Post {
 	return &Post{
 		Text:          reply.Text,
-		UserID:        user.ID,
 		Visibility:    model.PUBLIC,
 		ReplyToPost:   post,
 		ReplyToPostID: post.ID,
+		UserID:        user.ID,
 		User:          user,
 	}
 }

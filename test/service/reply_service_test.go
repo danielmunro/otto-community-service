@@ -3,7 +3,6 @@ package service_test
 import (
 	model2 "github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/constants"
-	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	"github.com/danielmunro/otto-community-service/internal/test"
@@ -13,10 +12,9 @@ import (
 
 const NumberOfRepliesToCreate = 5
 
-func createReplyModel(post *model.Post, user *entity.User) *model.NewReply {
+func createReplyModel(post *model.Post) *model.NewReply {
 	return &model.NewReply{
 		Post: *post,
-		User: model.User{Uuid: user.Uuid.String()},
 		Text: "this is a reply",
 	}
 }
@@ -26,8 +24,8 @@ func Test_GetReplies_ForPost(t *testing.T) {
 	testUser := createTestUser()
 	session := model2.CreateSessionModelFromString(*testUser.Uuid)
 	postService := service.CreatePostService()
-	replyService := service.CreateDefaultReplyService()
-	post, err := postService.CreatePost(session, model.CreateNewPost(testUser.Uuid, "this is a test"))
+	replyService := service.CreateReplyService()
+	post, err := postService.CreatePost(session, model.CreateNewPost("this is a test"))
 
 	// expect
 	test.Assert(t, err == nil)
@@ -35,7 +33,7 @@ func Test_GetReplies_ForPost(t *testing.T) {
 
 	// given
 	for i := 0; i < NumberOfRepliesToCreate; i++ {
-		_, _ = replyService.CreateReply(createReplyModel(post, testUser))
+		_, _ = replyService.CreateReply(session, createReplyModel(post))
 	}
 
 	// when
@@ -47,17 +45,17 @@ func Test_GetReplies_ForPost(t *testing.T) {
 
 func Test_CreateReply_Fails_WithMissing_User(t *testing.T) {
 	// setup
-	testUser := test.CreateTestUser()
-	replyService := service.CreateDefaultReplyService()
+	testUser := createTestUser()
+	session := model2.CreateSessionModelFromString(*testUser.Uuid)
+	replyService := service.CreateReplyService()
 
 	// when
 	postUuid := uuid.New()
-	response, err := replyService.CreateReply(&model.NewReply{
+	response, err := replyService.CreateReply(session, &model.NewReply{
 		Post: model.Post{
 			Uuid: postUuid.String(),
 			Text: "",
 		},
-		User: model.User{Uuid: testUser.Uuid},
 		Text: "this is a reply",
 	})
 
@@ -70,16 +68,16 @@ func Test_CreateReply_Fails_WithMissing_User(t *testing.T) {
 func Test_CreateReply_Fails_WithMissing_Post(t *testing.T) {
 	// setup
 	testUser := createTestUser()
-	replyService := service.CreateDefaultReplyService()
+	session := model2.CreateSessionModelFromString(*testUser.Uuid)
+	replyService := service.CreateReplyService()
 
 	// when
 	postUuid := uuid.New()
-	response, err := replyService.CreateReply(&model.NewReply{
+	response, err := replyService.CreateReply(session, &model.NewReply{
 		Post: model.Post{
 			Uuid: postUuid.String(),
 			Text: "",
 		},
-		User: model.User{Uuid: testUser.Uuid.String()},
 		Text: "this is a reply",
 	})
 
@@ -91,7 +89,7 @@ func Test_CreateReply_Fails_WithMissing_Post(t *testing.T) {
 
 func Test_GetReplies_FailsWithMissing_Post(t *testing.T) {
 	// setup
-	replyService := service.CreateDefaultReplyService()
+	replyService := service.CreateReplyService()
 
 	// when
 	response, err := replyService.GetRepliesForPost(uuid.New())
