@@ -23,7 +23,7 @@ func CreateFollowV1(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
-	follow, err := service.CreateDefaultFollowService().CreateFollow(uuid.MustParse(session.User.Uuid), newFollowModel)
+	follow, err := service.CreateFollowService().CreateFollow(uuid.MustParse(session.User.Uuid), newFollowModel)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -38,7 +38,7 @@ func GetUserFollowersByUsernameV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	usernameParam := params["username"]
 
-	follows, err := service.CreateDefaultFollowService().GetUserFollowersByUsername(usernameParam)
+	follows, err := service.CreateFollowService().GetUserFollowersByUsername(usernameParam)
 	if err != nil {
 		log.Print("error received from get user follows :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -52,7 +52,7 @@ func GetUserFollowersByUsernameV1(w http.ResponseWriter, r *http.Request) {
 func GetUserFollowersV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	username := params["username"]
-	follows, err := service.CreateDefaultFollowService().GetUserFollowers(username)
+	follows, err := service.CreateFollowService().GetUserFollowers(username)
 	if err != nil {
 		log.Print("error received from get user follows :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -66,7 +66,7 @@ func GetUserFollowersV1(w http.ResponseWriter, r *http.Request) {
 func GetUserFollowsV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	username := params["username"]
-	follows, err := service.CreateDefaultFollowService().GetUserFollows(username)
+	follows, err := service.CreateFollowService().GetUserFollows(username)
 	if err != nil {
 		log.Print("error received from get user follows :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -84,7 +84,7 @@ func DeleteFollowV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	followUuid := iUuid.GetUuidFromPathSecondPosition(r.URL.Path)
-	err := service.CreateDefaultFollowService().DeleteFollow(followUuid, uuid.MustParse(session.User.Uuid))
+	err := service.CreateFollowService().DeleteFollow(followUuid, uuid.MustParse(session.User.Uuid))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 	}

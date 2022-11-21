@@ -21,17 +21,11 @@ type FollowService struct {
 	kafkaWriter      *kafka.Producer
 }
 
-func CreateDefaultFollowService() *FollowService {
+func CreateFollowService() *FollowService {
 	conn := db.CreateDefaultConnection()
-	return CreateFollowService(
-		repository.CreateUserRepository(conn),
-		repository.CreateFollowRepository(conn))
-}
-
-func CreateFollowService(userRepository *repository.UserRepository, followRepository *repository.FollowRepository) *FollowService {
 	return &FollowService{
-		userRepository,
-		followRepository,
+		repository.CreateUserRepository(conn),
+		repository.CreateFollowRepository(conn),
 		kafka2.CreateWriter(),
 	}
 }

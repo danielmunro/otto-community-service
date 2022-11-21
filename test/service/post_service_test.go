@@ -93,7 +93,7 @@ func Test_PostService_Respects_FollowingVisibility(t *testing.T) {
 	session2 := model2.CreateSessionModelFromString(*testUser2.Uuid)
 	testUser3 := createTestUser()
 	session3 := model2.CreateSessionModelFromString(*testUser3.Uuid)
-	_, _ = service.CreateDefaultFollowService().CreateFollow(
+	_, _ = service.CreateFollowService().CreateFollow(
 		*testUser1.Uuid, &model.NewFollow{Following: model.User{Uuid: testUser2.Uuid.String()}})
 	postService := service.CreatePostService()
 	newPost := model.CreateNewPost(message)
@@ -259,7 +259,7 @@ func Test_CanGetPosts_ForUserFollows(t *testing.T) {
 	testUser := createTestUser()
 	following := createTestUser()
 	postService := service.CreatePostService()
-	followService := service.CreateDefaultFollowService()
+	followService := service.CreateFollowService()
 	_, _ = followService.CreateFollow(
 		*testUser.Uuid,
 		&model.NewFollow{Following: model.User{Uuid: following.Uuid.String()}},
