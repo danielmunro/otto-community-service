@@ -45,8 +45,8 @@ func Test_GetReplies_ForPost(t *testing.T) {
 
 func Test_CreateReply_Fails_WithMissing_User(t *testing.T) {
 	// setup
-	testUser := createTestUser()
-	session := model2.CreateSessionModelFromString(*testUser.Uuid)
+	testUser, _ := uuid.NewRandom()
+	session := model2.CreateSessionModelFromString(testUser)
 	replyService := service.CreateReplyService()
 
 	// when
