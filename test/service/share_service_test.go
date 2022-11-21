@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	model2 "github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/service"
 	"github.com/danielmunro/otto-community-service/internal/test"
@@ -10,9 +11,10 @@ import (
 func Test_ShareService_CanCreate_NewShare(t *testing.T) {
 	// setup
 	testUser := createTestUser()
+	session := model2.CreateSessionModelFromString(*testUser.Uuid)
 	postService := service.CreatePostService()
 	shareService := service.CreateDefaultShareService()
-	post, _ := postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, message))
+	post, _ := postService.CreatePost(session, model.CreateNewPost(testUser.Uuid, message))
 	newShare := &model.NewShare{
 		Text: "Yo",
 		User: model.User{

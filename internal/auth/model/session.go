@@ -8,8 +8,19 @@
  */
 
 package model
+
+import "github.com/google/uuid"
+
 // Session struct for Session
 type Session struct {
 	User  User   `json:"user"`
 	Token string `json:"token,omitempty"`
+}
+
+func CreateSessionModelFromString(uuid uuid.UUID) *Session {
+	return &Session{
+		User: User{
+			Uuid: uuid.String(),
+		},
+	}
 }

@@ -15,12 +15,8 @@ import (
 // CreateNewPostV1 - create a new post
 func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
-	if session == nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 	newPostModel, _ := model.DecodeRequestToNewPost(r)
-	post, err := service.CreatePostService().CreatePost(uuid.MustParse(session.User.Uuid), newPostModel)
+	post, err := service.CreatePostService().CreatePost(session, newPostModel)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -146,7 +142,6 @@ func DeletePostV1(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	postUuid, err := uuid.Parse(params["uuid"])
 	if err != nil {
-		log.Print("malformed uuid for delete post :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

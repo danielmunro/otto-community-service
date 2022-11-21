@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	model2 "github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/entity"
 	"github.com/danielmunro/otto-community-service/internal/model"
@@ -23,9 +24,10 @@ func createReplyModel(post *model.Post, user *entity.User) *model.NewReply {
 func Test_GetReplies_ForPost(t *testing.T) {
 	// setup
 	testUser := createTestUser()
+	session := model2.CreateSessionModelFromString(*testUser.Uuid)
 	postService := service.CreatePostService()
 	replyService := service.CreateDefaultReplyService()
-	post, err := postService.CreatePost(*testUser.Uuid, model.CreateNewPost(testUser.Uuid, "this is a test"))
+	post, err := postService.CreatePost(session, model.CreateNewPost(testUser.Uuid, "this is a test"))
 
 	// expect
 	test.Assert(t, err == nil)

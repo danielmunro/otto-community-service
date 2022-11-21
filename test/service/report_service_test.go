@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	model2 "github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/model"
 	"github.com/danielmunro/otto-community-service/internal/service"
@@ -12,8 +13,9 @@ import (
 func Test_PostReport_HappyPath(t *testing.T) {
 	// setup
 	user1 := createTestUser()
+	session := model2.CreateSessionModelFromString(*user1.Uuid)
 	postService := service.CreatePostService()
-	post, _ := postService.CreatePost(*user1.Uuid, model.CreateNewPost(user1.Uuid, ""))
+	post, _ := postService.CreatePost(session, model.CreateNewPost(user1.Uuid, ""))
 	user2 := createTestUser()
 	reportService := service.CreateDefaultReportService()
 	postUuid := uuid.MustParse(post.Uuid)
@@ -59,8 +61,9 @@ func Test_PostReport_Fails_WhenUserMissing(t *testing.T) {
 func Test_ReplyReport_HappyPath(t *testing.T) {
 	// setup
 	user1 := createTestUser()
+	session := model2.CreateSessionModelFromString(*user1.Uuid)
 	postService := service.CreatePostService()
-	post, _ := postService.CreatePost(*user1.Uuid, model.CreateNewPost(user1.Uuid, ""))
+	post, _ := postService.CreatePost(session, model.CreateNewPost(user1.Uuid, ""))
 	replyService := service.CreateDefaultReplyService()
 	postUuid := uuid.MustParse(post.Uuid)
 	reply, _ := replyService.CreateReply(model.CreateNewReply(user1.Uuid, &postUuid, "test message"))

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	model2 "github.com/danielmunro/otto-community-service/internal/auth/model"
 	"github.com/danielmunro/otto-community-service/internal/constants"
 	"github.com/danielmunro/otto-community-service/internal/db"
 	"github.com/danielmunro/otto-community-service/internal/entity"
@@ -23,6 +24,7 @@ type PostService struct {
 	imageRepository  *repository.ImageRepository
 	likeRepository   *repository.LikeRepository
 	kafkaWriter      *kafka.Producer
+	securityService  *SecurityService
 }
 
 func CreatePostService() *PostService {
@@ -34,6 +36,7 @@ func CreatePostService() *PostService {
 		imageRepository:  repository.CreateImageRepository(conn),
 		likeRepository:   repository.CreateLikeRepository(conn),
 		kafkaWriter:      kafka2.CreateWriter(),
+		securityService:  CreateSecurityService(),
 	}
 }
 
@@ -54,13 +57,13 @@ func (p *PostService) GetPost(viewerUuid *uuid.UUID, postUuid uuid.UUID) (*model
 	return mapper.GetPostModelFromEntity(postsWithShare[0]), nil
 }
 
-func (p *PostService) CreatePost(userUuid uuid.UUID, newPost *model.NewPost) (*model.Post, error) {
+func (p *PostService) CreatePost(session *model2.Session, newPost *model.NewPost) (*model.Post, error) {
+	if !p.securityService.CanCreateNewPost(session, newPost) {
+		return nil, errors.New("cannot create a new post")
+	}
 	user, err := p.userRepository.FindOneByUuid(uuid.MustParse(newPost.User.Uuid))
 	if err != nil {
 		return nil, err
-	}
-	if userUuid.String() != newPost.User.Uuid {
-		return nil, errors.New("cannot create a post for another user")
 	}
 	post := entity.CreatePost(user, newPost)
 	p.postRepository.Create(post)
