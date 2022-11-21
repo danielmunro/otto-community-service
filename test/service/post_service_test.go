@@ -132,7 +132,7 @@ func Test_PostService_Can_DeletePost(t *testing.T) {
 	postModel, _ := postService.CreatePost(session, model.CreateNewPost(testUser.Uuid, message))
 
 	// when
-	err := postService.DeletePost(uuid.MustParse(postModel.Uuid), *testUser.Uuid)
+	err := postService.DeletePost(session, uuid.MustParse(postModel.Uuid))
 
 	// then
 	test.Assert(t, err == nil)
@@ -144,7 +144,7 @@ func Test_PostService_CannotGet_DeletedPost(t *testing.T) {
 	session := model2.CreateSessionModelFromString(*testUser.Uuid)
 	postService := service.CreatePostService()
 	postModel, _ := postService.CreatePost(session, model.CreateNewPost(testUser.Uuid, message))
-	_ = postService.DeletePost(uuid.MustParse(postModel.Uuid), *testUser.Uuid)
+	_ = postService.DeletePost(session, uuid.MustParse(postModel.Uuid))
 
 	// when
 	response, err := postService.GetPost(nil, uuid.MustParse(postModel.Uuid))

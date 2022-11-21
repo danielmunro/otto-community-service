@@ -8,7 +8,6 @@ import (
 	iUuid "github.com/danielmunro/otto-community-service/internal/uuid"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 )
 
@@ -133,20 +132,14 @@ func GetLikedPostsV1(w http.ResponseWriter, r *http.Request) {
 func DeletePostV1(w http.ResponseWriter, r *http.Request) {
 	authService := service.CreateDefaultAuthService()
 	session := authService.GetSessionFromRequest(r)
-	if session == nil {
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
 	params := mux.Vars(r)
 	postUuid, err := uuid.Parse(params["uuid"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	userUuid := uuid.MustParse(session.User.Uuid)
-	err = service.CreatePostService().DeletePost(postUuid, userUuid)
+	err = service.CreatePostService().DeletePost(session, postUuid)
 	if err != nil {
-		log.Print("delete error, error :: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 }
