@@ -29,9 +29,7 @@ func CreateNewPostV1(w http.ResponseWriter, r *http.Request) {
 func UpdatePostV1(w http.ResponseWriter, r *http.Request) {
 	postModel, _ := model.DecodeRequestToPost(r)
 	session := service.CreateDefaultAuthService().GetSessionFromRequest(r)
-	svc := service.CreatePostService()
-	userUuid := uuid.MustParse(session.User.Uuid)
-	err := svc.UpdatePost(userUuid, postModel)
+	err := service.CreatePostService().UpdatePost(session, postModel)
 	if err != nil {
 		w.WriteHeader(400)
 	}

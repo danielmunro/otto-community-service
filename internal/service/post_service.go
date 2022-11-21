@@ -80,13 +80,10 @@ func (p *PostService) CreatePost(session *model2.Session, newPost *model.NewPost
 	return postModel, err
 }
 
-func (p *PostService) UpdatePost(userUuid uuid.UUID, postModel *model.Post) error {
+func (p *PostService) UpdatePost(session *model2.Session, postModel *model.Post) error {
 	postEntity, err := p.postRepository.FindOneByUuid(uuid.MustParse(postModel.Uuid))
-	if err != nil {
-		return err
-	}
-	if userUuid != *postEntity.User.Uuid {
-		return errors.New("user cannot update this post")
+	if err != nil || !p.securityService.CanUpdatePost(session, postEntity) {
+		return errors.New("user cannot update post")
 	}
 	postEntity.Text = postModel.Text
 	postEntity.Draft = postModel.Draft
