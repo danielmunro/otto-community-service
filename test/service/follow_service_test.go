@@ -13,7 +13,7 @@ func Test_CanFollow_AUser(t *testing.T) {
 	userService := service.CreateDefaultUserService()
 	user1 := userService.CreateUser(test.CreateTestUser())
 	user2 := userService.CreateUser(test.CreateTestUser())
-	followService := service.CreateDefaultFollowService()
+	followService := service.CreateFollowService()
 
 	// when
 	follow, err := followService.CreateFollow(uuid.MustParse(user1.Uuid.String()), &model.NewFollow{
@@ -32,7 +32,7 @@ func Test_GetFollows(t *testing.T) {
 	user1 := userService.CreateUser(test.CreateTestUser())
 	user2 := userService.CreateUser(test.CreateTestUser())
 	user3 := userService.CreateUser(test.CreateTestUser())
-	followService := service.CreateDefaultFollowService()
+	followService := service.CreateFollowService()
 
 	_, _ = followService.CreateFollow(uuid.MustParse(user1.Uuid.String()), &model.NewFollow{
 		Following: model.User{Uuid: user2.Uuid.String()},
@@ -54,7 +54,7 @@ func Test_GetFollowers(t *testing.T) {
 	user1 := userService.CreateUser(test.CreateTestUser())
 	user2 := userService.CreateUser(test.CreateTestUser())
 	user3 := userService.CreateUser(test.CreateTestUser())
-	followService := service.CreateDefaultFollowService()
+	followService := service.CreateFollowService()
 
 	_, _ = followService.CreateFollow(uuid.MustParse(user1.Uuid.String()), &model.NewFollow{
 		Following: model.User{Uuid: user3.Uuid.String()},
