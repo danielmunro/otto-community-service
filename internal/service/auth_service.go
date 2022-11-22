@@ -48,9 +48,7 @@ func (a *AuthService) DoWithValidSession(w http.ResponseWriter, r *http.Request,
 		return
 	}
 	session, err := a.getSession(sessionToken)
-	if err == nil {
-		log.Print("session validation succeeded, sessionUuid: ", session.User.Uuid)
-	} else {
+	if err != nil {
 		log.Print("FAILED! Either error, or Uuid mismatch :: ", err)
 		err := errors.New("invalid session")
 		w.WriteHeader(http.StatusForbidden)
