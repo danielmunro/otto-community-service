@@ -92,12 +92,6 @@ var routes = Routes{
 		controller.CreateNewPostV1,
 	},
 	{
-		"CreateSessionV1",
-		strings.ToUpper("Post"),
-		"/session",
-		controller.CreateSessionV1,
-	},
-	{
 		"DeleteFollowV1",
 		strings.ToUpper("Delete"),
 		"/follow/{uuid}",

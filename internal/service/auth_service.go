@@ -28,11 +28,6 @@ func CreateDefaultAuthService() *AuthService {
 	}
 }
 
-func (a *AuthService) CreateSession(newSession model.NewSession) (*model.Session, error) {
-	session, _, err := a.client.DefaultApi.CreateNewSesssion(context.TODO(), newSession)
-	return &session, err
-}
-
 func (a *AuthService) GetSessionFromRequest(r *http.Request) *model.Session {
 	sessionToken := a.getSessionToken(r)
 	if sessionToken != "" {

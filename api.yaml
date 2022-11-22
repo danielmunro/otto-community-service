@@ -449,20 +449,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
-  /session:
-    post:
-      operationId: createSessionV1
-      summary: create a session and login
-      requestBody:
-        description: new session
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/NewSession"
-      responses:
-        '201':
-          description: session created
   /follow:
     post:
       operationId: createFollowV1
@@ -736,17 +722,6 @@ components:
           $ref: "#/components/schemas/User"
         reply:
           $ref: "#/components/schemas/Reply"
-    NewSession:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-          format: email
-        password:
-          type: string
     Visibility:
       type: string
       enum:
