@@ -1,7 +1,3 @@
-# otto-community-service
-public messaging system for otto
+# Archived
 
-## Todos
-
-* Ignore/block
-* Rate limiting
+[New home here](https://github.com/third-place/community-service)
